@@ -159,7 +159,7 @@
                     <span>Inicio</span>
                 </button>
                 
-                <div id="nav-torneo-tabs" class="ribbon-container hide-scroll pr-4 sm:pr-0">
+                <div id="nav-torneo-tabs" class="ribbon-container hide-scroll pr-10 sm:pr-0">
                     <button onclick="switchTab('competicion')" id="tab-btn-competicion" class="py-2.5 sm:py-3 px-2 flex items-center gap-1.5 sm:gap-2 transition text-slate-400 hover:text-indigo-300 whitespace-nowrap">
                         <i class="fa-solid fa-trophy text-sm sm:text-base"></i>
                         <span>Competición</span>
@@ -346,7 +346,7 @@
                                 <option value="todas">Todas las fases</option>
                             </select>
                         </div>
-                        <button id="btn-generar-random" onclick="generarResultadosAleatorios()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] sm:text-xs px-2.5 py-1.5 rounded-xl shadow-md active:scale-95 transition ml-2 flex items-center gap-1.5">
+                        <button id="btn-resultados-accion" onclick="handleResultadosAccion()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] sm:text-xs px-2.5 py-1.5 rounded-xl shadow-md active:scale-95 transition ml-2 flex items-center gap-1.5">
                             <i class="fa-solid fa-dice"></i> <span class="hidden sm:inline">Generar Resultados</span>
                         </button>
                     </div>
@@ -693,15 +693,19 @@
 
                         <!-- INSCRIPCIÓN OBLIGATORIA -->
                         <div class="bg-slate-800/60 p-3.5 rounded-xl border border-slate-700 space-y-3">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-700/80 pb-2">
-                                <h5 class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-700/80 pb-3">
+                                <h5 class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5 mb-2 sm:mb-0">
                                     <i class="fa-solid fa-users-check"></i>
                                     Inscribir Jugadores Iniciales
                                 </h5>
-                                <button onclick="toggleTodosCrear()" class="ml-2 text-[9px] bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-1 px-2 rounded transition active:scale-95">Inscribir a todos</button>
-                                <div class="relative">
-                                    <input type="text" id="search-crear-players" oninput="renderCrearPlayersChecklist()" placeholder="Buscar jugador..." class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white pl-7 focus:outline-none focus:border-indigo-500 w-full sm:w-auto transition">
-                                    <i class="fa-solid fa-magnifying-glass absolute left-2 top-2 text-[10px] text-slate-400"></i>
+                                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                                    <button onclick="toggleTodosCrear()" class="text-[10px] sm:text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-1.5 px-3 rounded-lg transition active:scale-95 whitespace-nowrap shadow-md">
+                                        Inscribir a todos
+                                    </button>
+                                    <div class="relative flex-1 sm:flex-none">
+                                        <input type="text" id="search-crear-players" oninput="renderCrearPlayersChecklist()" placeholder="Buscar..." class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white pl-8 focus:outline-none focus:border-indigo-500 w-full transition">
+                                        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-[11px] text-slate-400"></i>
+                                    </div>
                                 </div>
                             </div>
                             <div id="crear-players-checklist" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto custom-scroll p-1"></div>
@@ -784,15 +788,19 @@
                         </div>
 
                         <div class="bg-slate-800/60 p-3.5 rounded-xl border border-slate-700 space-y-3">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-700/80 pb-2">
-                                <h5 class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-700/80 pb-3">
+                                <h5 class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5 mb-2 sm:mb-0">
                                     <i class="fa-solid fa-users-check"></i>
                                     Inscribir / Rescindir Jugadores
                                 </h5>
-                                <button onclick="toggleTodosEdit()" class="ml-2 text-[9px] bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-1 px-2 rounded transition active:scale-95">Inscribir a todos</button>
-                                <div class="relative">
-                                    <input type="text" id="search-edit-players" oninput="renderEditPlayersChecklist()" placeholder="Buscar jugador..." class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white pl-7 focus:outline-none focus:border-indigo-500 w-full sm:w-auto transition">
-                                    <i class="fa-solid fa-magnifying-glass absolute left-2 top-2 text-[10px] text-slate-400"></i>
+                                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                                    <button onclick="toggleTodosEdit()" class="text-[10px] sm:text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-1.5 px-3 rounded-lg transition active:scale-95 whitespace-nowrap shadow-md">
+                                        Inscribir a todos
+                                    </button>
+                                    <div class="relative flex-1 sm:flex-none">
+                                        <input type="text" id="search-edit-players" oninput="renderEditPlayersChecklist()" placeholder="Buscar..." class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white pl-8 focus:outline-none focus:border-indigo-500 w-full transition">
+                                        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-[11px] text-slate-400"></i>
+                                    </div>
                                 </div>
                             </div>
                             <div id="edit-players-checklist" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto custom-scroll p-1"></div>
@@ -1356,10 +1364,11 @@
             const btnCreate = document.getElementById('admin-btn-create-tournament');
             if (isAdminLoggedIn) {
                 btnCreate.classList.remove('hidden');
-                if (document.getElementById('btn-generar-random')) document.getElementById('btn-generar-random').classList.remove('hidden');
+                actualizarBtnResultados();
             } else {
                 btnCreate.classList.add('hidden');
-                if (document.getElementById('btn-generar-random')) document.getElementById('btn-generar-random').classList.add('hidden');
+                const btn = document.getElementById('btn-resultados-accion');
+                if (btn) btn.classList.add('hidden');
             }
         }
 
@@ -1608,10 +1617,19 @@
             } else if (torneo.formato === 'liga_liguilla') {
                 wrapperLiga.classList.remove('hidden');
                 wrapperCopaGrupos.classList.add('hidden');
-                wrapperCopa.classList.remove('hidden');
-                subtext.innerText = "Tabla General y Liguilla Eliminatoria";
+                
+                const liguillaMatches = torneo.partidos.filter(p => !p.fase.toLowerCase().includes('jornada'));
+                const primerCruce = liguillaMatches.length > 0 ? liguillaMatches[0] : null;
+                
+                if (primerCruce && primerCruce.j1Id !== null) {
+                    wrapperCopa.classList.remove('hidden');
+                    subtext.innerText = "Tabla General y Liguilla Eliminatoria";
+                    renderBracketsTree();
+                } else {
+                    wrapperCopa.classList.add('hidden');
+                    subtext.innerText = "Tabla General de Posiciones (Fase Regular)";
+                }
                 renderTablaPosiciones();
-                renderBracketsTree();
             } else if (torneo.formato === 'copa_grupos') {
                 wrapperLiga.classList.add('hidden');
                 wrapperCopaGrupos.classList.remove('hidden');
@@ -2203,9 +2221,7 @@
                 }
             }
 
-            if (torneo.formato.includes('liga')) {
-                verificarCampeonLiga(torneo);
-            }
+            verificarAvanceTorneo(torneo);
 
             saveData();
             cerrarModalMarcador();
@@ -3092,6 +3108,7 @@
                 `;
                 list.appendChild(item);
             });
+            actualizarBtnResultados();
         }
 
         function abrirEditarJugadorGlobal(id) {
@@ -3223,6 +3240,55 @@
                         currentList.splice(1, 0, currentList.pop());
                     }
                 }
+                
+                // Generar Árbol de Liguilla vacío si es liga_liguilla
+                if (torneo.formato === 'liga_liguilla') {
+                    const n = players.length;
+                    let numClasificados = 8;
+                    if (n < 8) numClasificados = 4;
+                    if (n < 4) numClasificados = 2;
+                    
+                    let rounds = [];
+                    if (numClasificados === 8) rounds = ["Cuartos de Final", "Semifinales", "Gran Final"];
+                    else if (numClasificados === 4) rounds = ["Semifinales", "Gran Final"];
+                    else rounds = ["Gran Final"];
+                    
+                    const esIdaVuelta = torneo.modoLlaves === 'ida_vuelta';
+                    let phaseMatchCounts = rounds.map((_, idx) => Math.pow(2, rounds.length - 1 - idx));
+                    let previousPhaseMatches = [];
+
+                    for (let r = 0; r < rounds.length; r++) {
+                        const faseName = rounds[r];
+                        const numMatches = phaseMatchCounts[r];
+                        let currentPhaseMatches = [];
+
+                        for (let m = 0; m < numMatches; m++) {
+                            const isFinal = (r === rounds.length - 1);
+                            if (esIdaVuelta && !isFinal) {
+                                let matchIda = { id: matchId++, fase: `${faseName} - Ida`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
+                                let matchVuelta = { id: matchId++, fase: `${faseName} - Vuelta`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
+                                currentPhaseMatches.push(matchIda);
+                                torneo.partidos.push(matchIda, matchVuelta);
+                            } else {
+                                let matchObj = { id: matchId++, fase: faseName, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
+                                currentPhaseMatches.push(matchObj);
+                                torneo.partidos.push(matchObj);
+                            }
+                        }
+
+                        if (previousPhaseMatches.length > 0) {
+                            for (let i = 0; i < previousPhaseMatches.length; i++) {
+                                let prevMatch = previousPhaseMatches[i];
+                                let targetIndex = Math.floor(i / 2);
+                                let slot = (i % 2 === 0) ? 'j1' : 'j2';
+                                prevMatch.nextMatchId = currentPhaseMatches[targetIndex].id;
+                                prevMatch.nextSlot = slot;
+                            }
+                        }
+                        previousPhaseMatches = currentPhaseMatches;
+                    }
+                }
+                
             } else if (torneo.formato === 'copa_grupos') {
                 const numGrupos = players.length >= 12 ? 4 : 2;
                 const grupos = Array.from({ length: numGrupos }, () => []);
@@ -3442,52 +3508,106 @@
                 `;
                 list.appendChild(item);
             });
+            actualizarBtnResultados();
         }
 
-        function verificarCampeonLiga(torneo) {
-            if (!torneo || !torneo.partidos || torneo.partidos.length === 0) return;
-            const todosJugados = torneo.partidos.every(p => p.jugado);
-            if (todosJugados) {
-                const stats = {};
-                (torneo.jugadores || []).forEach(j => {
-                    stats[j.id] = { ...j, pj:0, pg:0, pe:0, pp:0, gf:0, gc:0, dif:0, pts:0 };
-                });
+        function verificarAvanceTorneo(torneo) {
+            if (!torneo || !torneo.partidos) return;
 
-                torneo.partidos.forEach(p => {
-                    const j1 = stats[p.j1Id];
-                    const j2 = stats[p.j2Id];
-                    if (!j1 || !j2) return;
-
-                    j1.pj++; j2.pj++;
-                    j1.gf += p.g1; j1.gc += p.g2;
-                    j2.gf += p.g2; j2.gc += p.g1;
-
-                    if (p.g1 > p.g2) { j1.pg++; j1.pts += 3; j2.pp++; }
-                    else if (p.g2 > p.g1) { j2.pg++; j2.pts += 3; j1.pp++; }
-                    else { j1.pe++; j1.pts += 1; j2.pe++; j2.pts += 1; }
-                });
-
-                Object.values(stats).forEach(s => s.dif = s.gf - s.gc);
-                const sorted = Object.values(stats).sort((a,b) => b.pts - a.pts || b.dif - a.dif || b.gf - a.gf);
-
-                if (sorted.length > 0) {
-                    const campeon = sorted[0];
-                    const yaRegistrado = appData.palmares.some(p => p.torneo === torneo.nombre && p.edicion === torneo.edicion);
-                    if (!yaRegistrado) {
-                        AudioFX.playWin();
-                        appData.palmares.push({
-                            id: Date.now(),
-                            jugador: campeon.nombre,
-                            tipo: 'Liga',
-                            torneo: torneo.nombre,
-                            edicion: torneo.edicion,
-                            marcador: `${campeon.pts} PTS (${campeon.pg}G-${campeon.pe}E-${campeon.pp}P)`,
-                            fecha: new Date().toISOString().split('T')[0]
-                        });
-                        setTimeout(() => {
-                            showToast(`🏆 ¡Liga Concluida! Felicidades a ${campeon.nombre} por coronarse Campeón con ${campeon.pts} Puntos.`, "success");
-                        }, 3500);
+            if (torneo.formato === 'liga_tradicional') {
+                const todosJugados = torneo.partidos.every(p => p.jugado);
+                if (todosJugados) registrarCampeonLiga(torneo);
+            } 
+            else if (torneo.formato === 'liga_liguilla') {
+                const partidosLiga = torneo.partidos.filter(p => p.fase.toLowerCase().includes('jornada'));
+                const todosLigaJugados = partidosLiga.length > 0 && partidosLiga.every(p => p.jugado);
+                
+                if (todosLigaJugados) {
+                    const liguillaMatches = torneo.partidos.filter(p => !p.fase.toLowerCase().includes('jornada'));
+                    const primerCruce = liguillaMatches.length > 0 ? liguillaMatches[0] : null;
+                    
+                    if (primerCruce && primerCruce.j1Id === null) {
+                        iniciarLiguilla(torneo, partidosLiga, liguillaMatches);
                     }
+                }
+            }
+            else if (torneo.formato === 'copa_grupos') {
+                verificarYEjecutarSorteoGrupos(torneo);
+            }
+        }
+
+        function iniciarLiguilla(torneo, partidosLiga, liguillaMatches) {
+            const stats = {};
+            (torneo.jugadores || []).forEach(j => {
+                stats[j.id] = { id: j.id, pts: 0, dif: 0, gf: 0 };
+            });
+
+            partidosLiga.forEach(p => {
+                const j1 = stats[p.j1Id]; const j2 = stats[p.j2Id];
+                if (!j1 || !j2) return;
+                j1.gf += p.g1; j1.dif += (p.g1 - p.g2);
+                j2.gf += p.g2; j2.dif += (p.g2 - p.g1);
+                if (p.g1 > p.g2) j1.pts += 3;
+                else if (p.g2 > p.g1) j2.pts += 3;
+                else { j1.pts += 1; j2.pts += 1; }
+            });
+
+            const sorted = Object.values(stats).sort((a,b) => b.pts - a.pts || b.dif - a.dif || b.gf - a.gf);
+            
+            const primerFaseName = liguillaMatches[0].fase.replace(' - Ida', '').replace(' - Vuelta', '');
+            const firstRoundMatches = liguillaMatches.filter(p => p.fase.includes(primerFaseName) && !p.fase.includes('Vuelta'));
+            
+            const numClasificados = firstRoundMatches.length * 2;
+            const clasificados = sorted.slice(0, numClasificados).map(s => s.id);
+
+            let pairIdx = 0;
+            for (let i = 0; i < firstRoundMatches.length; i++) {
+                const match = firstRoundMatches[i];
+                match.j1Id = clasificados[pairIdx] || null;
+                match.j2Id = clasificados[numClasificados - 1 - pairIdx] || null;
+                pairIdx++;
+            }
+            
+            showToast("¡Fase regular concluida! La Liguilla ha comenzado.", "success");
+        }
+
+        function registrarCampeonLiga(torneo) {
+            const stats = {};
+            (torneo.jugadores || []).forEach(j => {
+                stats[j.id] = { ...j, pj:0, pg:0, pe:0, pp:0, gf:0, gc:0, dif:0, pts:0 };
+            });
+
+            torneo.partidos.forEach(p => {
+                const j1 = stats[p.j1Id]; const j2 = stats[p.j2Id];
+                if (!j1 || !j2) return;
+                j1.pj++; j2.pj++;
+                j1.gf += p.g1; j1.gc += p.g2;
+                j2.gf += p.g2; j2.gc += p.g1;
+                if (p.g1 > p.g2) { j1.pg++; j1.pts += 3; j2.pp++; }
+                else if (p.g2 > p.g1) { j2.pg++; j2.pts += 3; j1.pp++; }
+                else { j1.pe++; j1.pts += 1; j2.pe++; j2.pts += 1; }
+            });
+
+            Object.values(stats).forEach(s => s.dif = s.gf - s.gc);
+            const sorted = Object.values(stats).sort((a,b) => b.pts - a.pts || b.dif - a.dif || b.gf - a.gf);
+
+            if (sorted.length > 0) {
+                const campeon = sorted[0];
+                const yaRegistrado = appData.palmares.some(p => p.torneo === torneo.nombre && p.edicion === torneo.edicion);
+                if (!yaRegistrado) {
+                    AudioFX.playWin();
+                    appData.palmares.push({
+                        id: Date.now(),
+                        jugador: campeon.nombre,
+                        tipo: 'Liga',
+                        torneo: torneo.nombre,
+                        edicion: torneo.edicion,
+                        marcador: `${campeon.pts} PTS (${campeon.pg}G-${campeon.pe}E-${campeon.pp}P)`,
+                        fecha: new Date().toISOString().split('T')[0]
+                    });
+                    setTimeout(() => {
+                        showToast(`🏆 ¡Liga Concluida! Felicidades a ${campeon.nombre} por coronarse Campeón.`, "success");
+                    }, 3500);
                 }
             }
         }
@@ -3572,46 +3692,71 @@
             showToast("Configuración guardada.", "success");
         }
 
-        // INICIALIZACIÓN: GARANTIZAR PÁGINA DE INICIO LIMPIA AL CERRAR / NAVEGAR
-        
-        function toggleTodosCrear() {
-            AudioFX.playClick();
-            if (inscritosTemporalesCreacion.length === appData.jugadoresGlobales.length && appData.jugadoresGlobales.length > 0) {
-                inscritosTemporalesCreacion = []; // Deseleccionar todos
-            } else {
-                inscritosTemporalesCreacion = appData.jugadoresGlobales.map(j => j.id); // Seleccionar todos
-            }
-            renderCrearPlayersChecklist();
-        }
-
-        function toggleTodosEdit() {
-            AudioFX.playClick();
+        function actualizarBtnResultados() {
+            const btn = document.getElementById('btn-resultados-accion');
+            if (!btn) return;
             const torneo = getActiveTorneo();
-            if (!torneo) return;
-            if (!torneo.jugadores) torneo.jugadores = [];
-            
-            if (torneo.jugadores.length === appData.jugadoresGlobales.length && appData.jugadoresGlobales.length > 0) {
-                torneo.jugadores = []; // Deseleccionar todos
-            } else {
-                torneo.jugadores = JSON.parse(JSON.stringify(appData.jugadoresGlobales)); // Seleccionar todos
+            if (!torneo || !isAdminLoggedIn) {
+                btn.classList.add('hidden');
+                return;
             }
-            saveData();
-            renderEditPlayersChecklist();
+
+            btn.classList.remove('hidden');
+            const tieneJugados = torneo.partidos && torneo.partidos.some(p => p.jugado);
+            if (tieneJugados) {
+                btn.innerHTML = `<i class="fa-solid fa-rotate-left"></i> <span class="hidden sm:inline">Deshacer Resultados</span>`;
+                btn.className = "bg-rose-600 hover:bg-rose-500 text-white font-bold text-[10px] sm:text-xs px-2.5 py-1.5 rounded-xl shadow-md active:scale-95 transition ml-2 flex items-center gap-1.5";
+            } else {
+                btn.innerHTML = `<i class="fa-solid fa-dice"></i> <span class="hidden sm:inline">Generar Resultados</span>`;
+                btn.className = "bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] sm:text-xs px-2.5 py-1.5 rounded-xl shadow-md active:scale-95 transition ml-2 flex items-center gap-1.5";
+            }
         }
 
-        function generarResultadosAleatorios() {
+        function handleResultadosAccion() {
             AudioFX.playClick();
             const torneo = getActiveTorneo();
             if (!torneo || !torneo.partidos || torneo.partidos.length === 0) return;
 
             const tieneJugados = torneo.partidos.some(p => p.jugado);
             if (tieneJugados) {
-                customConfirm("Ya existen partidos con resultados. ¿Deseas sobreescribir y generar resultados para todos los partidos restantes?", "Generar Resultados", "fa-dice").then(ok => {
-                    if (ok) procesarResultadosAleatorios(torneo);
+                customConfirm("¿Deseas deshacer todos los resultados? El calendario se conservará intacto.", "Deshacer Resultados", "fa-rotate-left").then(ok => {
+                    if (ok) procesarDeshacerResultados(torneo);
                 });
             } else {
                 procesarResultadosAleatorios(torneo);
             }
+        }
+
+        function procesarDeshacerResultados(torneo) {
+            torneo.partidos.forEach(p => {
+                p.jugado = false;
+                p.g1 = null;
+                p.g2 = null;
+                p.pen1 = null;
+                p.pen2 = null;
+            });
+
+            torneo.partidos.forEach(p => {
+                if (p.nextMatchId) {
+                    const target = torneo.partidos.find(m => m.id === p.nextMatchId);
+                    if (target) {
+                        if (p.nextSlot === 'j1') target.j1Id = null;
+                        if (p.nextSlot === 'j2') target.j2Id = null;
+                    }
+                }
+            });
+
+            if (torneo.formato === 'liga_liguilla' || torneo.formato === 'copa_grupos') {
+                const elimMatches = torneo.partidos.filter(p => !p.fase.toLowerCase().includes('jornada') && !p.fase.startsWith('Grupo'));
+                elimMatches.forEach(m => {
+                    m.j1Id = null;
+                    m.j2Id = null;
+                });
+            }
+
+            saveData();
+            renderAll();
+            showToast("Resultados deshechos exitosamente.", "success");
         }
 
         function procesarResultadosAleatorios(torneo) {
@@ -3659,14 +3804,9 @@
                     processedAny = true;
                 });
                 
-                if (torneo.formato === 'copa_grupos') {
-                    verificarYEjecutarSorteoGrupos(torneo);
-                }
-                
+                verificarAvanceTorneo(torneo);
                 infiniteLoopGuard++;
             }
-            
-            if (torneo.formato.includes('liga')) verificarCampeonLiga(torneo);
             
             saveData();
             renderAll();
@@ -3674,7 +3814,7 @@
             if (processedAny) showToast(`Resultados simulados exitosamente.`, "success");
             else showToast(`No hay partidos pendientes.`, "error");
         }
-    
+
         window.onload = function() {
             appData.activeTorneoId = null; // Reiniciar selección para iniciar limpio en pantalla de Inicio
             initSupabaseClient();
