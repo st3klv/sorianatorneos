@@ -50,6 +50,10 @@
         .custom-scroll::-webkit-scrollbar-thumb { background: #263359; border-radius: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #6366f1; }
 
+        /* Hide scrollbar for mobile navs but allow scroll */
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
         /* Hardware Accelerated Animations for Fluidity */
         @keyframes fadeInOut {
             0% { opacity: 0; transform: translate3d(0, 15px, 0); }
@@ -78,6 +82,16 @@
         .animate-glow { 
             animation: pulseGlow 8s ease-in-out infinite; 
             will-change: transform, opacity; 
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translate3d(0, 15px, 0); }
+            to { opacity: 1; transform: translate3d(0, 0, 0); }
+        }
+        .animate-slide-up {
+            animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            will-change: transform, opacity;
         }
 
         .ribbon-container {
@@ -139,13 +153,13 @@
 
         <!-- NAVEGACIÓN SUPERIOR CINTA CON DESPLIEGUE ANIMADO -->
         <nav class="glass-panel border-b border-slate-800/80 sticky top-[50px] sm:top-[60px] md:top-[65px] z-30 shadow-md w-full">
-            <div class="max-w-7xl mx-auto px-2 sm:px-4 flex items-center justify-between sm:justify-start sm:gap-8 text-xs md:text-sm overflow-x-auto custom-scroll">
+            <div class="max-w-7xl mx-auto px-2 sm:px-4 flex items-center justify-between sm:justify-start sm:gap-8 text-xs md:text-sm overflow-x-auto hide-scroll whitespace-nowrap">
                 <button onclick="volverAInicioGlobal()" id="tab-btn-inicio" class="py-2.5 sm:py-3 px-2 flex items-center gap-1.5 sm:gap-2 transition text-slate-400 hover:text-indigo-300 tab-active whitespace-nowrap flex-shrink-0">
                     <i class="fa-solid fa-house text-sm sm:text-base"></i>
                     <span>Inicio</span>
                 </button>
                 
-                <div id="nav-torneo-tabs" class="ribbon-container">
+                <div id="nav-torneo-tabs" class="ribbon-container hide-scroll pr-4 sm:pr-0">
                     <button onclick="switchTab('competicion')" id="tab-btn-competicion" class="py-2.5 sm:py-3 px-2 flex items-center gap-1.5 sm:gap-2 transition text-slate-400 hover:text-indigo-300 whitespace-nowrap">
                         <i class="fa-solid fa-trophy text-sm sm:text-base"></i>
                         <span>Competición</span>
@@ -166,7 +180,7 @@
         <main class="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
 
             <!-- TAB 1: INICIO -->
-            <section id="tab-inicio" class="space-y-6 sm:space-y-8">
+            <section id="tab-inicio" class="space-y-6 sm:space-y-8 animate-slide-up" style="animation-delay: 0ms;">
                 
                 <!-- TORNEOS ACTIVOS -->
                 <div class="space-y-4">
@@ -193,7 +207,7 @@
                 </div>
 
                 <!-- SALÓN DE LA FAMA INTEGRADO EN INICIO -->
-                <div class="glass-card rounded-2xl p-4 sm:p-6 border border-slate-800 space-y-4 relative overflow-hidden">
+                <div class="glass-card rounded-2xl p-4 sm:p-6 border border-slate-800 space-y-4 relative overflow-hidden animate-slide-up" style="animation-delay: 150ms;">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
                         <div>
                             <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
@@ -216,7 +230,7 @@
                 </div>
 
                 <!-- HISTORIAL DE TORNEOS PASADOS -->
-                <div class="space-y-4 pt-2 border-t border-slate-800/80">
+                <div class="space-y-4 pt-2 border-t border-slate-800/80 animate-slide-up" style="animation-delay: 200ms;">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <h3 class="text-base sm:text-lg md:text-xl font-bold text-white flex items-center gap-2">
                             <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i>
@@ -233,7 +247,7 @@
 
             <!-- TAB 2: COMPETICIÓN (TABLAS Y ÁRBOLES) -->
             <section id="tab-competicion" class="hidden space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3 animate-slide-up">
                     <div>
                         <h3 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
                             <i class="fa-solid fa-trophy text-amber-400"></i>
@@ -243,16 +257,6 @@
                     </div>
 
                     <div class="flex items-center gap-2 flex-wrap self-start sm:self-auto">
-                        <div id="copa-view-switcher" class="hidden flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-700/80 text-xs">
-                            <button onclick="setBracketViewMode('grafico')" id="btn-view-grafico" class="px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 bg-indigo-600 text-white shadow">
-                                <i class="fa-solid fa-sitemap"></i>
-                                <span>Árbol de Llaves</span>
-                            </button>
-                            <button onclick="setBracketViewMode('lista')" id="btn-view-lista" class="px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white">
-                                <i class="fa-solid fa-list-ul"></i>
-                                <span>Lista</span>
-                            </button>
-                        </div>
                         <button onclick="compartirTorneoActual()" class="bg-indigo-600/80 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 active:scale-95">
                             <i class="fa-solid fa-share-nodes"></i>
                             <span>Compartir</span>
@@ -261,7 +265,7 @@
                 </div>
 
                 <!-- CONTENEDOR LIGA TRADICIONAL / LIGUILLA -->
-                <div id="wrapper-liga" class="hidden space-y-6">
+                <div id="wrapper-liga" class="hidden space-y-6 animate-slide-up" style="animation-delay: 50ms;">
                     <div class="glass-card rounded-2xl overflow-hidden shadow-xl border border-slate-800">
                         <div class="p-3 sm:p-4 bg-slate-800/60 border-b border-slate-700/80 font-bold text-slate-200 text-xs sm:text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                             <div class="flex items-center gap-2">
@@ -301,7 +305,7 @@
                 </div>
 
                 <!-- CONTENEDOR FASE DE GRUPOS DE COPA -->
-                <div id="wrapper-copa-grupos-tablas" class="hidden space-y-4">
+                <div id="wrapper-copa-grupos-tablas" class="hidden space-y-4 animate-slide-up" style="animation-delay: 100ms;">
                     <div class="flex items-center gap-2 border-b border-indigo-500/30 pb-2">
                         <i class="fa-solid fa-layer-group text-amber-400 text-sm"></i>
                         <h4 class="font-extrabold text-white text-sm uppercase tracking-wider">Tablas de Fase de Grupos</h4>
@@ -310,18 +314,15 @@
                 </div>
 
                 <!-- CONTENEDOR ÁRBOL DE ELIMINATORIAS (COPAS / LIGUILLA) -->
-                <div id="wrapper-copa" class="hidden space-y-4">
+                <div id="wrapper-copa" class="hidden space-y-4 animate-slide-up" style="animation-delay: 150ms;">
                     <div id="copa-grafico-container" class="glass-card rounded-2xl p-3 sm:p-6 border border-slate-800/80 overflow-x-auto custom-scroll w-full">
-                        <div id="brackets-tree-canvas" class="w-full flex flex-row items-stretch justify-start gap-4 sm:gap-6 py-4 min-w-max mx-auto"></div>
-                    </div>
-                    <div id="copa-lista-container" class="hidden space-y-4">
-                        <div id="brackets-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                        <div id="brackets-tree-canvas" class="w-full flex flex-row items-stretch justify-start gap-3 sm:gap-5 py-4 min-w-max mx-auto"></div>
                     </div>
                 </div>
             </section>
 
             <!-- TAB 3: CALENDARIO -->
-            <section id="tab-partidos" class="hidden space-y-6">
+            <section id="tab-partidos" class="hidden space-y-6 animate-slide-up">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
                     <div>
                         <h3 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
@@ -354,7 +355,7 @@
             </section>
 
             <!-- TAB 4: ESTADÍSTICAS -->
-            <section id="tab-stats" class="hidden space-y-6">
+            <section id="tab-stats" class="hidden space-y-6 animate-slide-up">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
                     <div>
                         <h3 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
@@ -404,24 +405,24 @@
                 Torneos Organizados Oficialmente por la <strong class="text-white font-black tracking-wide">Liga Soriana CVNL E-Sports</strong>
             </div>
         </div>
-        <span class="absolute right-3 bottom-1.5 text-[9px] font-mono text-indigo-400/80 select-none pointer-events-none">v13.5.0</span>
+        <span class="absolute right-3 bottom-1.5 text-[9px] font-mono text-indigo-400/80 select-none pointer-events-none">v14.0.0</span>
     </footer>
 
     <!-- BARRA NAVEGACIÓN MÓVIL -->
     <div class="fixed bottom-0 left-0 right-0 glass-panel border-t border-slate-800/80 md:hidden z-40 px-2 py-2 flex justify-around shadow-2xl">
-        <button onclick="volverAInicioGlobal()" class="flex flex-col items-center gap-1 text-[10px] text-slate-400 hover:text-indigo-400">
+        <button onclick="volverAInicioGlobal()" class="flex flex-col items-center gap-1 text-[10px] text-slate-400 hover:text-indigo-400 transition active:scale-95">
             <i class="fa-solid fa-house text-base"></i>
             <span>Inicio</span>
         </button>
-        <button onclick="switchTab('competicion')" class="tab-torneo-especifico hidden flex flex-col items-center gap-1 text-[10px] text-slate-400 hover:text-indigo-400">
+        <button onclick="switchTab('competicion')" class="tab-torneo-especifico hidden flex flex-col items-center gap-1 text-[10px] text-slate-400 hover:text-indigo-400 transition active:scale-95">
             <i class="fa-solid fa-trophy text-base"></i>
             <span>Competición</span>
         </button>
-        <button onclick="switchTab('partidos')" class="tab-torneo-especifico hidden flex flex-col items-center gap-1 text-[10px] text-slate-400 hover:text-indigo-400">
+        <button onclick="switchTab('partidos')" class="tab-torneo-especifico hidden flex flex-col items-center gap-1 text-[10px] text-slate-400 hover:text-indigo-400 transition active:scale-95">
             <i class="fa-solid fa-calendar-check text-base"></i>
             <span>Partidos</span>
         </button>
-        <button onclick="switchTab('stats')" class="tab-torneo-especifico hidden flex flex-col items-center gap-1 text-[10px] text-slate-400 hover:text-indigo-400">
+        <button onclick="switchTab('stats')" class="tab-torneo-especifico hidden flex flex-col items-center gap-1 text-[10px] text-slate-400 hover:text-indigo-400 transition active:scale-95">
             <i class="fa-solid fa-chart-column text-base"></i>
             <span>Stats</span>
         </button>
@@ -429,34 +430,34 @@
 
     <!-- TOAST NOTIFICATION -->
     <div id="toast-notification" class="fixed bottom-16 md:bottom-6 right-4 z-50 hidden bg-indigo-600 text-white font-bold text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 border border-indigo-400/40">
-        <i class="fa-solid fa-circle-check text-sm"></i>
+        <i id="toast-icon" class="fa-solid fa-circle-check text-sm"></i>
         <span id="toast-message">Notificación</span>
     </div>
 
     <!-- VENTANA MODAL PERSONALIZADA DE CONFIRMACIÓN -->
     <div id="custom-confirm-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[90] flex items-center justify-center p-3 hidden">
-        <div class="glass-panel bg-slate-900 rounded-2xl w-full max-w-sm p-5 space-y-4 border border-slate-700 shadow-2xl text-center">
+        <div class="glass-panel bg-slate-900 rounded-2xl w-full max-w-sm p-5 space-y-4 border border-slate-700 shadow-2xl text-center animate-slide-up">
             <div class="w-12 h-12 rounded-full bg-indigo-600/20 text-indigo-400 border border-indigo-500/40 flex items-center justify-center mx-auto text-xl">
                 <i id="confirm-modal-icon" class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <h4 id="confirm-modal-title" class="font-extrabold text-white text-base">Confirmación</h4>
             <p id="confirm-modal-msg" class="text-xs text-slate-300 leading-relaxed"></p>
             <div class="flex justify-center gap-2 pt-2 border-t border-slate-800">
-                <button id="confirm-modal-btn-cancel" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white rounded-xl bg-slate-800 hover:bg-slate-700 transition">Cancelar</button>
-                <button id="confirm-modal-btn-confirm" class="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl transition shadow-lg">Confirmar</button>
+                <button id="confirm-modal-btn-cancel" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white rounded-xl bg-slate-800 hover:bg-slate-700 transition active:scale-95">Cancelar</button>
+                <button id="confirm-modal-btn-confirm" class="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl transition shadow-lg active:scale-95">Confirmar</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL EDITAR JUGADOR -->
     <div id="edit-player-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[85] flex items-center justify-center p-3 sm:p-4 hidden">
-        <div class="glass-panel bg-slate-900 rounded-2xl w-full max-w-md p-5 space-y-4 border border-slate-700 shadow-2xl">
+        <div class="glass-panel bg-slate-900 rounded-2xl w-full max-w-md p-5 space-y-4 border border-slate-700 shadow-2xl animate-slide-up">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                 <h4 class="font-bold text-indigo-400 text-sm flex items-center gap-2">
                     <i class="fa-solid fa-user-pen"></i>
                     Editar Jugador
                 </h4>
-                <button onclick="closeEditPlayerModal()" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+                <button onclick="closeEditPlayerModal()" class="text-slate-400 hover:text-white text-xl font-bold active:scale-95 transition">&times;</button>
             </div>
             <input type="hidden" id="edit-player-id">
             <div class="space-y-3 text-xs">
@@ -474,21 +475,21 @@
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
-                <button onclick="closeEditPlayerModal()" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white">Cancelar</button>
-                <button onclick="guardarEdicionJugadorGlobal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition active:scale-95">Guardar Cambios</button>
+                <button onclick="closeEditPlayerModal()" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white transition active:scale-95">Cancelar</button>
+                <button onclick="guardarEdicionJugadorGlobal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition active:scale-95 shadow-lg">Guardar Cambios</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL REGISTRO DE MARCADOR Y PENALTIS -->
     <div id="score-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[80] flex items-center justify-center p-3 sm:p-4 hidden">
-        <div class="glass-panel bg-slate-900 rounded-2xl w-full max-w-md p-5 space-y-4 border border-slate-700 shadow-2xl">
+        <div class="glass-panel bg-slate-900 rounded-2xl w-full max-w-md p-5 space-y-4 border border-slate-700 shadow-2xl animate-slide-up">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                 <h4 class="font-bold text-indigo-400 text-sm flex items-center gap-2">
                     <i class="fa-solid fa-scoreboard"></i>
                     Anotar Resultado
                 </h4>
-                <button onclick="cerrarModalMarcador()" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+                <button onclick="cerrarModalMarcador()" class="text-slate-400 hover:text-white text-xl font-bold transition active:scale-95">&times;</button>
             </div>
             
             <input type="hidden" id="score-match-id">
@@ -505,7 +506,7 @@
                         <div id="score-j1-name" class="font-bold text-xs text-white truncate">Jugador 1</div>
                         <div>
                             <label class="block text-[10px] text-slate-400 mb-1">Goles</label>
-                            <input type="number" id="score-g1-input" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-center text-white font-extrabold text-base focus:outline-none focus:border-indigo-500">
+                            <input type="number" id="score-g1-input" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-center text-white font-extrabold text-base focus:outline-none focus:border-indigo-500 transition">
                         </div>
                     </div>
 
@@ -514,7 +515,7 @@
                         <div id="score-j2-name" class="font-bold text-xs text-white truncate">Jugador 2</div>
                         <div>
                             <label class="block text-[10px] text-slate-400 mb-1">Goles</label>
-                            <input type="number" id="score-g2-input" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-center text-white font-extrabold text-base focus:outline-none focus:border-indigo-500">
+                            <input type="number" id="score-g2-input" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-center text-white font-extrabold text-base focus:outline-none focus:border-indigo-500 transition">
                         </div>
                     </div>
                 </div>
@@ -525,7 +526,7 @@
                             <i class="fa-solid fa-futbol"></i>
                             Definición por Penaltis
                         </label>
-                        <input type="checkbox" id="score-penaltis-toggle" onchange="togglePenaltisInputs()" class="w-4 h-4 accent-amber-500 cursor-pointer">
+                        <input type="checkbox" id="score-penaltis-toggle" onchange="togglePenaltisInputs()" class="w-4 h-4 accent-amber-500 cursor-pointer transition">
                     </div>
 
                     <div id="score-penaltis-container" class="hidden grid grid-cols-2 gap-3 pt-1 border-t border-amber-500/20">
@@ -542,7 +543,7 @@
             </div>
 
             <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
-                <button onclick="cerrarModalMarcador()" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white">Cancelar</button>
+                <button onclick="cerrarModalMarcador()" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white transition active:scale-95">Cancelar</button>
                 <button onclick="guardarMarcadorModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition active:scale-95 shadow-lg">Guardar Resultado</button>
             </div>
         </div>
@@ -550,13 +551,13 @@
 
     <!-- MODAL EDITAR ENCUENTRO -->
     <div id="edit-match-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[75] flex items-center justify-center p-3 sm:p-4 hidden">
-        <div class="glass-panel bg-slate-900 rounded-2xl w-full max-w-md p-4 sm:p-5 space-y-4 border border-slate-700 shadow-2xl">
+        <div class="glass-panel bg-slate-900 rounded-2xl w-full max-w-md p-4 sm:p-5 space-y-4 border border-slate-700 shadow-2xl animate-slide-up">
             <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                 <h4 class="font-bold text-indigo-400 text-xs sm:text-sm flex items-center gap-2">
                     <i class="fa-solid fa-pen-to-square"></i>
                     Editar Encuentro
                 </h4>
-                <button onclick="closeEditMatchModal()" class="text-slate-400 hover:text-white text-lg font-bold px-1">&times;</button>
+                <button onclick="closeEditMatchModal()" class="text-slate-400 hover:text-white text-lg font-bold px-1 transition active:scale-95">&times;</button>
             </div>
             <input type="hidden" id="edit-match-id">
             <div class="space-y-3 text-xs">
@@ -580,44 +581,44 @@
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
-                <button onclick="closeEditMatchModal()" class="px-3 py-2 text-xs font-semibold text-slate-400 hover:text-white">Cancelar</button>
-                <button onclick="guardarEdicionMatch()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition active:scale-95">Guardar Cambios</button>
+                <button onclick="closeEditMatchModal()" class="px-3 py-2 text-xs font-semibold text-slate-400 hover:text-white transition active:scale-95">Cancelar</button>
+                <button onclick="guardarEdicionMatch()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition active:scale-95 shadow-lg">Guardar Cambios</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL DE ADMINISTRACIÓN UNIFICADO Y CONTEXTUAL -->
     <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 hidden">
-        <div class="glass-panel bg-slate-900/95 rounded-2xl w-full max-w-3xl max-h-[92vh] sm:max-h-[88vh] flex flex-col overflow-hidden border border-slate-700 shadow-2xl">
+        <div class="glass-panel bg-slate-900/95 rounded-2xl w-full max-w-3xl max-h-[92vh] sm:max-h-[88vh] flex flex-col overflow-hidden border border-slate-700 shadow-2xl animate-slide-up">
             <div class="p-3 sm:p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/80 flex-shrink-0">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-user-gear text-indigo-400 text-base sm:text-lg"></i>
                     <h3 id="admin-modal-title" class="font-bold text-white text-xs sm:text-base">Panel de Gestión</h3>
                 </div>
-                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white text-xl px-2">&times;</button>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white text-xl px-2 transition active:scale-95">&times;</button>
             </div>
 
             <!-- LOGIN -->
             <div id="admin-login-view" class="p-4 sm:p-6 space-y-4">
-                <p class="text-xs md:text-sm text-slate-300">Ingresa la clave de administración configurada para realizar cambios.</p>
+                <p id="admin-login-msg" class="text-xs md:text-sm text-slate-300">Ingresa la clave de administración. (Por defecto: 1234)</p>
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">Clave de Administración</label>
-                    <input type="password" id="admin-pin-input" placeholder="Clave por defecto: 1234" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 text-sm">
+                    <input type="password" id="admin-pin-input" placeholder="Clave por defecto: 1234" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-500 text-sm transition">
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
-                    <button onclick="closeAdminModal()" class="px-4 py-2 text-xs text-slate-400 hover:text-white">Cancelar</button>
-                    <button onclick="loginAdmin()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition active:scale-95">Ingresar</button>
+                    <button onclick="closeAdminModal()" class="px-4 py-2 text-xs text-slate-400 hover:text-white transition active:scale-95">Cancelar</button>
+                    <button onclick="loginAdmin()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition active:scale-95 shadow-lg">Ingresar</button>
                 </div>
             </div>
 
             <!-- PANEL LOGGED IN -->
             <div id="admin-panel-view" class="hidden flex-1 flex flex-col overflow-hidden">
-                <div id="admin-nav-tabs" class="flex-shrink-0 flex border-b border-slate-800 bg-slate-950/90 text-xs overflow-x-auto custom-scroll"></div>
+                <div id="admin-nav-tabs" class="flex-shrink-0 flex border-b border-slate-800 bg-slate-950/90 text-xs overflow-x-auto hide-scroll whitespace-nowrap"></div>
 
                 <div class="p-4 sm:p-6 overflow-y-auto custom-scroll space-y-6 flex-1 text-xs md:text-sm">
                     
                     <!-- CREAR TORNEO -->
-                    <div id="admin-sec-crear-torneo" class="hidden space-y-4">
+                    <div id="admin-sec-crear-torneo" class="hidden space-y-4 animate-slide-up">
                         <div class="border-b border-slate-800 pb-2">
                             <h4 class="font-bold text-indigo-400">Crear Nuevo Torneo</h4>
                         </div>
@@ -640,7 +641,7 @@
                             </div>
                             <div>
                                 <label class="block text-[11px] text-slate-400 mb-1">Formato de Competición</label>
-                                <select id="crear-formato" onchange="actualizarSubopcionesCrearTorneo()" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white font-semibold text-xs">
+                                <select id="crear-formato" onchange="actualizarSubopcionesCrearTorneo()" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white font-semibold text-xs transition">
                                     <option value="liga_tradicional">Liga Tradicional</option>
                                     <option value="liga_liguilla">Liga con Liguilla</option>
                                     <option value="copa_grupos">Copa con Fase de Grupos</option>
@@ -667,7 +668,7 @@
 
                             <div>
                                 <label class="block text-[11px] text-slate-400 mb-1">Logo del Torneo (Opcional)</label>
-                                <input type="file" id="crear-logo" accept="image/*" class="w-full bg-slate-800 text-slate-300 text-xs rounded border border-slate-700 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white">
+                                <input type="file" id="crear-logo" accept="image/*" class="w-full bg-slate-800 text-slate-300 text-xs rounded border border-slate-700 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white transition">
                             </div>
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
@@ -689,7 +690,7 @@
                                     Inscribir Jugadores Iniciales (Mínimo 2)
                                 </h5>
                                 <div class="relative">
-                                    <input type="text" id="search-crear-players" oninput="renderCrearPlayersChecklist()" placeholder="Buscar jugador..." class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white pl-7 focus:outline-none focus:border-indigo-500 w-full sm:w-auto">
+                                    <input type="text" id="search-crear-players" oninput="renderCrearPlayersChecklist()" placeholder="Buscar jugador..." class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white pl-7 focus:outline-none focus:border-indigo-500 w-full sm:w-auto transition">
                                     <i class="fa-solid fa-magnifying-glass absolute left-2 top-2 text-[10px] text-slate-400"></i>
                                 </div>
                             </div>
@@ -697,17 +698,17 @@
                         </div>
 
                         <div class="pt-2">
-                            <button onclick="ejecutarCreacionNuevoTorneo()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs active:scale-95 shadow-lg w-full sm:w-auto">
+                            <button onclick="ejecutarCreacionNuevoTorneo()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs active:scale-95 shadow-lg w-full sm:w-auto transition">
                                 <i class="fa-solid fa-plus mr-1"></i> Crear Torneo
                             </button>
                         </div>
                     </div>
 
                     <!-- EDITAR TORNEO -->
-                    <div id="admin-sec-editar-torneo" class="hidden space-y-4">
+                    <div id="admin-sec-editar-torneo" class="hidden space-y-4 animate-slide-up">
                         <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                             <h4 class="font-bold text-indigo-400">Editar Torneo</h4>
-                            <button onclick="eliminarTorneoActual()" class="bg-rose-600/80 hover:bg-rose-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg border border-rose-400/30 flex items-center gap-1">
+                            <button onclick="eliminarTorneoActual()" class="bg-rose-600/80 hover:bg-rose-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg border border-rose-400/30 flex items-center gap-1 transition active:scale-95">
                                 <i class="fa-solid fa-trash"></i>
                                 <span>Eliminar Torneo</span>
                             </button>
@@ -731,7 +732,7 @@
                             </div>
                             <div>
                                 <label class="block text-[11px] text-slate-400 mb-1">Formato de Competición</label>
-                                <select id="edit-formato" onchange="actualizarSubopcionesEditTorneo()" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white font-semibold text-xs">
+                                <select id="edit-formato" onchange="actualizarSubopcionesEditTorneo()" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white font-semibold text-xs transition">
                                     <option value="liga_tradicional">Liga Tradicional</option>
                                     <option value="liga_liguilla">Liga con Liguilla</option>
                                     <option value="copa_grupos">Copa con Fase de Grupos</option>
@@ -758,7 +759,7 @@
 
                             <div>
                                 <label class="block text-[11px] text-slate-400 mb-1">Cambiar Logo (Opcional)</label>
-                                <input type="file" id="edit-logo" accept="image/*" class="w-full bg-slate-800 text-slate-300 text-xs rounded border border-slate-700 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white">
+                                <input type="file" id="edit-logo" accept="image/*" class="w-full bg-slate-800 text-slate-300 text-xs rounded border border-slate-700 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white transition">
                             </div>
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
@@ -779,7 +780,7 @@
                                     Inscribir / Rescindir Jugadores
                                 </h5>
                                 <div class="relative">
-                                    <input type="text" id="search-edit-players" oninput="renderEditPlayersChecklist()" placeholder="Buscar jugador..." class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white pl-7 focus:outline-none focus:border-indigo-500 w-full sm:w-auto">
+                                    <input type="text" id="search-edit-players" oninput="renderEditPlayersChecklist()" placeholder="Buscar jugador..." class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white pl-7 focus:outline-none focus:border-indigo-500 w-full sm:w-auto transition">
                                     <i class="fa-solid fa-magnifying-glass absolute left-2 top-2 text-[10px] text-slate-400"></i>
                                 </div>
                             </div>
@@ -787,14 +788,14 @@
                         </div>
 
                         <div class="pt-2">
-                            <button onclick="guardarCambiosTorneoEditado()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs active:scale-95 shadow-lg w-full sm:w-auto">
+                            <button onclick="guardarCambiosTorneoEditado()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs active:scale-95 shadow-lg w-full sm:w-auto transition">
                                 <i class="fa-solid fa-floppy-disk mr-1"></i> Guardar Cambios
                             </button>
                         </div>
                     </div>
 
                     <!-- BANCO JUGADORES -->
-                    <div id="admin-sec-jugadores" class="hidden space-y-4">
+                    <div id="admin-sec-jugadores" class="hidden space-y-4 animate-slide-up">
                         <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
                             <h4 class="font-bold text-indigo-400">Banco de Jugadores</h4>
                             <span id="global-players-count-badge" class="text-xs bg-slate-800 px-2.5 py-0.5 rounded font-bold text-slate-300">0 / 32</span>
@@ -810,15 +811,15 @@
                             </div>
                             <div>
                                 <label class="block text-[10px] text-slate-400 mb-0.5">Foto de Perfil (Opcional):</label>
-                                <input type="file" id="add-jugador-file" accept="image/*" class="w-full bg-slate-800 text-slate-300 text-xs rounded border border-slate-700 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white">
+                                <input type="file" id="add-jugador-file" accept="image/*" class="w-full bg-slate-800 text-slate-300 text-xs rounded border border-slate-700 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white transition">
                             </div>
                         </div>
-                        <button onclick="agregarJugadorGlobal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs active:scale-95">Registrar Jugador</button>
+                        <button onclick="agregarJugadorGlobal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs active:scale-95 transition shadow-lg">Registrar Jugador</button>
 
                         <div class="flex justify-between items-center pt-3 border-t border-slate-800">
                             <h5 class="font-bold text-slate-300">Jugadores Registrados</h5>
                             <div class="relative w-full sm:w-64">
-                                <input type="text" id="search-global-bank-input" oninput="renderAdminJugadoresGlobalesList()" placeholder="Buscar jugador..." class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white pl-7 focus:outline-none focus:border-indigo-500 w-full">
+                                <input type="text" id="search-global-bank-input" oninput="renderAdminJugadoresGlobalesList()" placeholder="Buscar jugador..." class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white pl-7 focus:outline-none focus:border-indigo-500 w-full transition">
                                 <i class="fa-solid fa-magnifying-glass absolute left-2 top-2 text-[10px] text-slate-400"></i>
                             </div>
                         </div>
@@ -826,10 +827,10 @@
                     </div>
 
                     <!-- FIXTURE -->
-                    <div id="admin-sec-fixture" class="hidden space-y-4">
+                    <div id="admin-sec-fixture" class="hidden space-y-4 animate-slide-up">
                         <div class="flex items-center justify-between border-b border-slate-800 pb-2">
                             <h4 class="font-bold text-indigo-400">Gestión de Calendario</h4>
-                            <button onclick="generarFixtureAutoFormato()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg shadow-md active:scale-95">Generar Calendario</button>
+                            <button onclick="generarFixtureAutoFormato()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg shadow-md active:scale-95 transition">Generar Calendario</button>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 bg-slate-800/60 p-3 rounded-xl border border-slate-700">
@@ -850,30 +851,30 @@
                                 <input type="datetime-local" id="add-match-deadline" class="w-full bg-slate-800 text-white p-2 rounded border border-slate-700 text-xs">
                             </div>
                         </div>
-                        <button onclick="agregarPartidoManual()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-1.5 rounded-lg text-xs active:scale-95">Agregar Encuentro Manual</button>
+                        <button onclick="agregarPartidoManual()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-1.5 rounded-lg text-xs active:scale-95 transition shadow">Agregar Encuentro Manual</button>
 
                         <h5 class="font-bold text-slate-300 pt-3 border-t border-slate-800">Partidos del Torneo</h5>
                         <div id="admin-lista-partidos" class="space-y-2"></div>
                     </div>
 
                     <!-- COMUNICADOS DEL TORNEO -->
-                    <div id="admin-sec-comunicados-torneo" class="hidden space-y-4">
+                    <div id="admin-sec-comunicados-torneo" class="hidden space-y-4 animate-slide-up">
                         <h4 class="font-bold text-indigo-400 border-b border-slate-800 pb-2">Comunicados del Torneo</h4>
-                        <textarea id="add-comunicado-torneo-texto" rows="2" placeholder="Escribe el aviso..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white text-xs"></textarea>
-                        <button onclick="publicarComunicadoTorneo()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2 rounded-xl text-xs active:scale-95">Publicar Mensaje</button>
+                        <textarea id="add-comunicado-torneo-texto" rows="2" placeholder="Escribe el aviso..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white text-xs transition focus:outline-none focus:border-indigo-500"></textarea>
+                        <button onclick="publicarComunicadoTorneo()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2 rounded-xl text-xs active:scale-95 transition shadow-lg">Publicar Mensaje</button>
                         <div id="admin-lista-comunicados-torneo" class="space-y-2 pt-2"></div>
                     </div>
 
                     <!-- COMUNICADOS GENERALES -->
-                    <div id="admin-sec-comunicados-gen" class="hidden space-y-4">
+                    <div id="admin-sec-comunicados-gen" class="hidden space-y-4 animate-slide-up">
                         <h4 class="font-bold text-indigo-400 border-b border-slate-800 pb-2">Comunicados Generales de la Liga</h4>
-                        <textarea id="add-comunicado-gen-texto" rows="2" placeholder="Escribe un comunicado global para el Inicio..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white text-xs"></textarea>
-                        <button onclick="publicarComunicadoGeneral()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2 rounded-xl text-xs active:scale-95">Publicar Aviso Global</button>
+                        <textarea id="add-comunicado-gen-texto" rows="2" placeholder="Escribe un comunicado global para el Inicio..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white text-xs transition focus:outline-none focus:border-indigo-500"></textarea>
+                        <button onclick="publicarComunicadoGeneral()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2 rounded-xl text-xs active:scale-95 transition shadow-lg">Publicar Aviso Global</button>
                         <div id="admin-lista-comunicados-gen" class="space-y-2 pt-2"></div>
                     </div>
 
                     <!-- PALMARÉS ADMIN -->
-                    <div id="admin-sec-palmares" class="hidden space-y-4">
+                    <div id="admin-sec-palmares" class="hidden space-y-4 animate-slide-up">
                         <h4 class="font-bold text-indigo-400 border-b border-slate-800 pb-2">Salón de la Fama</h4>
                         <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700 space-y-3">
                             <h5 class="text-xs font-bold text-slate-300">Registrar Título Manual</h5>
@@ -898,41 +899,41 @@
                                     <input type="text" id="palm-marcador" placeholder="Ej: 3-2" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-white text-xs">
                                 </div>
                             </div>
-                            <button onclick="agregarPalmaresManual()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-1.5 rounded-lg text-xs active:scale-95">Registrar Título</button>
+                            <button onclick="agregarPalmaresManual()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-1.5 rounded-lg text-xs active:scale-95 transition shadow">Registrar Título</button>
                         </div>
                     </div>
 
                     <!-- CONFIGURACIÓN GLOBAL / NUBE -->
-                    <div id="admin-sec-config" class="hidden space-y-4">
+                    <div id="admin-sec-config" class="hidden space-y-4 animate-slide-up">
                         <div class="border-b border-slate-800 pb-2">
                             <h4 class="font-bold text-indigo-400">Configuración Global y Sincronización</h4>
                         </div>
                         <div class="grid grid-cols-1 gap-3 bg-slate-800/60 p-4 rounded-xl border border-slate-700">
                             <div>
                                 <label class="block text-[11px] text-slate-300 font-semibold mb-1">Logotipo de la Página (Opcional):</label>
-                                <input type="file" id="cfg-website-logo" accept="image/*" class="w-full bg-slate-900 text-slate-300 text-xs rounded border border-slate-700 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white">
+                                <input type="file" id="cfg-website-logo" accept="image/*" class="w-full bg-slate-900 text-slate-300 text-xs rounded border border-slate-700 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white transition">
                             </div>
                             <div class="pt-2 border-t border-slate-700/60">
                                 <label class="block text-[11px] text-slate-300 font-semibold mb-1">Supabase Project URL:</label>
-                                <input type="text" id="cfg-db-url" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white text-xs font-mono">
+                                <input type="text" id="cfg-db-url" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white text-xs font-mono transition focus:outline-none focus:border-indigo-500">
                             </div>
                             <div>
                                 <label class="block text-[11px] text-slate-300 font-semibold mb-1">Supabase Anon Key:</label>
-                                <input type="password" id="cfg-db-key" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white text-xs font-mono">
+                                <input type="password" id="cfg-db-key" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white text-xs font-mono transition focus:outline-none focus:border-indigo-500">
                             </div>
                             <div>
                                 <label class="block text-[11px] text-slate-300 font-semibold mb-1">Cambiar NIP de Administrador:</label>
-                                <input type="password" id="cfg-admin-pin" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white text-xs">
+                                <input type="password" id="cfg-admin-pin" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white text-xs transition focus:outline-none focus:border-indigo-500">
                             </div>
                         </div>
-                        <button onclick="guardarConfiguracionBaseDatos()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2 rounded-xl text-xs active:scale-95">Guardar Configuración</button>
+                        <button onclick="guardarConfiguracionBaseDatos()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2 rounded-xl text-xs active:scale-95 transition shadow-lg">Guardar Configuración</button>
                     </div>
 
                 </div>
 
                 <div class="p-3 border-t border-slate-800 bg-slate-950/80 flex justify-between items-center text-xs flex-shrink-0">
                     <span class="text-slate-400">Sesión de Administrador Activa</span>
-                    <button onclick="logoutAdmin()" class="text-rose-400 hover:text-rose-300 font-bold">Cerrar Sesión Admin</button>
+                    <button onclick="logoutAdmin()" class="text-rose-400 hover:text-rose-300 font-bold transition active:scale-95">Cerrar Sesión Admin</button>
                 </div>
             </div>
 
@@ -964,6 +965,40 @@
                     gain.connect(this.ctx.destination);
                     osc.start();
                     osc.stop(this.ctx.currentTime + 0.05);
+                } catch(e) {}
+            },
+            playSuccess() {
+                try {
+                    this.init();
+                    if (!this.ctx) return;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.1);
+                } catch(e) {}
+            },
+            playError() {
+                try {
+                    this.init();
+                    if (!this.ctx) return;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(200, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.2);
                 } catch(e) {}
             },
             playWin() {
@@ -1044,6 +1079,7 @@
         }
 
         function customConfirm(message, title = "Confirmación", icon = "fa-triangle-exclamation") {
+            AudioFX.playClick();
             return new Promise((resolve) => {
                 const modal = document.getElementById('custom-confirm-modal');
                 document.getElementById('confirm-modal-title').innerText = title;
@@ -1059,8 +1095,8 @@
                     btnCancel.onclick = null;
                 };
 
-                btnConfirm.onclick = () => { cleanup(); resolve(true); };
-                btnCancel.onclick = () => { cleanup(); resolve(false); };
+                btnConfirm.onclick = () => { AudioFX.playClick(); cleanup(); resolve(true); };
+                btnCancel.onclick = () => { AudioFX.playClick(); cleanup(); resolve(false); };
 
                 modal.classList.remove('hidden');
             });
@@ -1071,10 +1107,10 @@
             if (!container) return;
 
             if (logoUrl && logoUrl.trim() !== "" && !logoUrl.includes("placeholder.com")) {
-                container.innerHTML = `<img src="${logoUrl}" class="${extraSizeClass} rounded-xl object-contain bg-slate-900/50 p-0.5 border border-indigo-500/80 shadow-[0_0_12px_rgba(99,102,241,0.35)] flex-shrink-0">`;
+                container.innerHTML = `<img src="${logoUrl}" class="${extraSizeClass} rounded-xl object-contain bg-slate-900/50 p-0.5 border border-indigo-500/80 shadow-[0_0_12px_rgba(99,102,241,0.35)] flex-shrink-0 transition">`;
             } else {
                 container.innerHTML = `
-                    <div class="${extraSizeClass} rounded-xl bg-gradient-to-br from-amber-500 via-indigo-600 to-purple-700 flex items-center justify-center text-lg sm:text-xl shadow-[0_0_12px_rgba(245,158,11,0.3)] border border-amber-300/40 text-amber-200 flex-shrink-0">
+                    <div class="${extraSizeClass} rounded-xl bg-gradient-to-br from-amber-500 via-indigo-600 to-purple-700 flex items-center justify-center text-lg sm:text-xl shadow-[0_0_12px_rgba(245,158,11,0.3)] border border-amber-300/40 text-amber-200 flex-shrink-0 transition">
                         🏆
                     </div>
                 `;
@@ -1182,8 +1218,20 @@
             });
         }
 
-        function showToast(msg) {
+        function showToast(msg, type = 'info') {
             const toast = document.getElementById('toast-notification');
+            const icon = document.getElementById('toast-icon');
+            
+            if(type === 'success') {
+                AudioFX.playSuccess();
+                icon.className = "fa-solid fa-circle-check text-sm text-emerald-400";
+            } else if (type === 'error') {
+                AudioFX.playError();
+                icon.className = "fa-solid fa-circle-exclamation text-sm text-rose-400";
+            } else {
+                icon.className = "fa-solid fa-circle-info text-sm text-white";
+            }
+
             document.getElementById('toast-message').innerText = msg;
             toast.classList.remove('hidden');
             toast.classList.add('toast-animate');
@@ -1204,7 +1252,7 @@
                 navigator.share({ title: titleStr, text: text, url: shareUrl }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(`${text} ${shareUrl}`);
-                showToast("¡Enlace copiado al portapapeles!");
+                showToast("¡Enlace copiado al portapapeles!", "success");
             }
         }
 
@@ -1213,13 +1261,21 @@
             ['inicio', 'competicion', 'partidos', 'stats'].forEach(t => {
                 const sec = document.getElementById('tab-' + t);
                 const btn = document.getElementById('tab-btn-' + t);
-                if (sec) sec.classList.add('hidden');
+                if (sec) {
+                    sec.classList.add('hidden');
+                    sec.classList.remove('animate-slide-up');
+                }
                 if (btn) btn.classList.remove('tab-active');
             });
 
             const activeSec = document.getElementById('tab-' + tabId);
             const activeBtn = document.getElementById('tab-btn-' + tabId);
-            if (activeSec) activeSec.classList.remove('hidden');
+            if (activeSec) {
+                activeSec.classList.remove('hidden');
+                // Trigger reflow to restart animation
+                void activeSec.offsetWidth;
+                activeSec.classList.add('animate-slide-up');
+            }
             if (activeBtn) activeBtn.classList.add('tab-active');
         }
 
@@ -1302,7 +1358,7 @@
 
             if (activos.length === 0) {
                 container.innerHTML = `
-                    <div class="col-span-full glass-card p-6 rounded-2xl text-center border border-slate-800 space-y-2">
+                    <div class="col-span-full glass-card p-6 rounded-2xl text-center border border-slate-800 space-y-2 animate-slide-up">
                         <i class="fa-solid fa-trophy text-3xl text-slate-600 mb-1 block"></i>
                         <p class="text-xs text-slate-400 font-bold">No hay torneos activos en este momento.</p>
                         <p class="text-[10px] text-slate-500">Crea un torneo desde el Panel de Administración.</p>
@@ -1311,14 +1367,15 @@
                 return;
             }
 
-            activos.forEach(t => {
+            activos.forEach((t, idx) => {
                 const isSelected = t.id === appData.activeTorneoId;
                 const pend = (t.partidos || []).filter(p => !p.jugado);
                 let nextStr = pend.length > 0 ? `Próximo: ${pend[0].fase}` : (t.partidos && t.partidos.length > 0 ? "Torneo Concluido" : "Sin partidos");
 
                 const card = document.createElement('div');
-                card.className = `glass-card p-4 rounded-2xl border transition flex flex-col justify-between gap-4 relative overflow-hidden ${isSelected ? 'border-indigo-500/80 bg-gradient-to-br from-indigo-950/50 via-slate-900 to-slate-950 shadow-xl' : 'border-slate-800'}`;
-                
+                card.className = `glass-card p-4 rounded-2xl border transition flex flex-col justify-between gap-4 relative overflow-hidden animate-slide-up opacity-0 ${isSelected ? 'border-indigo-500/80 bg-gradient-to-br from-indigo-950/50 via-slate-900 to-slate-950 shadow-xl' : 'border-slate-800'}`;
+                card.style.animationDelay = `${idx * 50}ms`;
+
                 let logoMark = (t.logo && t.logo.trim() !== "" && !t.logo.includes("placeholder.com")) ? 
                     `<img src="${t.logo}" class="w-12 h-12 rounded-xl object-contain bg-slate-900/50 p-0.5 border border-indigo-500/50 flex-shrink-0">` : 
                     `<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 via-indigo-600 to-purple-700 flex items-center justify-center text-xl border border-amber-300/40 flex-shrink-0">🏆</div>`;
@@ -1327,17 +1384,17 @@
 
                 const adminThreeDots = isAdminLoggedIn ? `
                     <div class="relative flex-shrink-0">
-                        <button onclick="toggleCardAdminMenu(event, ${t.id})" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition" title="Opciones de Administración">
+                        <button onclick="toggleCardAdminMenu(event, ${t.id})" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition active:scale-95" title="Opciones de Administración">
                             <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
                         </button>
                         <div id="card-menu-${t.id}" class="hidden absolute right-0 top-8 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-1.5 z-30 w-40 text-xs space-y-1">
-                            <button onclick="abrirEditarTorneoAdminMenu(${t.id})" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-800 text-indigo-300 flex items-center gap-2 font-semibold">
+                            <button onclick="abrirEditarTorneoAdminMenu(${t.id})" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-800 text-indigo-300 flex items-center gap-2 font-semibold transition">
                                 <i class="fa-solid fa-pen-to-square"></i> Editar Torneo
                             </button>
-                            <button onclick="abrirCalendarioTorneoAdminMenu(${t.id})" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-800 text-slate-200 flex items-center gap-2 font-semibold">
+                            <button onclick="abrirCalendarioTorneoAdminMenu(${t.id})" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-800 text-slate-200 flex items-center gap-2 font-semibold transition">
                                 <i class="fa-solid fa-calendar-days"></i> Calendario
                             </button>
-                            <button onclick="eliminarTorneoEspecifico(${t.id})" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-rose-950/60 text-rose-400 flex items-center gap-2 font-semibold border-t border-slate-800/80 pt-1.5">
+                            <button onclick="eliminarTorneoEspecifico(${t.id})" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-rose-950/60 text-rose-400 flex items-center gap-2 font-semibold border-t border-slate-800/80 pt-1.5 transition">
                                 <i class="fa-solid fa-trash"></i> Eliminar
                             </button>
                         </div>
@@ -1381,6 +1438,7 @@
         }
 
         function toggleCardAdminMenu(event, torneoId) {
+            AudioFX.playClick();
             event.stopPropagation();
             const targetMenu = document.getElementById(`card-menu-${torneoId}`);
             document.querySelectorAll('[id^="card-menu-"]').forEach(el => {
@@ -1405,16 +1463,17 @@
                 return;
             }
 
-            list.slice().reverse().forEach(c => {
+            list.slice().reverse().forEach((c, idx) => {
                 const item = document.createElement('div');
-                item.className = "flex items-start justify-between gap-2 p-2 rounded-lg bg-slate-900/80 border border-slate-800 text-xs";
+                item.className = "flex items-start justify-between gap-2 p-2 rounded-lg bg-slate-900/80 border border-slate-800 text-xs animate-slide-up opacity-0";
+                item.style.animationDelay = `${idx * 30}ms`;
                 item.innerHTML = `
                     <div class="min-w-0 flex-1">
                         <p class="text-slate-200 font-medium leading-tight break-words">${c.texto}</p>
                         <span class="text-[9px] text-slate-500 font-mono"><i class="fa-regular fa-clock mr-1"></i>${c.fecha}</span>
                     </div>
                     ${isAdminLoggedIn ? `
-                        <button onclick="borrarComunicadoGeneral(${c.id})" class="text-rose-400 hover:text-rose-300 text-xs px-1 flex-shrink-0" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="borrarComunicadoGeneral(${c.id})" class="text-rose-400 hover:text-rose-300 text-xs px-1 flex-shrink-0 transition active:scale-95" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
                     ` : ''}
                 `;
                 container.appendChild(item);
@@ -1432,9 +1491,10 @@
                 return;
             }
 
-            pasados.forEach(t => {
+            pasados.forEach((t, idx) => {
                 const card = document.createElement('div');
-                card.className = `glass-card p-3.5 sm:p-4 rounded-2xl border border-slate-800 transition flex flex-col justify-between gap-3 relative overflow-hidden`;
+                card.className = `glass-card p-3.5 sm:p-4 rounded-2xl border border-slate-800 transition flex flex-col justify-between gap-3 relative overflow-hidden animate-slide-up opacity-0`;
+                card.style.animationDelay = `${idx * 50}ms`;
                 
                 let logoMark = (t.logo && t.logo.trim() !== "" && !t.logo.includes("placeholder.com")) ? 
                     `<img src="${t.logo}" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-contain bg-slate-900/50 p-0.5 border border-slate-700 flex-shrink-0">` : 
@@ -1442,17 +1502,17 @@
 
                 const adminThreeDots = isAdminLoggedIn ? `
                     <div class="relative flex-shrink-0">
-                        <button onclick="toggleCardAdminMenu(event, ${t.id})" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition" title="Opciones">
+                        <button onclick="toggleCardAdminMenu(event, ${t.id})" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition active:scale-95" title="Opciones">
                             <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
                         </button>
                         <div id="card-menu-${t.id}" class="hidden absolute right-0 top-8 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-1.5 z-30 w-40 text-xs space-y-1">
-                            <button onclick="abrirEditarTorneoAdminMenu(${t.id})" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-800 text-indigo-300 flex items-center gap-2 font-semibold">
+                            <button onclick="abrirEditarTorneoAdminMenu(${t.id})" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-800 text-indigo-300 flex items-center gap-2 font-semibold transition">
                                 <i class="fa-solid fa-pen-to-square"></i> Editar Torneo
                             </button>
-                            <button onclick="abrirCalendarioTorneoAdminMenu(${t.id})" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-800 text-slate-200 flex items-center gap-2 font-semibold">
+                            <button onclick="abrirCalendarioTorneoAdminMenu(${t.id})" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-800 text-slate-200 flex items-center gap-2 font-semibold transition">
                                 <i class="fa-solid fa-calendar-days"></i> Calendario
                             </button>
-                            <button onclick="eliminarTorneoEspecifico(${t.id})" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-rose-950/60 text-rose-400 flex items-center gap-2 font-semibold border-t border-slate-800/80 pt-1.5">
+                            <button onclick="eliminarTorneoEspecifico(${t.id})" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-rose-950/60 text-rose-400 flex items-center gap-2 font-semibold border-t border-slate-800/80 pt-1.5 transition">
                                 <i class="fa-solid fa-trash"></i> Eliminar
                             </button>
                         </div>
@@ -1499,7 +1559,7 @@
                 } else {
                     saveData();
                 }
-                showToast("Torneo eliminado.");
+                showToast("Torneo eliminado.", "success");
             }
         }
 
@@ -1508,25 +1568,17 @@
         }
 
         // SECCIÓN COMPETICIÓN CON MANEJO COMPLETO DE GRUPOS, LIGAS Y ÁRBOLES
-        function setBracketViewMode(mode) {
-            AudioFX.playClick();
-            appData.bracketViewMode = mode;
-            renderCompeticionSection();
-        }
-
         function renderCompeticionSection() {
             const torneo = getActiveTorneo();
             const wrapperLiga = document.getElementById('wrapper-liga');
             const wrapperCopaGrupos = document.getElementById('wrapper-copa-grupos-tablas');
             const wrapperCopa = document.getElementById('wrapper-copa');
-            const copaSwitcher = document.getElementById('copa-view-switcher');
             const subtext = document.getElementById('competicion-subtext');
 
             if (!torneo) {
                 wrapperLiga.classList.add('hidden');
                 wrapperCopaGrupos.classList.add('hidden');
                 wrapperCopa.classList.add('hidden');
-                copaSwitcher.classList.add('hidden');
                 subtext.innerText = "Abre un torneo desde la pantalla de Inicio para consultar la fase de competición.";
                 return;
             }
@@ -1535,23 +1587,19 @@
                 wrapperLiga.classList.remove('hidden');
                 wrapperCopaGrupos.classList.add('hidden');
                 wrapperCopa.classList.add('hidden');
-                copaSwitcher.classList.add('hidden');
                 subtext.innerText = "Tabla General de Posiciones";
                 renderTablaPosiciones();
             } else if (torneo.formato === 'liga_liguilla') {
                 wrapperLiga.classList.remove('hidden');
                 wrapperCopaGrupos.classList.add('hidden');
                 wrapperCopa.classList.remove('hidden');
-                copaSwitcher.classList.remove('hidden');
                 subtext.innerText = "Tabla General y Liguilla Eliminatoria";
                 renderTablaPosiciones();
                 renderBracketsTree();
             } else if (torneo.formato === 'copa_grupos') {
-                // FASE DE GRUPOS: MOSTRAR TABLAS DE CADA GRUPO + ÁRBOLES DE ELIMINATORIAS
                 wrapperLiga.classList.add('hidden');
                 wrapperCopaGrupos.classList.remove('hidden');
                 wrapperCopa.classList.remove('hidden');
-                copaSwitcher.classList.remove('hidden');
                 subtext.innerText = "Tablas de Grupos y Fases Eliminatorias";
 
                 renderTablasFaseDeGrupos(torneo);
@@ -1562,27 +1610,9 @@
                 wrapperLiga.classList.add('hidden');
                 wrapperCopaGrupos.classList.add('hidden');
                 wrapperCopa.classList.remove('hidden');
-                copaSwitcher.classList.remove('hidden');
-
-                const mode = appData.bracketViewMode || 'grafico';
-                document.getElementById('btn-view-grafico').className = mode === 'grafico' ? 
-                    'px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 bg-indigo-600 text-white shadow' : 
-                    'px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white';
-                document.getElementById('btn-view-lista').className = mode === 'lista' ? 
-                    'px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 bg-indigo-600 text-white shadow' : 
-                    'px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white';
-
-                subtext.innerText = mode === 'grafico' ? "Árbol Gráfico de Eliminatorias Completo" : "Lista por Rondas Eliminatorias";
-                
-                if (mode === 'grafico') {
-                    document.getElementById('copa-grafico-container').classList.remove('hidden');
-                    document.getElementById('copa-lista-container').classList.add('hidden');
-                    renderBracketsTree();
-                } else {
-                    document.getElementById('copa-grafico-container').classList.add('hidden');
-                    document.getElementById('copa-lista-container').classList.remove('hidden');
-                    renderBracketsList();
-                }
+                subtext.innerText = "Árbol Gráfico de Eliminatorias Completo";
+                document.getElementById('copa-grafico-container').classList.remove('hidden');
+                renderBracketsTree();
             }
         }
 
@@ -1600,7 +1630,7 @@
 
             const gruposNombres = [...new Set(partidosGrupos.map(p => p.fase.split(' - ')[0]))];
 
-            gruposNombres.forEach(grupoNombre => {
+            gruposNombres.forEach((grupoNombre, gIdx) => {
                 const partidosDelGrupo = partidosGrupos.filter(p => p.fase.startsWith(grupoNombre));
                 const idsEnGrupo = new Set();
                 partidosDelGrupo.forEach(p => { if (p.j1Id) idsEnGrupo.add(p.j1Id); if (p.j2Id) idsEnGrupo.add(p.j2Id); });
@@ -1627,7 +1657,8 @@
                 const sorted = Object.values(stats).sort((a,b) => b.pts - a.pts || b.dif - a.dif || b.gf - a.gf);
 
                 const card = document.createElement('div');
-                card.className = "glass-card rounded-2xl overflow-hidden border border-slate-800 shadow-lg space-y-1";
+                card.className = "glass-card rounded-2xl overflow-hidden border border-slate-800 shadow-lg space-y-1 animate-slide-up opacity-0";
+                card.style.animationDelay = `${gIdx * 50}ms`;
                 
                 let rowsHTML = sorted.map((s, idx) => {
                     const isClasificado = idx < 2; // Clasifican los dos primeros lugares
@@ -1652,7 +1683,7 @@
                         <span>${grupoNombre}</span>
                         <span class="text-[9px] text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30">Pases: Top 2</span>
                     </div>
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto custom-scroll">
                         <table class="w-full text-left">
                             <thead class="bg-slate-900/80 uppercase text-[9px] text-slate-400 border-b border-slate-800">
                                 <tr>
@@ -1732,7 +1763,7 @@
             }
 
             saveData();
-            showToast("Fase de Grupos concluida: ¡Sorteo de eliminatorias ejecutado!");
+            showToast("Fase de Grupos concluida: ¡Sorteo de eliminatorias ejecutado!", "success");
         }
 
         function renderTablaPosiciones() {
@@ -1782,7 +1813,8 @@
 
             sorted.forEach((s, idx) => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-800/40 transition border-b border-slate-800/40";
+                tr.className = "hover:bg-slate-800/40 transition border-b border-slate-800/40 animate-slide-up opacity-0";
+                tr.style.animationDelay = `${idx * 30}ms`;
                 tr.innerHTML = `
                     <td class="p-2 sm:p-3 text-center font-bold text-slate-400 text-xs">${idx + 1}</td>
                     <td class="p-2 sm:p-3 flex items-center gap-2.5">
@@ -1824,9 +1856,10 @@
 
             const fases = [...new Set(partidosEliminatoria.map(p => p.fase))];
             
-            fases.forEach((faseName) => {
+            fases.forEach((faseName, idx) => {
                 const col = document.createElement('div');
-                col.className = "w-[240px] sm:w-[270px] flex-shrink-0 flex flex-col justify-around gap-4 relative bg-slate-900/60 p-3.5 rounded-2xl border border-slate-800/80 shadow-lg backdrop-blur-md";
+                col.className = "w-[170px] sm:w-[220px] flex-shrink-0 flex flex-col justify-around gap-2 relative bg-slate-900/60 p-2 sm:p-3 rounded-2xl border border-slate-800/80 shadow-lg backdrop-blur-md animate-slide-up opacity-0";
+                col.style.animationDelay = `${idx * 100}ms`;
                 
                 const isFinal = faseName.toLowerCase().includes('final') && !faseName.toLowerCase().includes('cuartos') && !faseName.toLowerCase().includes('octavos') && !faseName.toLowerCase().includes('semifinal') && !faseName.toLowerCase().includes('dieciseisavos');
 
@@ -1866,22 +1899,22 @@
             const j2Gana = p.jugado && (p.g2 > p.g1 || (p.g1 === p.g2 && p.pen2 > p.pen1));
 
             const matchBox = document.createElement('div');
-            matchBox.className = `glass-card p-2.5 rounded-xl border space-y-1.5 shadow-md relative w-full ${isFinal ? 'border-amber-500/50 bg-gradient-to-r from-amber-950/20 via-slate-900 to-indigo-950/30' : 'border-slate-700/70'}`;
+            matchBox.className = `glass-card p-1.5 sm:p-2 rounded-xl border space-y-1 shadow-md relative w-full ${isFinal ? 'border-amber-500/50 bg-gradient-to-r from-amber-950/20 via-slate-900 to-indigo-950/30' : 'border-slate-700/70'}`;
             
             const renderSlot = (jugador, isWinner, score) => {
                 if (!jugador) {
                     return `
-                        <div class="flex items-center justify-between text-[11px] p-1.5 rounded-lg bg-slate-800/30 border border-dashed border-slate-700/60 text-slate-500 italic">
+                        <div class="flex items-center justify-between text-[9px] sm:text-[10px] p-1 sm:p-1.5 rounded-lg bg-slate-800/30 border border-dashed border-slate-700/60 text-slate-500 italic">
                             <span>Por definir...</span>
                             <span>-</span>
                         </div>
                     `;
                 }
                 return `
-                    <div class="flex items-center justify-between text-[11px] p-1.5 rounded-lg transition ${isWinner ? 'bg-indigo-900/80 font-bold border border-indigo-500/60 text-white' : 'bg-slate-800/50 text-slate-300'}">
+                    <div class="flex items-center justify-between text-[9px] sm:text-[10px] p-1 sm:p-1.5 rounded-lg transition ${isWinner ? 'bg-indigo-900/80 font-bold border border-indigo-500/60 text-white shadow-sm' : 'bg-slate-800/50 text-slate-300'}">
                         <div class="flex items-center gap-2 truncate min-w-0">
-                            <img src="${jugador.foto || 'https://via.placeholder.com/30'}" class="w-5 h-5 rounded-full object-cover border border-slate-600 flex-shrink-0">
-                            <span class="truncate max-w-[100px] sm:max-w-[110px]">${jugador.nombre}</span>
+                            <img src="${jugador.foto || 'https://via.placeholder.com/30'}" class="w-4 h-4 sm:w-5 sm:h-5 rounded-full object-cover border border-slate-600 flex-shrink-0">
+                            <span class="truncate max-w-[80px] sm:max-w-[110px]">${jugador.nombre}</span>
                         </div>
                         <span class="font-black ${isWinner ? 'text-amber-300' : 'text-slate-400'} flex-shrink-0 ml-1">${p.jugado ? score : '-'}</span>
                     </div>
@@ -1895,32 +1928,13 @@
                 ${isAdminLoggedIn ? `
                     <div class="pt-1.5 flex justify-end gap-1 border-t border-slate-800/60 text-[10px]">
                         ${(p.j1Id && p.j2Id) ? `
-                            <button onclick="abrirModalMarcador(${p.id})" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2 py-0.5 rounded font-bold transition active:scale-95" title="Anotar Marcador"><i class="fa-solid fa-pen"></i> Marcador</button>
+                            <button onclick="abrirModalMarcador(${p.id})" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2 py-0.5 rounded font-bold transition active:scale-95" title="Anotar Marcador"><i class="fa-solid fa-pen"></i></button>
                         ` : ''}
                         <button onclick="abrirEditarMatch(${p.id})" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-0.5 rounded font-semibold transition active:scale-95" title="Editar Encuentro"><i class="fa-solid fa-user-pen"></i></button>
                     </div>
                 ` : ''}
             `;
             return matchBox;
-        }
-
-        function renderBracketsList() {
-            const torneo = getActiveTorneo();
-            const container = document.getElementById('brackets-list-container');
-            container.innerHTML = '';
-
-            if (!torneo || !torneo.partidos || torneo.partidos.length === 0) {
-                container.innerHTML = `<div class="col-span-2 text-center text-slate-500 text-xs py-8">Sin partidos programados.</div>`;
-                return;
-            }
-
-            const partidosEliminatoria = torneo.partidos.filter(p => !p.fase.toLowerCase().startsWith('jornada') && !p.fase.startsWith('Grupo'));
-
-            partidosEliminatoria.forEach(p => {
-                const isFinal = p.fase.toLowerCase() === 'gran final';
-                const matchCard = buildBracketMatchCard(p, isFinal);
-                container.appendChild(matchCard);
-            });
         }
 
         function renderPartidos() {
@@ -1956,10 +1970,14 @@
             });
 
             const allKnownPlayers = [...(torneo.jugadores || []), ...(appData.jugadoresGlobales || [])];
+            let phaseIdx = 0;
 
             Object.keys(agrupados).forEach(faseName => {
                 const section = document.createElement('div');
-                section.className = "space-y-3";
+                section.className = "space-y-3 animate-slide-up opacity-0";
+                section.style.animationDelay = `${phaseIdx * 50}ms`;
+                phaseIdx++;
+                
                 section.innerHTML = `
                     <div class="flex items-center gap-2 border-b border-slate-800/80 pb-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.8)]"></span>
@@ -1970,12 +1988,12 @@
                 const gridMatches = document.createElement('div');
                 gridMatches.className = "grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4";
 
-                agrupados[faseName].forEach(p => {
+                agrupados[faseName].forEach((p, pIdx) => {
                     const j1 = allKnownPlayers.find(j => j.id === p.j1Id) || { nombre: "Por definir", equipo: "", foto: "https://via.placeholder.com/40" };
                     const j2 = allKnownPlayers.find(j => j.id === p.j2Id) || { nombre: "Por definir", equipo: "", foto: "https://via.placeholder.com/40" };
 
                     const plazoFormatted = p.plazo ? p.plazo.replace('T', ' Hora: ') : 'Por definir';
-                    let penStr = (p.pen1 !== null && p.pen1 !== undefined) ? `<span class="text-[9px] sm:text-[10px] text-amber-300 block">(${p.pen1} - ${p.pen2} pen.)</span>` : '';
+                    let penStr = (p.pen1 !== null && p.pen1 !== undefined) ? `<span class="text-[9px] sm:text-[10px] text-amber-300 block mt-1">(${p.pen1} - ${p.pen2} pen.)</span>` : '';
 
                     const card = document.createElement('div');
                     card.className = "glass-card rounded-2xl p-3.5 sm:p-4 border border-slate-800/80 space-y-3 relative";
@@ -1996,7 +2014,7 @@
 
                             <div class="w-2/12 text-center flex-shrink-0">
                                 ${p.jugado ? 
-                                    `<span class="text-sm sm:text-base md:text-lg font-black text-white bg-slate-800 px-2 sm:px-3 py-1 rounded-xl border border-slate-700 block">${p.g1} - ${p.g2}</span>${penStr}` :
+                                    `<span class="text-sm sm:text-base md:text-lg font-black text-white bg-slate-800 px-2 sm:px-3 py-1 rounded-xl border border-slate-700 block transition hover:scale-105 cursor-default">${p.g1} - ${p.g2}</span>${penStr}` :
                                     `<span class="text-[11px] sm:text-xs font-bold text-slate-500 bg-slate-800/80 px-2 sm:px-2.5 py-1 rounded-md">VS</span>`
                                 }
                             </div>
@@ -2045,7 +2063,7 @@
             const j2 = allKnownPlayers.find(j => j.id === match.j2Id) || { nombre: match.j2Id ? 'J2' : 'Por definir', foto: 'https://via.placeholder.com/40' };
 
             if (!match.j1Id || !match.j2Id) {
-                return showToast("Ambos participantes deben estar definidos para registrar un marcador.");
+                return showToast("Ambos participantes deben estar definidos para registrar un marcador.", "error");
             }
 
             document.getElementById('score-match-id').value = match.id;
@@ -2070,6 +2088,7 @@
         }
 
         function togglePenaltisInputs() {
+            AudioFX.playClick();
             const isChecked = document.getElementById('score-penaltis-toggle').checked;
             const container = document.getElementById('score-penaltis-container');
             if (isChecked) container.classList.remove('hidden');
@@ -2077,6 +2096,7 @@
         }
 
         function cerrarModalMarcador() {
+            AudioFX.playClick();
             document.getElementById('score-modal').classList.add('hidden');
         }
 
@@ -2100,13 +2120,13 @@
 
             if (g1 === g2 && (torneo.formato.includes('copa') || match.fase.toLowerCase().includes('final') || usaPenaltis)) {
                 if (!usaPenaltis) {
-                    return showToast("En partidos eliminatorios empatados debes activar la opción de penaltis.");
+                    return showToast("En partidos eliminatorios empatados debes activar la opción de penaltis.", "error");
                 }
                 const pen1 = parseInt(document.getElementById('score-pen1-input').value) || 0;
                 const pen2 = parseInt(document.getElementById('score-pen2-input').value) || 0;
 
                 if (pen1 === pen2) {
-                    return showToast("El marcador de penaltis no puede quedar empatado.");
+                    return showToast("El marcador de penaltis no puede quedar empatado.", "error");
                 }
 
                 match.pen1 = pen1;
@@ -2134,7 +2154,7 @@
                     nextMatch.g1 = null; nextMatch.g2 = null;
                     nextMatch.pen1 = null; nextMatch.pen2 = null;
 
-                    showToast(`¡${ganadorObj.nombre} avanza a ${nextMatch.fase}!`);
+                    showToast(`¡${ganadorObj.nombre} avanza a ${nextMatch.fase}!`, "success");
                 }
             }
 
@@ -2156,7 +2176,9 @@
                         marcador: scoreStr,
                         fecha: new Date().toISOString().split('T')[0]
                     });
-                    showToast(`🏆 ¡Felicidades a ${ganadorObj.nombre}! Se ha coronado Campeón de la ${torneo.nombre}.`);
+                    setTimeout(() => {
+                        showToast(`🏆 ¡Felicidades a ${ganadorObj.nombre}! Se ha coronado Campeón de la ${torneo.nombre}.`, "success");
+                    }, 3500);
                 }
             }
 
@@ -2166,10 +2188,11 @@
 
             saveData();
             cerrarModalMarcador();
-            showToast("Resultado guardado.");
+            showToast("Resultado guardado.", "success");
         }
 
         function abrirEditarMatch(matchId) {
+            AudioFX.playClick();
             const torneo = getActiveTorneo();
             if (!torneo) return;
 
@@ -2201,6 +2224,7 @@
         }
 
         function closeEditMatchModal() {
+            AudioFX.playClick();
             document.getElementById('edit-match-modal').classList.add('hidden');
         }
 
@@ -2222,7 +2246,7 @@
 
             saveData();
             closeEditMatchModal();
-            showToast("Encuentro actualizado.");
+            showToast("Encuentro actualizado.", "success");
         }
 
         function setStatsMode(mode) {
@@ -2303,7 +2327,8 @@
             sortedOfensiva.forEach((s, idx) => {
                 const valStr = mode === 'totales' ? `${s.gf} Goles` : `${s.pj > 0 ? (s.gf / s.pj).toFixed(2) : 0} G/P`;
                 const item = document.createElement('div');
-                item.className = "flex items-center justify-between p-2.5 rounded-xl bg-slate-800/40 border border-slate-800";
+                item.className = "flex items-center justify-between p-2.5 rounded-xl bg-slate-800/40 border border-slate-800 animate-slide-up opacity-0";
+                item.style.animationDelay = `${idx * 40}ms`;
                 item.innerHTML = `
                     <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
                         <span class="text-xs font-black text-slate-500 w-4 flex-shrink-0">${idx + 1}</span>
@@ -2327,19 +2352,18 @@
             sortedDefensiva.forEach((s, idx) => {
                 const valStr = mode === 'totales' ? `${s.gc} Encajados` : `${s.pj > 0 ? (s.gc / s.pj).toFixed(2) : 0} E/P`;
                 const item = document.createElement('div');
-                item.className = "flex items-center justify-between p-2.5 rounded-xl bg-slate-800/40 border border-slate-800";
+                item.className = "flex items-center justify-between p-2.5 rounded-xl bg-slate-800/40 border border-slate-800 w-full animate-slide-up opacity-0";
+                item.style.animationDelay = `${idx * 40}ms`;
                 item.innerHTML = `
-                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-800/40 border border-slate-800 w-full">
-                        <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                            <span class="text-xs font-black text-slate-500 w-4 flex-shrink-0">${idx + 1}</span>
-                            <img src="${s.foto || 'https://via.placeholder.com/30'}" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover flex-shrink-0 border border-slate-700">
-                            <div class="min-w-0 truncate">
-                                <div class="text-xs font-bold text-slate-200 truncate">${s.nombre}</div>
-                                <div class="text-[10px] text-slate-400 truncate">${s.equipo || 'Sin equipo'} (${s.pj} PJ)</div>
-                            </div>
+                    <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                        <span class="text-xs font-black text-slate-500 w-4 flex-shrink-0">${idx + 1}</span>
+                        <img src="${s.foto || 'https://via.placeholder.com/30'}" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover flex-shrink-0 border border-slate-700">
+                        <div class="min-w-0 truncate">
+                            <div class="text-xs font-bold text-slate-200 truncate">${s.nombre}</div>
+                            <div class="text-[10px] text-slate-400 truncate">${s.equipo || 'Sin equipo'} (${s.pj} PJ)</div>
                         </div>
-                        <span class="text-xs font-extrabold text-emerald-400 flex-shrink-0 ml-2">${valStr}</span>
                     </div>
+                    <span class="text-xs font-extrabold text-emerald-400 flex-shrink-0 ml-2">${valStr}</span>
                 `;
                 containerDefensiva.appendChild(item);
             });
@@ -2401,9 +2425,10 @@
                 return;
             }
 
-            filteredList.forEach(data => {
+            filteredList.forEach((data, idx) => {
                 const card = document.createElement('div');
-                card.className = "glass-card p-3.5 sm:p-4 rounded-2xl border border-slate-800 space-y-3";
+                card.className = "glass-card p-3.5 sm:p-4 rounded-2xl border border-slate-800 space-y-3 animate-slide-up opacity-0";
+                card.style.animationDelay = `${idx * 50}ms`;
                 
                 let titulosHTML = '';
                 if (data.count === 0) {
@@ -2481,6 +2506,17 @@
 
         function openAdminModal(tabTarget) {
             AudioFX.playClick();
+            
+            const pinInput = document.getElementById('admin-pin-input');
+            const msg = document.getElementById('admin-login-msg');
+            if (appData.configGlobal && appData.configGlobal.pin !== "1234") {
+                pinInput.placeholder = "Ingresa tu Clave";
+                if(msg) msg.innerText = "Ingresa la clave de administración configurada.";
+            } else {
+                pinInput.placeholder = "Clave por defecto: 1234";
+                if(msg) msg.innerText = "Ingresa la clave de administración. (Por defecto: 1234)";
+            }
+
             document.getElementById('admin-modal').classList.remove('hidden');
 
             if (isAdminLoggedIn) {
@@ -2496,6 +2532,7 @@
         }
 
         function loginAdmin() {
+            AudioFX.playClick();
             const pinInput = document.getElementById('admin-pin-input').value.trim();
             const pinCorrecto = (appData.configGlobal && appData.configGlobal.pin) ? appData.configGlobal.pin : "1234";
 
@@ -2508,12 +2545,14 @@
                 renderAdminNavTabs();
                 switchAdminTab(adminContextMode === 'global' ? 'crear-torneo' : 'editar-torneo');
                 renderAll();
+                document.getElementById('admin-pin-input').value = '';
             } else {
-                showToast("Clave incorrecta. Clave por defecto: 1234");
+                showToast("Clave incorrecta.", "error");
             }
         }
 
         function logoutAdmin() {
+            AudioFX.playClick();
             isAdminLoggedIn = false;
             document.getElementById('admin-login-view').classList.remove('hidden');
             document.getElementById('admin-panel-view').classList.add('hidden');
@@ -2529,20 +2568,20 @@
             if (adminContextMode === 'global') {
                 document.getElementById('admin-modal-title').innerText = "Panel de Gestión - General";
                 nav.innerHTML = `
-                    <button onclick="switchAdminTab('crear-torneo')" id="admin-tab-crear-torneo" class="px-4 py-3 font-semibold text-indigo-400 border-b-2 border-indigo-500 whitespace-nowrap">Crear Nuevo Torneo</button>
-                    <button onclick="switchAdminTab('jugadores')" id="admin-tab-jugadores" class="px-4 py-3 font-semibold text-slate-400 whitespace-nowrap">Banco de Jugadores</button>
-                    <button onclick="switchAdminTab('comunicados-gen')" id="admin-tab-comunicados-gen" class="px-4 py-3 font-semibold text-slate-400 whitespace-nowrap">Comunicados Generales</button>
-                    <button onclick="switchAdminTab('palmares')" id="admin-tab-palmares" class="px-4 py-3 font-semibold text-slate-400 whitespace-nowrap">Salón de la Fama</button>
-                    <button onclick="switchAdminTab('config')" id="admin-tab-config" class="px-4 py-3 font-semibold text-slate-400 whitespace-nowrap">Configuración</button>
+                    <button onclick="switchAdminTab('crear-torneo')" id="admin-tab-crear-torneo" class="px-4 py-3 font-semibold text-indigo-400 border-b-2 border-indigo-500 whitespace-nowrap transition">Crear Nuevo Torneo</button>
+                    <button onclick="switchAdminTab('jugadores')" id="admin-tab-jugadores" class="px-4 py-3 font-semibold text-slate-400 whitespace-nowrap transition">Banco de Jugadores</button>
+                    <button onclick="switchAdminTab('comunicados-gen')" id="admin-tab-comunicados-gen" class="px-4 py-3 font-semibold text-slate-400 whitespace-nowrap transition">Comunicados Generales</button>
+                    <button onclick="switchAdminTab('palmares')" id="admin-tab-palmares" class="px-4 py-3 font-semibold text-slate-400 whitespace-nowrap transition">Salón de la Fama</button>
+                    <button onclick="switchAdminTab('config')" id="admin-tab-config" class="px-4 py-3 font-semibold text-slate-400 whitespace-nowrap transition">Configuración</button>
                 `;
             } else {
                 const t = getActiveTorneo();
                 const nombreTorneo = t ? t.nombre : "Torneo";
                 document.getElementById('admin-modal-title').innerText = `Gestión: ${nombreTorneo}`;
                 nav.innerHTML = `
-                    <button onclick="switchAdminTab('editar-torneo')" id="admin-tab-editar-torneo" class="px-4 py-3 font-semibold text-indigo-400 border-b-2 border-indigo-500 whitespace-nowrap">Editar Torneo</button>
-                    <button onclick="switchAdminTab('fixture')" id="admin-tab-fixture" class="px-4 py-3 font-semibold text-slate-400 whitespace-nowrap">Gestión de Calendario</button>
-                    <button onclick="switchAdminTab('comunicados-torneo')" id="admin-tab-comunicados-torneo" class="px-4 py-3 font-semibold text-slate-400 whitespace-nowrap">Comunicados del Torneo</button>
+                    <button onclick="switchAdminTab('editar-torneo')" id="admin-tab-editar-torneo" class="px-4 py-3 font-semibold text-indigo-400 border-b-2 border-indigo-500 whitespace-nowrap transition">Editar Torneo</button>
+                    <button onclick="switchAdminTab('fixture')" id="admin-tab-fixture" class="px-4 py-3 font-semibold text-slate-400 whitespace-nowrap transition">Gestión de Calendario</button>
+                    <button onclick="switchAdminTab('comunicados-torneo')" id="admin-tab-comunicados-torneo" class="px-4 py-3 font-semibold text-slate-400 whitespace-nowrap transition">Comunicados del Torneo</button>
                 `;
             }
         }
@@ -2552,15 +2591,22 @@
             ['crear-torneo', 'editar-torneo', 'jugadores', 'fixture', 'comunicados-torneo', 'comunicados-gen', 'palmares', 'config'].forEach(s => {
                 const el = document.getElementById('admin-sec-' + s);
                 const tabBtn = document.getElementById('admin-tab-' + s);
-                if (el) el.classList.add('hidden');
-                if (tabBtn) tabBtn.className = "px-4 py-3 font-semibold text-slate-400 whitespace-nowrap";
+                if (el) {
+                    el.classList.add('hidden');
+                    el.classList.remove('animate-slide-up');
+                }
+                if (tabBtn) tabBtn.className = "px-4 py-3 font-semibold text-slate-400 whitespace-nowrap transition";
             });
 
             const activeEl = document.getElementById('admin-sec-' + secId);
             const activeTabBtn = document.getElementById('admin-tab-' + secId);
 
-            if (activeEl) activeEl.classList.remove('hidden');
-            if (activeTabBtn) activeTabBtn.className = "px-4 py-3 font-semibold text-indigo-400 border-b-2 border-indigo-500 whitespace-nowrap";
+            if (activeEl) {
+                activeEl.classList.remove('hidden');
+                void activeEl.offsetWidth; // Reflow
+                activeEl.classList.add('animate-slide-up');
+            }
+            if (activeTabBtn) activeTabBtn.className = "px-4 py-3 font-semibold text-indigo-400 border-b-2 border-indigo-500 whitespace-nowrap transition";
 
             if (secId === 'crear-torneo') prepararFormularioCrearTorneo();
             if (secId === 'editar-torneo') cargarDatosTorneoEditar();
@@ -2658,13 +2704,13 @@
             list.forEach(j => {
                 const isInscrito = inscritosTemporalesCreacion.includes(j.id);
                 const item = document.createElement('div');
-                item.className = `flex items-center justify-between p-2 rounded-lg border text-xs ${isInscrito ? 'bg-indigo-950/50 border-indigo-500/50' : 'bg-slate-800 border-slate-700'}`;
+                item.className = `flex items-center justify-between p-2 rounded-lg border text-xs transition ${isInscrito ? 'bg-indigo-950/50 border-indigo-500/50' : 'bg-slate-800 border-slate-700'}`;
                 item.innerHTML = `
                     <div class="flex items-center gap-2 truncate">
                         <img src="${j.foto || 'https://via.placeholder.com/30'}" class="w-6 h-6 rounded-full object-cover">
                         <span class="font-bold text-white truncate">${j.nombre}</span>
                     </div>
-                    <button onclick="toggleInscripcionTemporalCrear(${j.id})" class="px-2.5 py-1 rounded text-[10px] font-bold ${isInscrito ? 'bg-rose-600/80 text-white' : 'bg-emerald-600/80 text-white'}">
+                    <button onclick="toggleInscripcionTemporalCrear(${j.id})" class="px-2.5 py-1 rounded text-[10px] font-bold transition active:scale-95 ${isInscrito ? 'bg-rose-600/80 text-white' : 'bg-emerald-600/80 text-white'}">
                         ${isInscrito ? 'Rescindir' : 'Inscribir'}
                     </button>
                 `;
@@ -2673,6 +2719,7 @@
         }
 
         function toggleInscripcionTemporalCrear(jugadorId) {
+            AudioFX.playClick();
             const idx = inscritosTemporalesCreacion.indexOf(jugadorId);
             if (idx >= 0) {
                 inscritosTemporalesCreacion.splice(idx, 1);
@@ -2686,11 +2733,11 @@
             const nom = document.getElementById('crear-nombre').value.trim();
             const ed = document.getElementById('crear-edicion').value.trim();
 
-            if (!nom) return showToast("Ingresa el nombre del torneo.");
-            if (!ed) return showToast("Ingresa la edición del torneo.");
+            if (!nom) return showToast("Ingresa el nombre del torneo.", "error");
+            if (!ed) return showToast("Ingresa la edición del torneo.", "error");
 
             if (inscritosTemporalesCreacion.length < 2) {
-                return showToast("Debes inscribir al menos 2 jugadores del Banco antes de crear el torneo.");
+                return showToast("Debes inscribir al menos 2 jugadores del Banco antes de crear el torneo.", "error");
             }
 
             const fileInput = document.getElementById('crear-logo');
@@ -2731,7 +2778,7 @@
             adminContextMode = "torneo";
             renderAdminNavTabs();
             switchAdminTab('fixture');
-            showToast("Nuevo torneo creado exitosamente.");
+            showToast("Nuevo torneo creado exitosamente.", "success");
         }
 
         function cargarDatosTorneoEditar() {
@@ -2771,13 +2818,13 @@
             list.forEach(j => {
                 const isInscrito = inscritosIds.includes(j.id);
                 const item = document.createElement('div');
-                item.className = `flex items-center justify-between p-2 rounded-lg border text-xs ${isInscrito ? 'bg-indigo-950/50 border-indigo-500/50' : 'bg-slate-800 border-slate-700'}`;
+                item.className = `flex items-center justify-between p-2 rounded-lg border text-xs transition ${isInscrito ? 'bg-indigo-950/50 border-indigo-500/50' : 'bg-slate-800 border-slate-700'}`;
                 item.innerHTML = `
                     <div class="flex items-center gap-2 truncate">
                         <img src="${j.foto || 'https://via.placeholder.com/30'}" class="w-6 h-6 rounded-full object-cover">
                         <span class="font-bold text-white truncate">${j.nombre}</span>
                     </div>
-                    <button onclick="toggleInscripcionJugadorEdit(${j.id})" class="px-2.5 py-1 rounded text-[10px] font-bold ${isInscrito ? 'bg-rose-600/80 text-white' : 'bg-emerald-600/80 text-white'}">
+                    <button onclick="toggleInscripcionJugadorEdit(${j.id})" class="px-2.5 py-1 rounded text-[10px] font-bold transition active:scale-95 ${isInscrito ? 'bg-rose-600/80 text-white' : 'bg-emerald-600/80 text-white'}">
                         ${isInscrito ? 'Rescindir' : 'Inscribir'}
                     </button>
                 `;
@@ -2786,6 +2833,7 @@
         }
 
         function toggleInscripcionJugadorEdit(jugadorId) {
+            AudioFX.playClick();
             const torneo = getActiveTorneo();
             if (!torneo) return;
 
@@ -2828,7 +2876,7 @@
             torneo.fechaFin = document.getElementById('edit-fin').value;
 
             saveData();
-            showToast("Cambios guardados correctamente.");
+            showToast("Cambios guardados correctamente.", "success");
         }
 
         function loadAdminFixtureData() {
@@ -2863,7 +2911,7 @@
             document.getElementById('add-comunicado-gen-texto').value = '';
             saveData();
             renderAdminComunicadosGenList();
-            showToast("Aviso general publicado.");
+            showToast("Aviso general publicado.", "success");
         }
 
         function renderAdminComunicadosGenList() {
@@ -2873,9 +2921,9 @@
 
             (appData.comunicadosGenerales || []).forEach(c => {
                 list.innerHTML += `
-                    <div class="flex items-center justify-between bg-slate-800 p-2 rounded-lg text-xs">
+                    <div class="flex items-center justify-between bg-slate-800 p-2 rounded-lg text-xs transition">
                         <span class="text-slate-200 truncate max-w-[80%]">${c.texto}</span>
-                        <button onclick="borrarComunicadoGeneral(${c.id})" class="text-rose-400 font-bold"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="borrarComunicadoGeneral(${c.id})" class="text-rose-400 font-bold active:scale-95 transition"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
             });
@@ -2885,11 +2933,12 @@
             appData.comunicadosGenerales = (appData.comunicadosGenerales || []).filter(c => c.id !== id);
             saveData();
             renderAdminComunicadosGenList();
+            showToast("Aviso eliminado.");
         }
 
         function publicarComunicadoTorneo() {
             const torneo = getActiveTorneo();
-            if (!torneo) return showToast("Abre un torneo primero.");
+            if (!torneo) return showToast("Abre un torneo primero.", "error");
 
             const txt = document.getElementById('add-comunicado-torneo-texto').value.trim();
             if (!txt) return;
@@ -2906,7 +2955,7 @@
             document.getElementById('add-comunicado-torneo-texto').value = '';
             saveData();
             renderAdminComunicadosTorneoList();
-            showToast("Comunicado del torneo publicado.");
+            showToast("Comunicado del torneo publicado.", "success");
         }
 
         function renderAdminComunicadosTorneoList() {
@@ -2918,9 +2967,9 @@
 
             torneo.comunicados.forEach(c => {
                 list.innerHTML += `
-                    <div class="flex items-center justify-between bg-slate-800 p-2 rounded-lg text-xs">
+                    <div class="flex items-center justify-between bg-slate-800 p-2 rounded-lg text-xs transition">
                         <span class="text-slate-200 truncate max-w-[80%]">${c.texto}</span>
-                        <button onclick="borrarComunicadoTorneo(${c.id})" class="text-rose-400 font-bold"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="borrarComunicadoTorneo(${c.id})" class="text-rose-400 font-bold active:scale-95 transition"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
             });
@@ -2932,21 +2981,22 @@
             torneo.comunicados = torneo.comunicados.filter(c => c.id !== id);
             saveData();
             renderAdminComunicadosTorneoList();
+            showToast("Comunicado eliminado.");
         }
 
         async function agregarJugadorGlobal() {
             if ((appData.jugadoresGlobales || []).length >= 32) {
-                return showToast("Se ha alcanzado el límite máximo de 32 jugadores en el Banco de Jugadores.");
+                return showToast("Se ha alcanzado el límite máximo de 32 jugadores en el Banco de Jugadores.", "error");
             }
 
             const nom = document.getElementById('add-jugador-nombre').value.trim();
             const eq = document.getElementById('add-jugador-equipo').value.trim();
             const fileInput = document.getElementById('add-jugador-file');
 
-            if (!nom) return showToast("Ingresa el nombre del jugador.");
+            if (!nom) return showToast("Ingresa el nombre del jugador.", "error");
 
             const nomExiste = appData.jugadoresGlobales.some(j => j.nombre.toLowerCase() === nom.toLowerCase());
-            if (nomExiste) return showToast(`El jugador "${nom}" ya existe.`);
+            if (nomExiste) return showToast(`El jugador "${nom}" ya existe.`, "error");
 
             let finalPhotoUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(nom)}`;
             if (fileInput.files && fileInput.files[0]) {
@@ -2964,7 +3014,7 @@
             saveData();
             renderAdminJugadoresGlobalesList();
             populateAdminPalmaresDropdowns();
-            showToast("Jugador registrado.");
+            showToast("Jugador registrado.", "success");
         }
 
         function renderAdminJugadoresGlobalesList() {
@@ -2987,24 +3037,27 @@
                 return;
             }
 
-            filtrados.forEach(j => {
-                list.innerHTML += `
-                    <div class="flex items-center justify-between gap-2 bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60 text-xs">
-                        <div class="flex items-center gap-2.5 min-w-0">
-                            <img src="${j.foto || 'https://via.placeholder.com/30'}" class="w-7 h-7 rounded-full object-cover flex-shrink-0 border border-slate-600">
-                            <span class="font-bold text-white truncate">${j.nombre}</span>
-                            <span class="text-slate-400 truncate">${j.equipo ? `(${j.equipo})` : '(Sin equipo)'}</span>
-                        </div>
-                        <div class="flex items-center gap-1.5 flex-shrink-0">
-                            <button onclick="abrirEditarJugadorGlobal(${j.id})" class="text-indigo-400 hover:text-indigo-300 font-bold p-1.5 rounded-lg bg-slate-700/60 hover:bg-slate-700 transition" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="borrarJugadorGlobal(${j.id})" class="text-rose-400 hover:text-rose-300 font-bold p-1.5 rounded-lg bg-slate-700/60 hover:bg-slate-700 transition" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
-                        </div>
+            filtrados.forEach((j, idx) => {
+                const item = document.createElement('div');
+                item.className = "flex items-center justify-between gap-2 bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60 text-xs animate-slide-up opacity-0";
+                item.style.animationDelay = `${idx * 30}ms`;
+                item.innerHTML = `
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <img src="${j.foto || 'https://via.placeholder.com/30'}" class="w-7 h-7 rounded-full object-cover flex-shrink-0 border border-slate-600">
+                        <span class="font-bold text-white truncate">${j.nombre}</span>
+                        <span class="text-slate-400 truncate">${j.equipo ? `(${j.equipo})` : '(Sin equipo)'}</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <button onclick="abrirEditarJugadorGlobal(${j.id})" class="text-indigo-400 hover:text-indigo-300 font-bold p-1.5 rounded-lg bg-slate-700/60 hover:bg-slate-700 transition active:scale-95" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="borrarJugadorGlobal(${j.id})" class="text-rose-400 hover:text-rose-300 font-bold p-1.5 rounded-lg bg-slate-700/60 hover:bg-slate-700 transition active:scale-95" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
+                list.appendChild(item);
             });
         }
 
         function abrirEditarJugadorGlobal(id) {
+            AudioFX.playClick();
             const j = appData.jugadoresGlobales.find(p => p.id === id);
             if (!j) return;
 
@@ -3017,6 +3070,7 @@
         }
 
         function closeEditPlayerModal() {
+            AudioFX.playClick();
             document.getElementById('edit-player-modal').classList.add('hidden');
         }
 
@@ -3029,7 +3083,7 @@
             const eq = document.getElementById('edit-player-equipo').value.trim();
             const fileInput = document.getElementById('edit-player-file');
 
-            if (!nom) return showToast("El nombre no puede estar vacío.");
+            if (!nom) return showToast("El nombre no puede estar vacío.", "error");
 
             j.nombre = nom;
             j.equipo = eq;
@@ -3049,7 +3103,7 @@
             saveData();
             renderAdminJugadoresGlobalesList();
             closeEditPlayerModal();
-            showToast("Datos actualizados.");
+            showToast("Datos actualizados.", "success");
         }
 
         async function borrarJugadorGlobal(id) {
@@ -3062,7 +3116,7 @@
                 saveData();
                 renderAdminJugadoresGlobalesList();
                 populateAdminPalmaresDropdowns();
-                showToast("Jugador eliminado.");
+                showToast("Jugador eliminado.", "success");
             }
         }
 
@@ -3090,8 +3144,8 @@
 
         async function generarFixtureAutoFormato() {
             const torneo = getActiveTorneo();
-            if (!torneo) return showToast("Abre un torneo primero.");
-            if (!torneo.jugadores || torneo.jugadores.length < 2) return showToast("Se necesitan al menos 2 jugadores inscritos en este torneo.");
+            if (!torneo) return showToast("Abre un torneo primero.", "error");
+            if (!torneo.jugadores || torneo.jugadores.length < 2) return showToast("Se necesitan al menos 2 jugadores inscritos en este torneo.", "error");
 
             const ok = await customConfirm("¿Deseas generar el calendario automático? Esto reemplazará los partidos actuales de este torneo.", "Generar Calendario", "fa-calendar-plus");
             if (!ok) return;
@@ -3282,19 +3336,19 @@
 
             saveData();
             loadAdminFixtureData();
-            showToast("Calendario automático generado.");
+            showToast("Calendario automático generado.", "success");
         }
 
         function agregarPartidoManual() {
             const torneo = getActiveTorneo();
-            if (!torneo) return showToast("Abre un torneo primero.");
+            if (!torneo) return showToast("Abre un torneo primero.", "error");
 
             const j1 = parseInt(document.getElementById('add-match-j1').value);
             const j2 = parseInt(document.getElementById('add-match-j2').value);
             const fase = document.getElementById('add-match-fase-select').value || "Jornada 1";
             const plazo = document.getElementById('add-match-deadline').value || new Date().toISOString().slice(0,16);
 
-            if (j1 === j2) return showToast("Selecciona dos jugadores distintos.");
+            if (j1 === j2) return showToast("Selecciona dos jugadores distintos.", "error");
 
             if (!torneo.partidos) torneo.partidos = [];
 
@@ -3310,7 +3364,7 @@
 
             saveData();
             renderAdminPartidosList();
-            showToast("Encuentro agregado.");
+            showToast("Encuentro agregado.", "success");
         }
 
         function renderAdminPartidosList() {
@@ -3322,7 +3376,7 @@
 
             const allKnownPlayers = [...(torneo.jugadores || []), ...(appData.jugadoresGlobales || [])];
 
-            torneo.partidos.forEach(p => {
+            torneo.partidos.forEach((p, idx) => {
                 const j1 = allKnownPlayers.find(j => j.id === p.j1Id) || { nombre: p.j1Id ? '?' : 'Por definir' };
                 const j2 = allKnownPlayers.find(j => j.id === p.j2Id) || { nombre: p.j2Id ? '?' : 'Por definir' };
 
@@ -3331,22 +3385,24 @@
                     scoreText += ` (${p.pen1}-${p.pen2} pen.)`;
                 }
 
-                list.innerHTML += `
-                    <div class="bg-slate-800/80 p-2.5 rounded-lg text-xs space-y-1 border border-slate-700/60">
-                        <div class="flex justify-between text-indigo-300 font-bold">
-                            <span>${p.fase}</span>
-                            <span>${scoreText}</span>
-                        </div>
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 text-slate-200">
-                            <span class="break-words">${j1.nombre} vs ${j2.nombre} (Límite: ${p.plazo ? p.plazo.replace('T', ' ') : 'N/D'})</span>
-                            <div class="flex gap-1 flex-shrink-0">
-                                <button onclick="abrirModalMarcador(${p.id})" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2 py-0.5 rounded text-[10px]">Marcador</button>
-                                <button onclick="abrirEditarMatch(${p.id})" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-0.5 rounded text-[10px]"><i class="fa-solid fa-user-pen"></i></button>
-                                <button onclick="borrarPartido(${p.id})" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[10px]"><i class="fa-solid fa-trash"></i></button>
-                            </div>
+                const item = document.createElement('div');
+                item.className = "bg-slate-800/80 p-2.5 rounded-lg text-xs space-y-1 border border-slate-700/60 animate-slide-up opacity-0";
+                item.style.animationDelay = `${idx * 20}ms`;
+                item.innerHTML = `
+                    <div class="flex justify-between text-indigo-300 font-bold">
+                        <span>${p.fase}</span>
+                        <span>${scoreText}</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 text-slate-200">
+                        <span class="break-words">${j1.nombre} vs ${j2.nombre} (Límite: ${p.plazo ? p.plazo.replace('T', ' ') : 'N/D'})</span>
+                        <div class="flex gap-1 flex-shrink-0">
+                            <button onclick="abrirModalMarcador(${p.id})" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2 py-0.5 rounded text-[10px] transition active:scale-95">Marcador</button>
+                            <button onclick="abrirEditarMatch(${p.id})" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-0.5 rounded text-[10px] transition active:scale-95"><i class="fa-solid fa-user-pen"></i></button>
+                            <button onclick="borrarPartido(${p.id})" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[10px] transition active:scale-95"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 `;
+                list.appendChild(item);
             });
         }
 
@@ -3390,7 +3446,9 @@
                             marcador: `${campeon.pts} PTS (${campeon.pg}G-${campeon.pe}E-${campeon.pp}P)`,
                             fecha: new Date().toISOString().split('T')[0]
                         });
-                        showToast(`🏆 ¡Liga Concluida! Felicidades a ${campeon.nombre} por coronarse Campeón con ${campeon.pts} Puntos.`);
+                        setTimeout(() => {
+                            showToast(`🏆 ¡Liga Concluida! Felicidades a ${campeon.nombre} por coronarse Campeón con ${campeon.pts} Puntos.`, "success");
+                        }, 3500);
                     }
                 }
             }
@@ -3404,7 +3462,7 @@
                 torneo.partidos = torneo.partidos.filter(p => p.id !== id);
                 saveData();
                 if (isAdminLoggedIn) renderAdminPartidosList();
-                showToast("Partido eliminado.");
+                showToast("Partido eliminado.", "success");
             }
         }
 
@@ -3439,7 +3497,7 @@
             const torNombreEd = document.getElementById('palm-torneo-select').value;
             const marc = document.getElementById('palm-marcador').value.trim() || "N/D";
 
-            if (!torNombreEd) return showToast("Selecciona un torneo de la lista.");
+            if (!torNombreEd) return showToast("Selecciona un torneo de la lista.", "error");
 
             appData.palmares.push({
                 id: Date.now(),
@@ -3453,7 +3511,7 @@
             document.getElementById('palm-marcador').value = '';
             saveData();
             populateAdminPalmaresDropdowns();
-            showToast("Título agregado al Palmarés.");
+            showToast("Título agregado al Palmarés.", "success");
         }
 
         async function guardarConfiguracionBaseDatos() {
@@ -3473,7 +3531,7 @@
 
             saveData();
             initSupabaseClient();
-            showToast("Configuración guardada.");
+            showToast("Configuración guardada.", "success");
         }
 
         // INICIALIZACIÓN: GARANTIZAR PÁGINA DE INICIO LIMPIA AL CERRAR / NAVEGAR
