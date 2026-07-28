@@ -920,6 +920,8 @@
                             </div>
                             <button onclick="agregarPalmaresManual()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-1.5 rounded-lg text-xs active:scale-95 transition shadow">Registrar Título</button>
                         </div>
+                        <h5 class="font-bold text-slate-300 pt-3 border-t border-slate-800">Títulos Registrados</h5>
+                        <div id="admin-lista-palmares" class="space-y-2 max-h-48 overflow-y-auto custom-scroll pr-1"></div>
                     </div>
 
                     <!-- CONFIGURACIÓN GLOBAL / NUBE -->
@@ -959,6 +961,22 @@
         </div>
     </div>
 
+    <!-- MODAL GESTIÓN DE PALMARÉS -->
+    <div id="manage-palmares-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[85] flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="glass-panel bg-slate-900 rounded-2xl w-full max-w-md p-5 space-y-4 border border-slate-700 shadow-2xl animate-slide-up">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h4 class="font-bold text-amber-400 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-crown"></i>
+                    Gestionar Títulos: <span id="manage-palmares-player-name" class="text-white ml-1"></span>
+                </h4>
+                <button onclick="cerrarGestionPalmares()" class="text-slate-400 hover:text-white text-xl font-bold active:scale-95 transition">&times;</button>
+            </div>
+            <div id="manage-palmares-list" class="space-y-2 max-h-60 overflow-y-auto custom-scroll pr-1">
+                <!-- Content injected here -->
+            </div>
+        </div>
+    </div>
+    
     <!-- SCRIPT DE LÓGICA Y SINCRONIZACIÓN -->
     <script>
         const AudioFX = {
@@ -2222,6 +2240,7 @@
             }
 
             verificarAvanceTorneo(torneo);
+            torneo.isSimulated = false; // Manual intervention
 
             saveData();
             cerrarModalMarcador();
@@ -2423,6 +2442,87 @@
             });
         }
 
+                function togglePalmaresAdminMenu(event, safeName) {
+            AudioFX.playClick();
+            event.stopPropagation();
+            const safeId = safeName.replace(/\s+/g, '-');
+            const targetMenu = document.getElementById(`palmares-menu-${safeId}`);
+            document.querySelectorAll('[id^="palmares-menu-"]').forEach(el => {
+                if (el !== targetMenu) el.classList.add('hidden');
+            });
+            if (targetMenu) targetMenu.classList.toggle('hidden');
+        }
+
+        function abrirGestionPalmares(nombre) {
+            AudioFX.playClick();
+            document.getElementById('manage-palmares-modal').classList.remove('hidden');
+            document.getElementById('manage-palmares-player-name').innerText = nombre;
+            renderGestionPalmaresList(nombre);
+        }
+
+        function cerrarGestionPalmares() {
+            AudioFX.playClick();
+            document.getElementById('manage-palmares-modal').classList.add('hidden');
+        }
+
+        function renderGestionPalmaresList(nombre) {
+            const list = document.getElementById('manage-palmares-list');
+            list.innerHTML = '';
+            const titulos = (appData.palmares || []).filter(p => p.jugador === nombre);
+            
+            if (titulos.length === 0) {
+                list.innerHTML = '<div class="text-xs text-slate-500 text-center py-4">No hay títulos para gestionar.</div>';
+                return;
+            }
+
+            titulos.forEach(t => {
+                list.innerHTML += `
+                    <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700/60 text-xs flex justify-between items-center gap-2 transition hover:bg-slate-800">
+                        <div class="min-w-0">
+                            <div class="font-bold text-white truncate">${t.torneo} ${t.edicion || ''}</div>
+                            <div class="text-[10px] text-slate-400">Marcador: ${t.marcador || 'N/D'} | Fecha: ${t.fecha}</div>
+                        </div>
+                        <button onclick="borrarPalmares(${t.id}, '${nombre.replace(/'/g, "\\'")}')" class="text-rose-400 hover:text-rose-300 font-bold p-1.5 rounded-lg bg-slate-700/60 hover:bg-slate-700 transition active:scale-95 flex-shrink-0" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        async function borrarPalmares(id, nombreObj = null) {
+            const ok = await customConfirm("¿Deseas eliminar este título del Palmarés?", "Eliminar Título", "fa-trash");
+            if (ok) {
+                appData.palmares = appData.palmares.filter(p => p.id !== id);
+                saveData();
+                if (nombreObj && typeof nombreObj === 'string') renderGestionPalmaresList(nombreObj);
+                renderPalmares();
+                renderAdminPalmaresList();
+                showToast("Título eliminado.", "success");
+            }
+        }
+
+        function renderAdminPalmaresList() {
+            const list = document.getElementById('admin-lista-palmares');
+            if (!list) return;
+            list.innerHTML = '';
+            
+            if ((appData.palmares || []).length === 0) {
+                list.innerHTML = '<div class="text-xs text-slate-500 py-2">No hay palmarés registrados.</div>';
+                return;
+            }
+
+            [...appData.palmares].reverse().forEach(p => {
+                list.innerHTML += `
+                    <div class="flex items-center justify-between gap-2 bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60 text-xs transition">
+                        <div class="min-w-0">
+                            <div class="font-bold text-white truncate">${p.jugador} <span class="text-amber-400 font-normal ml-1">🏆 ${p.torneo}</span></div>
+                            <div class="text-[10px] text-slate-400 truncate">Edición: ${p.edicion || 'N/D'} | Fecha: ${p.fecha}</div>
+                        </div>
+                        <button onclick="borrarPalmares(${p.id})" class="text-rose-400 hover:text-rose-300 font-bold p-1.5 rounded-lg bg-slate-700/60 hover:bg-slate-700 transition active:scale-95 flex-shrink-0" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            });
+        }
+        
         function renderPalmares() {
             const grid = document.getElementById('palmares-grid');
             if (!grid) return;
@@ -2449,8 +2549,20 @@
                     }
                 });
 
+                // Get Avatar
+                let avatar = 'https://via.placeholder.com/40';
+                const jGlobal = (appData.jugadoresGlobales || []).find(j => j.nombre === jugadorName);
+                if (jGlobal && jGlobal.foto) avatar = jGlobal.foto;
+                else {
+                    for (let t of (appData.torneos || [])) {
+                        const jT = (t.jugadores || []).find(j => j.nombre === jugadorName);
+                        if (jT && jT.foto) { avatar = jT.foto; break; }
+                    }
+                }
+
                 playerStats.push({
                     nombre: jugadorName,
+                    avatar: avatar,
                     count: count,
                     titulos: titulos,
                     latestDate: latestDate
@@ -2481,30 +2593,75 @@
 
             filteredList.forEach((data, idx) => {
                 const card = document.createElement('div');
-                card.className = "glass-card p-3.5 sm:p-4 rounded-2xl border border-slate-800 space-y-3 animate-slide-up opacity-0";
+                card.className = "glass-card p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-4 animate-slide-up opacity-0 relative";
                 card.style.animationDelay = `${idx * 50}ms`;
                 
-                let titulosHTML = '';
-                if (data.count === 0) {
-                    titulosHTML = `<div class="text-rose-400/80 italic font-semibold text-[11px]">Este jugador no registra títulos aún.</div>`;
-                } else {
-                    titulosHTML = data.titulos.map(t => `
-                        <div class="border-b border-slate-800/60 pb-1">
-                            <div class="font-bold text-slate-200">• ${t.tipo}: ${t.torneo} ${t.edicion || ''}</div>
-                            <div class="text-[10px] text-indigo-300">Marcador Final: ${t.marcador || 'N/D'} | Fecha: ${t.fecha || 'N/D'}</div>
+                const safeNameStr = data.nombre.replace(/'/g, "\\\\'");
+                const safeSpaceStr = data.nombre.replace(/\s+/g, '-');
+                
+                const adminThreeDots = isAdminLoggedIn ? `
+                    <div class="relative flex-shrink-0">
+                        <button onclick="togglePalmaresAdminMenu(event, '${safeNameStr}')" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition active:scale-95" title="Gestionar Títulos">
+                            <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
+                        </button>
+                        <div id="palmares-menu-${safeSpaceStr}" class="hidden absolute right-0 top-8 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-1.5 z-30 w-40 text-xs space-y-1">
+                            <button onclick="abrirGestionPalmares('${safeNameStr}')" class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-slate-800 text-indigo-300 flex items-center gap-2 font-semibold transition">
+                                <i class="fa-solid fa-pen-to-square"></i> Gestionar Títulos
+                            </button>
                         </div>
-                    `).join('');
+                    </div>
+                ` : '';
+
+                let trophiesHTML = '';
+                if (data.count === 0) {
+                    trophiesHTML = `<div class="text-rose-400/80 italic font-semibold text-[11px] w-full text-center py-2">Sin títulos registrados.</div>`;
+                } else {
+                    const groups = {};
+                    data.titulos.forEach(t => {
+                        if (!groups[t.torneo]) groups[t.torneo] = [];
+                        groups[t.torneo].push(t);
+                    });
+
+                    trophiesHTML = `<div class="grid grid-cols-2 gap-3 w-full">` + Object.keys(groups).map(torneoName => {
+                        const group = groups[torneoName];
+                        const fullTorneo = (appData.torneos || []).find(tr => tr.nombre === torneoName);
+                        const formato = fullTorneo ? fullTorneo.formato : (group[0].tipo === 'Liga' ? 'liga_tradicional' : 'copa_directa');
+                        
+                        let iconClass = 'fa-solid fa-trophy text-amber-400';
+                        if (formato === 'liga_tradicional') iconClass = 'fa-solid fa-shield-halved text-slate-300';
+                        else if (formato === 'liga_liguilla') iconClass = 'fa-solid fa-trophy text-amber-400';
+                        else if (formato === 'copa_grupos') iconClass = 'fa-solid fa-trophy text-yellow-500';
+                        else if (formato === 'copa_directa') iconClass = 'fa-solid fa-medal text-slate-300';
+
+                        const stackedIcons = group.map((_, i) => `<i class="${iconClass} text-3xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] ${i > 0 ? '-ml-4' : ''} relative z-[${10-i}]"></i>`).join('');
+                        
+                        const detailsHTML = group.map(t => `<div class="text-[9px] text-indigo-300 truncate w-full text-center">${t.edicion || 'Edición N/D'} • ${t.fecha || ''}</div>`).join('');
+
+                        return `
+                            <div class="flex flex-col items-center justify-start p-2.5 bg-slate-800/40 rounded-xl border border-slate-700/50 hover:bg-slate-800/60 transition">
+                                <div class="flex justify-center items-end mb-2 h-10 w-full overflow-hidden px-2">${stackedIcons}</div>
+                                <div class="text-[10px] text-center text-slate-200 font-bold leading-tight mb-1 line-clamp-2">Ganador de ${torneoName}</div>
+                                <div class="flex flex-col gap-0.5 w-full items-center">${detailsHTML}</div>
+                            </div>
+                        `;
+                    }).join('') + `</div>`;
                 }
 
                 card.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <h4 class="font-extrabold text-white text-xs sm:text-sm">${data.nombre}</h4>
-                        <span class="text-xs bg-amber-900/40 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-700/50">
-                            ${data.count} Títulos
-                        </span>
+                    <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                        <div class="flex items-center gap-3 min-w-0 flex-1">
+                            <img src="${data.avatar}" class="w-10 h-10 rounded-full object-cover border-2 border-indigo-500/50 shadow-md flex-shrink-0 bg-slate-800">
+                            <div class="min-w-0">
+                                <h4 class="font-extrabold text-white text-sm truncate">${data.nombre}</h4>
+                                <span class="text-[10px] bg-amber-900/40 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-700/50 shadow-sm inline-block mt-0.5">
+                                    ${data.count} Títulos
+                                </span>
+                            </div>
+                        </div>
+                        ${adminThreeDots}
                     </div>
-                    <div class="text-[11px] text-slate-400 pt-1 space-y-1.5">
-                        ${titulosHTML}
+                    <div class="pt-3 flex flex-wrap gap-3">
+                        ${trophiesHTML}
                     </div>
                 `;
                 grid.appendChild(card);
@@ -2668,7 +2825,7 @@
             if (secId === 'fixture') loadAdminFixtureData();
             if (secId === 'comunicados-torneo') renderAdminComunicadosTorneoList();
             if (secId === 'comunicados-gen') renderAdminComunicadosGenList();
-            if (secId === 'palmares') populateAdminPalmaresDropdowns();
+            if (secId === 'palmares') { populateAdminPalmaresDropdowns(); renderAdminPalmaresList(); }
         }
 
         function actualizarSubopcionesCrearTorneo() {
@@ -3669,6 +3826,7 @@
             document.getElementById('palm-marcador').value = '';
             saveData();
             populateAdminPalmaresDropdowns();
+            renderAdminPalmaresList();
             showToast("Título agregado al Palmarés.", "success");
         }
 
@@ -3702,8 +3860,7 @@
             }
 
             btn.classList.remove('hidden');
-            const tieneJugados = torneo.partidos && torneo.partidos.some(p => p.jugado);
-            if (tieneJugados) {
+            if (torneo.isSimulated) {
                 btn.innerHTML = `<i class="fa-solid fa-rotate-left"></i> <span class="hidden sm:inline">Deshacer Resultados</span>`;
                 btn.className = "bg-rose-600 hover:bg-rose-500 text-white font-bold text-[10px] sm:text-xs px-2.5 py-1.5 rounded-xl shadow-md active:scale-95 transition ml-2 flex items-center gap-1.5";
             } else {
@@ -3717,13 +3874,19 @@
             const torneo = getActiveTorneo();
             if (!torneo || !torneo.partidos || torneo.partidos.length === 0) return;
 
-            const tieneJugados = torneo.partidos.some(p => p.jugado);
-            if (tieneJugados) {
-                customConfirm("¿Deseas deshacer todos los resultados? El calendario se conservará intacto.", "Deshacer Resultados", "fa-rotate-left").then(ok => {
+            if (torneo.isSimulated) {
+                customConfirm("¿Deseas deshacer todos los resultados simulados? El calendario se conservará intacto.", "Deshacer Resultados", "fa-rotate-left").then(ok => {
                     if (ok) procesarDeshacerResultados(torneo);
                 });
             } else {
-                procesarResultadosAleatorios(torneo);
+                const tieneJugados = torneo.partidos.some(p => p.jugado);
+                if (tieneJugados) {
+                    customConfirm("Hay resultados anotados manualmente. ¿Deseas sobreescribir y simular el resto del torneo de forma aleatoria?", "Generar Resultados", "fa-dice").then(ok => {
+                        if (ok) procesarResultadosAleatorios(torneo);
+                    });
+                } else {
+                    procesarResultadosAleatorios(torneo);
+                }
             }
         }
 
@@ -3736,6 +3899,7 @@
                 p.pen2 = null;
             });
 
+            torneo.isSimulated = false;
             torneo.partidos.forEach(p => {
                 if (p.nextMatchId) {
                     const target = torneo.partidos.find(m => m.id === p.nextMatchId);
@@ -3807,7 +3971,7 @@
                 verificarAvanceTorneo(torneo);
                 infiniteLoopGuard++;
             }
-            
+            if (processedAny) torneo.isSimulated = true;
             saveData();
             renderAll();
             
