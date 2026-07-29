@@ -552,8 +552,9 @@
             </div>
 
             <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+                <button onclick="borrarResultadoModal()" class="px-3 py-2 text-xs font-bold text-rose-400 hover:text-rose-300 transition active:scale-95 mr-auto flex items-center gap-1 bg-slate-800 hover:bg-slate-700 rounded-xl"><i class="fa-solid fa-rotate-left"></i> Limpiar</button>
                 <button onclick="cerrarModalMarcador()" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white transition active:scale-95">Cancelar</button>
-                <button onclick="guardarMarcadorModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition active:scale-95 shadow-lg">Guardar Resultado</button>
+                <button onclick="guardarMarcadorModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition active:scale-95 shadow-lg">Guardar</button>
             </div>
         </div>
     </div>
@@ -1233,22 +1234,28 @@
 
         function resolverByesPrimeraRonda(torneo, firstRoundMatches) {
             firstRoundMatches.forEach(match => {
-                if (match.j1Id && !match.j2Id) {
+                if ((match.j1Id && !match.j2Id) || (!match.j1Id && match.j2Id)) {
                     match.jugado = true; match.g1 = 0; match.g2 = 0; match.bye = true;
-                    if (match.nextMatchId) {
-                        const nextMatch = torneo.partidos.find(p => p.id === match.nextMatchId);
-                        if (nextMatch) {
-                            if (match.nextSlot === 'j1') nextMatch.j1Id = match.j1Id;
-                            else if (match.nextSlot === 'j2') nextMatch.j2Id = match.j1Id;
+                    
+                    if (match.relMatchId) {
+                        const mVuelta = torneo.partidos.find(p => p.id === match.relMatchId);
+                        if (mVuelta) {
+                            mVuelta.jugado = true; mVuelta.g1 = 0; mVuelta.g2 = 0; mVuelta.bye = true;
+                            if (mVuelta.nextMatchId) {
+                                const nextM = torneo.partidos.find(p => p.id === mVuelta.nextMatchId);
+                                if (nextM) {
+                                    if (mVuelta.nextSlot === 'j1') nextM.j1Id = match.j1Id || match.j2Id;
+                                    else nextM.j2Id = match.j1Id || match.j2Id;
+                                }
+                            }
                         }
-                    }
-                } else if (!match.j1Id && match.j2Id) {
-                    match.jugado = true; match.g1 = 0; match.g2 = 0; match.bye = true;
-                    if (match.nextMatchId) {
-                        const nextMatch = torneo.partidos.find(p => p.id === match.nextMatchId);
-                        if (nextMatch) {
-                            if (match.nextSlot === 'j1') nextMatch.j1Id = match.j2Id;
-                            else if (match.nextSlot === 'j2') nextMatch.j2Id = match.j2Id;
+                    } else {
+                        if (match.nextMatchId) {
+                            const nextM = torneo.partidos.find(p => p.id === match.nextMatchId);
+                            if (nextM) {
+                                if (match.nextSlot === 'j1') nextM.j1Id = match.j1Id || match.j2Id;
+                                else nextM.j2Id = match.j1Id || match.j2Id;
+                            }
                         }
                     }
                 }
@@ -1596,6 +1603,7 @@
 
             const ok = await customConfirm(`¿Estás seguro de eliminar el torneo "${torneo.nombre}"? Esta acción no se puede deshacer.`, "Eliminar Torneo", "fa-trash");
             if (ok) {
+                appData.palmares = appData.palmares.filter(p => !(p.torneo === torneo.nombre && p.edicion === torneo.edicion));
                 appData.torneos = appData.torneos.filter(t => t.id !== id);
                 if (appData.activeTorneoId === id) {
                     volverAInicioGlobal();
@@ -2157,6 +2165,29 @@
             document.getElementById('score-modal').classList.add('hidden');
         }
 
+                function borrarResultadoModal() {
+            AudioFX.playClick();
+            const torneo = getActiveTorneo();
+            const matchId = parseInt(document.getElementById('score-match-id').value);
+            const match = torneo.partidos.find(p => p.id === matchId);
+            
+            match.jugado = false; match.g1 = null; match.g2 = null; match.pen1 = null; match.pen2 = null;
+            
+            if (match.nextMatchId) {
+                const nextMatch = torneo.partidos.find(p => p.id === match.nextMatchId);
+                if (nextMatch) {
+                    if (match.nextSlot === 'j1') nextMatch.j1Id = null;
+                    else if (match.nextSlot === 'j2') nextMatch.j2Id = null;
+                    else if (match.nextSlot === 'none') { nextMatch.j1Id = null; nextMatch.j2Id = null; }
+                }
+            }
+            
+            torneo.isSimulated = false;
+            saveData();
+            cerrarModalMarcador();
+            showToast("Resultado limpiado.", "success");
+        }
+
         function guardarMarcadorModal() {
             const torneo = getActiveTorneo();
             if (!torneo) return;
@@ -2173,69 +2204,89 @@
             const j1 = allKnownPlayers.find(j => j.id === match.j1Id) || { id: match.j1Id, nombre: 'J1' };
             const j2 = allKnownPlayers.find(j => j.id === match.j2Id) || { id: match.j2Id, nombre: 'J2' };
 
+            let globalG1 = g1;
+            let globalG2 = g2;
+
+            if (match.isVuelta && match.relMatchId) {
+                const idaMatch = torneo.partidos.find(p => p.id === match.relMatchId);
+                if (idaMatch && idaMatch.jugado) {
+                    globalG1 += idaMatch.g1;
+                    globalG2 += idaMatch.g2;
+                } else {
+                    return showToast("Debes registrar el resultado del partido de Ida primero.", "error");
+                }
+            }
+
             let ganadorObj = null;
 
-            if (g1 === g2 && (torneo.formato.includes('copa') || match.fase.toLowerCase().includes('final') || usaPenaltis)) {
-                if (!usaPenaltis) {
-                    return showToast("En partidos eliminatorios empatados debes activar la opción de penaltis.", "error");
-                }
-                const pen1 = parseInt(document.getElementById('score-pen1-input').value) || 0;
-                const pen2 = parseInt(document.getElementById('score-pen2-input').value) || 0;
+            if (globalG1 === globalG2 && (torneo.formato.includes('copa') || match.fase.toLowerCase().includes('final'))) {
+                if (match.isIda) {
+                    // Empate permitido en la Ida
+                    ganadorObj = null;
+                } else {
+                    if (!usaPenaltis) {
+                        return showToast("El marcador global está empatado. Debes activar los penaltis.", "error");
+                    }
+                    const pen1 = parseInt(document.getElementById('score-pen1-input').value) || 0;
+                    const pen2 = parseInt(document.getElementById('score-pen2-input').value) || 0;
 
-                if (pen1 === pen2) {
-                    return showToast("El marcador de penaltis no puede quedar empatado.", "error");
+                    if (pen1 === pen2) return showToast("El marcador de penaltis no puede quedar empatado.", "error");
+                    match.pen1 = pen1; match.pen2 = pen2;
+                    ganadorObj = pen1 > pen2 ? j1 : j2;
                 }
-
-                match.pen1 = pen1;
-                match.pen2 = pen2;
-                ganadorObj = pen1 > pen2 ? j1 : j2;
             } else {
                 match.pen1 = usaPenaltis ? (parseInt(document.getElementById('score-pen1-input').value) || 0) : null;
                 match.pen2 = usaPenaltis ? (parseInt(document.getElementById('score-pen2-input').value) || 0) : null;
                 
-                if (g1 > g2) ganadorObj = j1;
-                else if (g2 > g1) ganadorObj = j2;
+                if (globalG1 > globalG2) ganadorObj = j1;
+                else if (globalG2 > globalG1) ganadorObj = j2;
             }
 
             match.g1 = g1;
             match.g2 = g2;
             match.jugado = true;
 
-            if (ganadorObj && match.nextMatchId) {
-                const nextMatch = torneo.partidos.find(p => p.id === match.nextMatchId);
-                if (nextMatch) {
-                    if (match.nextSlot === 'j1') nextMatch.j1Id = ganadorObj.id;
-                    else if (match.nextSlot === 'j2') nextMatch.j2Id = ganadorObj.id;
-
-                    nextMatch.jugado = false;
-                    nextMatch.g1 = null; nextMatch.g2 = null;
-                    nextMatch.pen1 = null; nextMatch.pen2 = null;
-
-                    showToast(`¡${ganadorObj.nombre} avanza a ${nextMatch.fase}!`, "success");
+            if (match.isIda) {
+                // Solo pasar los jugadores al partido de vuelta
+                if (match.nextMatchId) {
+                    const nextMatch = torneo.partidos.find(p => p.id === match.nextMatchId);
+                    if (nextMatch) {
+                        nextMatch.j1Id = match.j1Id;
+                        nextMatch.j2Id = match.j2Id;
+                    }
                 }
-            }
-
-            if (match.fase.toLowerCase() === 'gran final' && ganadorObj) {
-                let scoreStr = `${g1}-${g2}`;
-                if (match.pen1 !== null && match.pen2 !== null) {
-                    scoreStr += ` (${match.pen1}-${match.pen2} pen.)`;
+            } else {
+                // Avanza el ganador (Vuelta o Partido Único)
+                if (ganadorObj && match.nextMatchId) {
+                    const nextMatch = torneo.partidos.find(p => p.id === match.nextMatchId);
+                    if (nextMatch) {
+                        if (match.nextSlot === 'j1') nextMatch.j1Id = ganadorObj.id;
+                        else if (match.nextSlot === 'j2') nextMatch.j2Id = ganadorObj.id;
+                    }
                 }
 
-                AudioFX.playWin();
-                const yaRegistrado = appData.palmares.some(p => p.torneo === torneo.nombre && p.edicion === torneo.edicion);
-                if (!yaRegistrado) {
-                    appData.palmares.push({
-                        id: Date.now(),
-                        jugador: ganadorObj.nombre,
-                        tipo: torneo.formato.includes('liga') ? 'Liga' : 'Copa',
-                        torneo: torneo.nombre,
-                        edicion: torneo.edicion,
-                        marcador: scoreStr,
-                        fecha: new Date().toISOString().split('T')[0]
-                    });
-                    setTimeout(() => {
-                        showToast(`🏆 ¡Felicidades a ${ganadorObj.nombre}! Se ha coronado Campeón de la ${torneo.nombre}.`, "success");
-                    }, 3500);
+                if (match.fase.toLowerCase().includes('gran final') && ganadorObj) {
+                    let scoreStr = `${globalG1}-${globalG2}`;
+                    if (match.pen1 !== null && match.pen2 !== null) {
+                        scoreStr += ` (${match.pen1}-${match.pen2} pen.)`;
+                    }
+
+                    AudioFX.playWin();
+                    const yaRegistrado = appData.palmares.some(p => p.torneo === torneo.nombre && p.edicion === torneo.edicion);
+                    if (!yaRegistrado) {
+                        appData.palmares.push({
+                            id: Date.now(),
+                            jugador: ganadorObj.nombre,
+                            tipo: torneo.formato.includes('liga') ? 'Liga' : 'Copa',
+                            torneo: torneo.nombre,
+                            edicion: torneo.edicion,
+                            marcador: scoreStr,
+                            fecha: new Date().toISOString().split('T')[0]
+                        });
+                        setTimeout(() => {
+                            showToast(`🏆 ¡Felicidades a ${ganadorObj.nombre}! Se ha coronado Campeón de la ${torneo.nombre}.`, "success");
+                        }, 3500);
+                    }
                 }
             }
 
@@ -2246,7 +2297,6 @@
             cerrarModalMarcador();
             showToast("Resultado guardado.", "success");
         }
-
         function abrirEditarMatch(matchId) {
             AudioFX.playClick();
             const torneo = getActiveTorneo();
@@ -2627,13 +2677,14 @@
                         const fullTorneo = (appData.torneos || []).find(tr => tr.nombre === torneoName);
                         const formato = fullTorneo ? fullTorneo.formato : (group[0].tipo === 'Liga' ? 'liga_tradicional' : 'copa_directa');
                         
-                        let iconClass = 'fa-solid fa-trophy text-amber-400';
-                        if (formato === 'liga_tradicional') iconClass = 'fa-solid fa-shield-halved text-slate-300';
-                        else if (formato === 'liga_liguilla') iconClass = 'fa-solid fa-trophy text-amber-400';
-                        else if (formato === 'copa_grupos') iconClass = 'fa-solid fa-trophy text-yellow-500';
-                        else if (formato === 'copa_directa') iconClass = 'fa-solid fa-medal text-slate-300';
+                        let iconClass = 'fa-solid fa-trophy text-amber-400 drop-shadow-[0_4px_8px_rgba(251,191,36,0.3)]';
+                        if (formato === 'liga_tradicional') iconClass = 'fa-solid fa-trophy text-amber-500 drop-shadow-[0_4px_8px_rgba(245,158,11,0.5)]';
+                        else if (formato === 'liga_liguilla') iconClass = 'fa-solid fa-trophy text-yellow-400 drop-shadow-[0_4px_8px_rgba(250,204,21,0.5)]';
+                        else if (formato === 'copa_grupos') iconClass = 'fa-solid fa-trophy text-amber-300 drop-shadow-[0_4px_8px_rgba(252,211,77,0.5)]';
+                        else if (formato === 'copa_directa') iconClass = 'fa-solid fa-trophy text-yellow-500 drop-shadow-[0_4px_8px_rgba(234,179,8,0.5)]';
 
-                        const stackedIcons = group.map((_, i) => `<i class="${iconClass} text-3xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] ${i > 0 ? '-ml-4' : ''} relative z-[${10-i}]"></i>`).join('');
+                        const countText = group.length > 1 ? `<span class="absolute -bottom-1 -right-1.5 bg-slate-900 text-white text-[9px] font-black px-1.5 py-0.5 rounded border border-slate-700 shadow-md">x${group.length}</span>` : '';
+                        const stackedIcons = `<div class="relative"><i class="${iconClass} text-3xl"></i>${countText}</div>`;
                         
                         const detailsHTML = group.map(t => `<div class="text-[9px] text-indigo-300 truncate w-full text-center">${t.edicion || 'Edición N/D'} • ${t.fecha || ''}</div>`).join('');
 
@@ -3411,183 +3462,71 @@
                     else rounds = ["Gran Final"];
                     
                     const esIdaVuelta = torneo.modoLlaves === 'ida_vuelta';
-                    let phaseMatchCounts = rounds.map((_, idx) => Math.pow(2, rounds.length - 1 - idx));
-                    let previousPhaseMatches = [];
-
-                    for (let r = 0; r < rounds.length; r++) {
-                        const faseName = rounds[r];
-                        const numMatches = phaseMatchCounts[r];
-                        let currentPhaseMatches = [];
-
-                        for (let m = 0; m < numMatches; m++) {
-                            const isFinal = (r === rounds.length - 1);
-                            if (esIdaVuelta && !isFinal) {
-                                let matchIda = { id: matchId++, fase: `${faseName} - Ida`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                                let matchVuelta = { id: matchId++, fase: `${faseName} - Vuelta`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                                currentPhaseMatches.push(matchIda);
-                                torneo.partidos.push(matchIda, matchVuelta);
-                            } else {
-                                let matchObj = { id: matchId++, fase: faseName, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                                currentPhaseMatches.push(matchObj);
-                                torneo.partidos.push(matchObj);
-                            }
-                        }
-
-                        if (previousPhaseMatches.length > 0) {
-                            for (let i = 0; i < previousPhaseMatches.length; i++) {
-                                let prevMatch = previousPhaseMatches[i];
-                                let targetIndex = Math.floor(i / 2);
-                                let slot = (i % 2 === 0) ? 'j1' : 'j2';
-                                prevMatch.nextMatchId = currentPhaseMatches[targetIndex].id;
-                                prevMatch.nextSlot = slot;
-                            }
-                        }
-                        previousPhaseMatches = currentPhaseMatches;
-                    }
-                }
-                
-            } else if (torneo.formato === 'copa_grupos') {
-                const numGrupos = players.length >= 12 ? 4 : 2;
-                const grupos = Array.from({ length: numGrupos }, () => []);
-                
-                players.forEach((p, idx) => {
-                    grupos[idx % numGrupos].push(p);
-                });
-
-                const vueltasGrupos = parseInt(torneo.vueltas || "1");
-
-                grupos.forEach((grupoPlayers, gIdx) => {
-                    const grupoLetra = String.fromCharCode(65 + gIdx);
-                    let list = [...grupoPlayers];
-                    if (list.length % 2 !== 0) list.push({ id: null, nombre: 'BYE' });
-                    const numRounds = list.length - 1;
-                    const half = list.length / 2;
-
-                    for (let v = 0; v < vueltasGrupos; v++) {
-                        let currentList = [...list];
-                        for (let round = 0; round < numRounds; round++) {
-                            const numJornada = (v * numRounds) + round + 1;
-                            const faseName = `Grupo ${grupoLetra} - Jornada ${numJornada}`;
-                            for (let i = 0; i < half; i++) {
-                                const j1 = currentList[i];
-                                const j2 = currentList[currentList.length - 1 - i];
-                                if (j1.id !== null && j2.id !== null) {
-                                    torneo.partidos.push({
-                                        id: matchId++,
-                                        fase: faseName,
-                                        j1Id: v === 0 ? j1.id : j2.id,
-                                        j2Id: v === 0 ? j2.id : j1.id,
-                                        g1: null, g2: null, pen1: null, pen2: null,
-                                        jugado: false,
-                                        plazo: nowIso
-                                    });
-                                }
-                            }
-                            currentList.splice(1, 0, currentList.pop());
-                        }
-                    }
-                });
-
-                const esIdaVuelta = torneo.modoLlaves === 'ida_vuelta';
-                const fasesElim = numGrupos === 4 ? ["Cuartos de Final", "Semifinales", "Gran Final"] : ["Semifinales", "Gran Final"];
-                
-                let previousPhaseMatches = [];
-
-                fasesElim.forEach((faseName) => {
-                    let count = 1;
-                    if (faseName === 'Cuartos de Final') count = 4;
-                    if (faseName === 'Semifinales') count = 2;
-
-                    let currentPhaseMatches = [];
-
-                    for (let c = 0; c < count; c++) {
-                        if (esIdaVuelta && faseName !== 'Gran Final') {
-                            let matchIda = { id: matchId++, fase: `${faseName} - Ida`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            let matchVuelta = { id: matchId++, fase: `${faseName} - Vuelta`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            currentPhaseMatches.push(matchIda);
-                            torneo.partidos.push(matchIda, matchVuelta);
-                        } else {
-                            let matchObj = { id: matchId++, fase: faseName, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            currentPhaseMatches.push(matchObj);
-                            torneo.partidos.push(matchObj);
-                        }
-                    }
-
-                    if (previousPhaseMatches.length > 0) {
-                        for (let i = 0; i < previousPhaseMatches.length; i++) {
-                            let prevMatch = previousPhaseMatches[i];
-                            let targetIndex = Math.floor(i / 2);
-                            let slot = (i % 2 === 0) ? 'j1' : 'j2';
-                            prevMatch.nextMatchId = currentPhaseMatches[targetIndex].id;
-                            prevMatch.nextSlot = slot;
-                        }
-                    }
-
-                    previousPhaseMatches = currentPhaseMatches;
-                });
-
-            } else if (torneo.formato === 'copa_directa') {
-                const n = players.length;
-                let rounds = [];
-
-                if (n > 16) rounds = ["Dieciseisavos de Final", "Octavos de Final", "Cuartos de Final", "Semifinales", "Gran Final"];
-                else if (n > 8) rounds = ["Octavos de Final", "Cuartos de Final", "Semifinales", "Gran Final"];
-                else if (n > 4) rounds = ["Cuartos de Final", "Semifinales", "Gran Final"];
-                else if (n > 2) rounds = ["Semifinales", "Gran Final"];
-                else rounds = ["Gran Final"];
-
-                const esIdaVuelta = torneo.modoLlaves === 'ida_vuelta';
                 let phaseMatchCounts = rounds.map((_, idx) => Math.pow(2, rounds.length - 1 - idx));
                 let allMatches = [];
-                let previousPhaseMatches = [];
+                let prevPhaseExitMatches = [];
 
                 for (let r = 0; r < rounds.length; r++) {
                     const faseName = rounds[r];
                     const numMatches = phaseMatchCounts[r];
-                    let currentPhaseMatches = [];
+                    let currentPhaseEntryMatches = [];
+                    let currentPhaseExitMatches = [];
 
                     for (let m = 0; m < numMatches; m++) {
                         const isFinal = (r === rounds.length - 1);
                         if (esIdaVuelta && !isFinal) {
-                            let matchIda = { id: matchId++, fase: `${faseName} - Ida`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            let matchVuelta = { id: matchId++, fase: `${faseName} - Vuelta`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            currentPhaseMatches.push(matchIda);
+                            let matchIda = { id: matchId++, fase: `${faseName} - Ida`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso, isIda: true, isVuelta: false };
+                            let matchVuelta = { id: matchId++, fase: `${faseName} - Vuelta`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso, isIda: false, isVuelta: true };
+                            
+                            matchIda.relMatchId = matchVuelta.id;
+                            matchVuelta.relMatchId = matchIda.id;
+                            matchIda.nextMatchId = matchVuelta.id; // Ida advances to Vuelta
+                            matchIda.nextSlot = 'none';
+                            
+                            currentPhaseEntryMatches.push(matchIda);
+                            currentPhaseExitMatches.push(matchVuelta);
                             allMatches.push(matchIda, matchVuelta);
                         } else {
                             let matchObj = { id: matchId++, fase: faseName, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            currentPhaseMatches.push(matchObj);
+                            currentPhaseEntryMatches.push(matchObj);
+                            currentPhaseExitMatches.push(matchObj);
                             allMatches.push(matchObj);
                         }
                     }
 
-                    if (previousPhaseMatches.length > 0) {
-                        for (let i = 0; i < previousPhaseMatches.length; i++) {
-                            let prevMatch = previousPhaseMatches[i];
+                    if (prevPhaseExitMatches.length > 0) {
+                        for (let i = 0; i < prevPhaseExitMatches.length; i++) {
                             let targetIndex = Math.floor(i / 2);
                             let slot = (i % 2 === 0) ? 'j1' : 'j2';
-                            prevMatch.nextMatchId = currentPhaseMatches[targetIndex].id;
-                            prevMatch.nextSlot = slot;
+                            prevPhaseExitMatches[i].nextMatchId = currentPhaseEntryMatches[targetIndex].id;
+                            prevPhaseExitMatches[i].nextSlot = slot;
                         }
                     }
-
-                    previousPhaseMatches = currentPhaseMatches;
+                    prevPhaseExitMatches = currentPhaseExitMatches;
                 }
 
-                let firstRoundMatches = allMatches.filter(m => m.fase.startsWith(rounds[0]));
+                let firstRoundMatches = allMatches.filter(m => m.fase === rounds[0] || m.fase === rounds[0] + ' - Ida');
                 const bracketSize = firstRoundMatches.length * 2;
                 const numByes = bracketSize - n;
 
                 let playerIdx = 0;
                 for (let i = 0; i < firstRoundMatches.length; i++) {
+                    const mIda = firstRoundMatches[i];
+                    const mVuelta = mIda.relMatchId ? allMatches.find(m => m.id === mIda.relMatchId) : null;
+                    
                     if (i < numByes) {
                         const pBye = players[playerIdx++] || null;
-                        firstRoundMatches[i].j1Id = pBye ? pBye.id : null;
-                        firstRoundMatches[i].j2Id = null;
+                        mIda.j1Id = pBye ? pBye.id : null;
+                        if(mVuelta) mVuelta.j1Id = pBye ? pBye.id : null;
                     } else {
                         const pA = players[playerIdx++] || null;
                         const pB = players[playerIdx++] || null;
-                        firstRoundMatches[i].j1Id = pA ? pA.id : null;
-                        firstRoundMatches[i].j2Id = pB ? pB.id : null;
+                        mIda.j1Id = pA ? pA.id : null;
+                        mIda.j2Id = pB ? pB.id : null;
+                        if(mVuelta) {
+                            mVuelta.j1Id = pA ? pA.id : null;
+                            mVuelta.j2Id = pB ? pB.id : null;
+                        }
                     }
                 }
 
@@ -3936,33 +3875,63 @@
                     
                     let g1 = Math.floor(Math.random() * 4);
                     let g2 = Math.floor(Math.random() * 4);
-                    
                     let p1 = null, p2 = null;
-                    if (g1 === g2 && isElimination) {
-                        p1 = Math.floor(Math.random() * 4) + 1;
-                        p2 = Math.floor(Math.random() * 4) + 1;
-                        if (p1 === p2) p1++; // Break tie
-                    }
                     
                     match.g1 = g1; match.g2 = g2;
-                    match.pen1 = p1; match.pen2 = p2;
                     match.jugado = true;
                     
-                    let ganadorId = null;
-                    if (g1 > g2) ganadorId = match.j1Id;
-                    else if (g2 > g1) ganadorId = match.j2Id;
-                    else if (p1 !== null && p2 !== null) {
-                        ganadorId = p1 > p2 ? match.j1Id : match.j2Id;
-                    }
-                    
-                    if (ganadorId && match.nextMatchId) {
-                        const nextMatch = torneo.partidos.find(p => p.id === match.nextMatchId);
-                        if (nextMatch) {
-                            if (match.nextSlot === 'j1') nextMatch.j1Id = ganadorId;
-                            else if (match.nextSlot === 'j2') nextMatch.j2Id = ganadorId;
-                            nextMatch.jugado = false;
-                            nextMatch.g1 = null; nextMatch.g2 = null;
-                            nextMatch.pen1 = null; nextMatch.pen2 = null;
+                    if (match.isIda) {
+                         if (match.nextMatchId) {
+                             const vMatch = torneo.partidos.find(p => p.id === match.nextMatchId);
+                             if (vMatch) { vMatch.j1Id = match.j1Id; vMatch.j2Id = match.j2Id; }
+                         }
+                    } else {
+                        let globalG1 = g1; let globalG2 = g2;
+                        if (match.isVuelta && match.relMatchId) {
+                            const idaMatch = torneo.partidos.find(p => p.id === match.relMatchId);
+                            if (idaMatch && idaMatch.jugado) {
+                                globalG1 += idaMatch.g1; globalG2 += idaMatch.g2;
+                            }
+                        }
+                        
+                        if (globalG1 === globalG2 && isElimination) {
+                            p1 = Math.floor(Math.random() * 4) + 1;
+                            p2 = Math.floor(Math.random() * 4) + 1;
+                            if (p1 === p2) p1++;
+                            match.pen1 = p1; match.pen2 = p2;
+                        }
+                        
+                        let ganadorId = null;
+                        if (globalG1 > globalG2) ganadorId = match.j1Id;
+                        else if (globalG2 > globalG1) ganadorId = match.j2Id;
+                        else if (p1 !== null && p2 !== null) ganadorId = p1 > p2 ? match.j1Id : match.j2Id;
+                        
+                        if (ganadorId && match.nextMatchId) {
+                            const nextMatch = torneo.partidos.find(p => p.id === match.nextMatchId);
+                            if (nextMatch) {
+                                if (match.nextSlot === 'j1') nextMatch.j1Id = ganadorId;
+                                else if (match.nextSlot === 'j2') nextMatch.j2Id = ganadorId;
+                            }
+                        }
+                        
+                        if (match.fase.toLowerCase().includes('gran final') && ganadorId) {
+                            const ganadorObj = appData.jugadoresGlobales.find(j => j.id === ganadorId) || (torneo.jugadores || []).find(j => j.id === ganadorId);
+                            if (ganadorObj) {
+                                const yaRegistrado = appData.palmares.some(p => p.torneo === torneo.nombre && p.edicion === torneo.edicion);
+                                if (!yaRegistrado) {
+                                    let scoreStr = `${globalG1}-${globalG2}`;
+                                    if (p1 !== null && p2 !== null) scoreStr += ` (${p1}-${p2} pen.)`;
+                                    appData.palmares.push({
+                                        id: Date.now() + Math.random(),
+                                        jugador: ganadorObj.nombre,
+                                        tipo: torneo.formato.includes('liga') ? 'Liga' : 'Copa',
+                                        torneo: torneo.nombre,
+                                        edicion: torneo.edicion,
+                                        marcador: scoreStr,
+                                        fecha: new Date().toISOString().split('T')[0]
+                                    });
+                                }
+                            }
                         }
                     }
                     processedAny = true;
@@ -3978,7 +3947,6 @@
             if (processedAny) showToast(`Resultados simulados exitosamente.`, "success");
             else showToast(`No hay partidos pendientes.`, "error");
         }
-
         window.onload = function() {
             appData.activeTorneoId = null; // Reiniciar selección para iniciar limpio en pantalla de Inicio
             initSupabaseClient();
