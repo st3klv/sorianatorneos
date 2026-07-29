@@ -1949,8 +1949,20 @@
             const torneo = getActiveTorneo();
             const allKnownPlayers = [...(torneo.jugadores || []), ...(appData.jugadoresGlobales || [])];
             
-            const j1 = allKnownPlayers.find(j => j.id === p.j1Id) || (p.j1Id ? { nombre: "Jugador Registrado", foto: "https://via.placeholder.com/30" } : null);
-            const j2 = allKnownPlayers.find(j => j.id === p.j2Id) || (p.j2Id ? { nombre: "Jugador Registrado", foto: "https://via.placeholder.com/30" } : null);
+            
+            // Si es partido de vuelta y los jugadores son nulos, jalar los datos de la Ida
+            let effectiveJ1Id = p.j1Id;
+            let effectiveJ2Id = p.j2Id;
+            if (p.isVuelta && p.relMatchId && !p.j1Id && !p.j2Id) {
+                const idaMatch = torneo.partidos.find(m => m.id === p.relMatchId);
+                if (idaMatch && (idaMatch.j1Id || idaMatch.j2Id)) {
+                    effectiveJ1Id = idaMatch.j1Id;
+                    effectiveJ2Id = idaMatch.j2Id;
+                }
+            }
+            
+            const j1 = allKnownPlayers.find(j => j.id === effectiveJ1Id) || (effectiveJ1Id ? { nombre: "Jugador Registrado", foto: "https://via.placeholder.com/30" } : null);
+            const j2 = allKnownPlayers.find(j => j.id === effectiveJ2Id) || (effectiveJ2Id ? { nombre: "Jugador Registrado", foto: "https://via.placeholder.com/30" } : null);
 
             let penText1 = p.pen1 !== null && p.pen1 !== undefined ? ` (${p.pen1})` : '';
             let penText2 = p.pen2 !== null && p.pen2 !== undefined ? ` (${p.pen2})` : '';
@@ -2219,9 +2231,10 @@
 
             let ganadorObj = null;
 
-            if (globalG1 === globalG2 && (torneo.formato.includes('copa') || match.fase.toLowerCase().includes('final'))) {
+            const isEliminatory = (!match.fase.toLowerCase().includes('jornada') && !match.fase.startsWith('Grupo'));
+            
+            if (globalG1 === globalG2 && isEliminatory) {
                 if (match.isIda) {
-                    // Empate permitido en la Ida
                     ganadorObj = null;
                 } else {
                     if (!usaPenaltis) {
@@ -2677,14 +2690,37 @@
                         const fullTorneo = (appData.torneos || []).find(tr => tr.nombre === torneoName);
                         const formato = fullTorneo ? fullTorneo.formato : (group[0].tipo === 'Liga' ? 'liga_tradicional' : 'copa_directa');
                         
-                        let iconClass = 'fa-solid fa-trophy text-amber-400 drop-shadow-[0_4px_8px_rgba(251,191,36,0.3)]';
-                        if (formato === 'liga_tradicional') iconClass = 'fa-solid fa-trophy text-amber-500 drop-shadow-[0_4px_8px_rgba(245,158,11,0.5)]';
-                        else if (formato === 'liga_liguilla') iconClass = 'fa-solid fa-trophy text-yellow-400 drop-shadow-[0_4px_8px_rgba(250,204,21,0.5)]';
-                        else if (formato === 'copa_grupos') iconClass = 'fa-solid fa-trophy text-amber-300 drop-shadow-[0_4px_8px_rgba(252,211,77,0.5)]';
-                        else if (formato === 'copa_directa') iconClass = 'fa-solid fa-trophy text-yellow-500 drop-shadow-[0_4px_8px_rgba(234,179,8,0.5)]';
+                        let iconElement = '<i class="fa-solid fa-trophy text-3xl text-amber-400 drop-shadow-[0_4px_8px_rgba(251,191,36,0.4)]"></i>';
+                        
+                        if (formato === 'liga_tradicional') {
+                            iconElement = `
+                                <div class="relative w-8 h-10 flex items-center justify-center">
+                                    <div class="absolute inset-0 bg-gradient-to-tr from-amber-600 to-yellow-300 rounded-full blur-[2px] opacity-70"></div>
+                                    <i class="fa-solid fa-shield text-3xl text-amber-500 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] relative z-10"></i>
+                                    <i class="fa-solid fa-star text-xs text-yellow-100 absolute z-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></i>
+                                </div>`;
+                        } else if (formato === 'liga_liguilla') {
+                            iconElement = `
+                                <div class="relative w-8 h-10 flex items-center justify-center">
+                                    <i class="fa-solid fa-trophy text-3xl text-yellow-400 drop-shadow-[0_4px_8px_rgba(250,204,21,0.5)] relative z-10"></i>
+                                    <i class="fa-solid fa-crown text-[10px] text-amber-100 absolute z-20 -top-1 left-1/2 transform -translate-x-1/2 -rotate-12"></i>
+                                </div>`;
+                        } else if (formato === 'copa_grupos') {
+                            iconElement = `
+                                <div class="relative w-8 h-10 flex items-center justify-center">
+                                    <i class="fa-solid fa-trophy text-3xl text-amber-300 drop-shadow-[0_4px_8px_rgba(252,211,77,0.5)]"></i>
+                                    <div class="absolute bottom-1 w-4 h-1 bg-amber-600 rounded-full blur-[1px]"></div>
+                                </div>`;
+                        } else if (formato === 'copa_directa') {
+                            iconElement = `
+                                <div class="relative w-8 h-10 flex items-center justify-center">
+                                    <i class="fa-solid fa-trophy text-3xl text-yellow-500 drop-shadow-[0_4px_8px_rgba(234,179,8,0.5)] relative z-10"></i>
+                                    <i class="fa-solid fa-bolt text-xs text-amber-200 absolute z-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></i>
+                                </div>`;
+                        }
 
-                        const countText = group.length > 1 ? `<span class="absolute -bottom-1 -right-1.5 bg-slate-900 text-white text-[9px] font-black px-1.5 py-0.5 rounded border border-slate-700 shadow-md">x${group.length}</span>` : '';
-                        const stackedIcons = `<div class="relative"><i class="${iconClass} text-3xl"></i>${countText}</div>`;
+                        const countText = group.length > 1 ? `<span class="absolute -bottom-1 -right-2 bg-slate-900 text-white text-[9px] font-black px-1.5 py-0.5 rounded border border-slate-700 shadow-lg z-30">x${group.length}</span>` : '';
+                        const stackedIcons = `<div class="relative flex items-center justify-center">${iconElement}${countText}</div>`;
                         
                         const detailsHTML = group.map(t => `<div class="text-[9px] text-indigo-300 truncate w-full text-center">${t.edicion || 'Edición N/D'} • ${t.fecha || ''}</div>`).join('');
 
@@ -3577,8 +3613,19 @@
             const allKnownPlayers = [...(torneo.jugadores || []), ...(appData.jugadoresGlobales || [])];
 
             torneo.partidos.forEach((p, idx) => {
-                const j1 = allKnownPlayers.find(j => j.id === p.j1Id) || { nombre: p.j1Id ? '?' : 'Por definir' };
-                const j2 = allKnownPlayers.find(j => j.id === p.j2Id) || { nombre: p.j2Id ? '?' : 'Por definir' };
+                
+                let effectiveJ1Id = p.j1Id;
+                let effectiveJ2Id = p.j2Id;
+                if (p.isVuelta && p.relMatchId && !p.j1Id && !p.j2Id) {
+                    const idaMatch = torneo.partidos.find(m => m.id === p.relMatchId);
+                    if (idaMatch && (idaMatch.j1Id || idaMatch.j2Id)) {
+                        effectiveJ1Id = idaMatch.j1Id;
+                        effectiveJ2Id = idaMatch.j2Id;
+                    }
+                }
+                
+                const j1 = allKnownPlayers.find(j => j.id === effectiveJ1Id) || { nombre: effectiveJ1Id ? '?' : 'Por definir', foto: 'https://via.placeholder.com/40', equipo: '' };
+                const j2 = allKnownPlayers.find(j => j.id === effectiveJ2Id) || { nombre: effectiveJ2Id ? '?' : 'Por definir', foto: 'https://via.placeholder.com/40', equipo: '' };
 
                 let scoreText = p.jugado ? `${p.g1} - ${p.g2}` : 'Pendiente';
                 if (p.jugado && p.pen1 !== null && p.pen1 !== undefined) {
