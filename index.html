@@ -50,11 +50,9 @@
         .custom-scroll::-webkit-scrollbar-thumb { background: #263359; border-radius: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #6366f1; }
 
-        /* Hide scrollbar for mobile navs but allow scroll */
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Hardware Accelerated Animations for Fluidity */
         @keyframes fadeInOut {
             0% { opacity: 0; transform: translate3d(0, 15px, 0); }
             15% { opacity: 1; transform: translate3d(0, 0, 0); }
@@ -151,7 +149,7 @@
             </div>
         </header>
 
-        <!-- NAVEGACIÓN SUPERIOR CINTA CON DESPLIEGUE ANIMADO -->
+        <!-- NAVEGACIÓN SUPERIOR -->
         <nav class="glass-panel border-b border-slate-800/80 sticky top-[50px] sm:top-[60px] md:top-[65px] z-30 shadow-md w-full">
             <div class="max-w-7xl mx-auto pl-2 pr-6 sm:px-4 flex items-center justify-between sm:justify-start sm:gap-8 text-xs md:text-sm overflow-x-auto hide-scroll whitespace-nowrap">
                 <button onclick="volverAInicioGlobal()" id="tab-btn-inicio" class="py-2.5 sm:py-3 px-2 flex items-center gap-1.5 sm:gap-2 transition text-slate-400 hover:text-indigo-300 tab-active whitespace-nowrap flex-shrink-0">
@@ -182,7 +180,6 @@
             <!-- TAB 1: INICIO -->
             <section id="tab-inicio" class="space-y-6 sm:space-y-8 animate-slide-up" style="animation-delay: 0ms;">
                 
-                <!-- TORNEOS ACTIVOS -->
                 <div class="space-y-4">
                     <div class="flex items-center justify-between border-b border-indigo-500/30 pb-2">
                         <h3 class="text-base sm:text-lg md:text-xl font-black text-white flex items-center gap-2">
@@ -194,7 +191,6 @@
                     <div id="torneos-activos-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </div>
 
-                <!-- COMUNICADOS GENERALES WIDGET -->
                 <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-800 space-y-3 relative overflow-hidden animate-float">
                     <div class="flex items-center justify-between border-b border-slate-800 pb-2">
                         <h4 class="text-xs sm:text-sm font-extrabold text-indigo-300 flex items-center gap-2">
@@ -206,7 +202,6 @@
                     <div id="comunicados-generales-container" class="space-y-2 max-h-36 overflow-y-auto custom-scroll pr-1"></div>
                 </div>
 
-                <!-- SALÓN DE LA FAMA INTEGRADO EN INICIO -->
                 <div class="glass-card rounded-2xl p-4 sm:p-6 border border-slate-800 space-y-4 relative overflow-hidden animate-slide-up" style="animation-delay: 150ms;">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
                         <div>
@@ -226,10 +221,9 @@
                             </select>
                         </div>
                     </div>
-                    <div id="palmares-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"></div>
+                    <div id="palmares-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"></div>
                 </div>
 
-                <!-- HISTORIAL DE TORNEOS PASADOS -->
                 <div class="space-y-4 pt-2 border-t border-slate-800/80 animate-slide-up" style="animation-delay: 200ms;">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <h3 class="text-base sm:text-lg md:text-xl font-bold text-white flex items-center gap-2">
@@ -245,7 +239,7 @@
                 </div>
             </section>
 
-            <!-- TAB 2: COMPETICIÓN (TABLAS Y ÁRBOLES) -->
+            <!-- TAB 2: COMPETICIÓN -->
             <section id="tab-competicion" class="hidden space-y-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3 animate-slide-up">
                     <div>
@@ -255,16 +249,8 @@
                         </h3>
                         <p id="competicion-subtext" class="text-xs text-slate-400">Estado de posiciones y llaves eliminatorias</p>
                     </div>
-
-                    <div class="flex items-center gap-2 flex-wrap self-start sm:self-auto">
-                        <button onclick="compartirTorneoActual()" class="bg-indigo-600/80 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 active:scale-95">
-                            <i class="fa-solid fa-share-nodes"></i>
-                            <span>Compartir</span>
-                        </button>
-                    </div>
                 </div>
 
-                <!-- CONTENEDOR LIGA TRADICIONAL / LIGUILLA -->
                 <div id="wrapper-liga" class="hidden space-y-6 animate-slide-up" style="animation-delay: 50ms;">
                     <div class="glass-card rounded-2xl overflow-hidden shadow-xl border border-slate-800">
                         <div class="p-3 sm:p-4 bg-slate-800/60 border-b border-slate-700/80 font-bold text-slate-200 text-xs sm:text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
@@ -302,7 +288,6 @@
                     </div>
                 </div>
 
-                <!-- CONTENEDOR FASE DE GRUPOS DE COPA -->
                 <div id="wrapper-copa-grupos-tablas" class="hidden space-y-4 animate-slide-up" style="animation-delay: 100ms;">
                     <div class="flex items-center gap-2 border-b border-indigo-500/30 pb-2">
                         <i class="fa-solid fa-layer-group text-amber-400 text-sm"></i>
@@ -311,7 +296,6 @@
                     <div id="copa-grupos-tables-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </div>
 
-                <!-- CONTENEDOR ÁRBOL DE ELIMINATORIAS (COPAS / LIGUILLA) -->
                 <div id="wrapper-copa" class="hidden space-y-4 animate-slide-up" style="animation-delay: 150ms;">
                     <div id="copa-grafico-container" class="glass-card rounded-2xl p-3 sm:p-6 border border-slate-800/80 overflow-x-auto custom-scroll w-full">
                         <div id="brackets-tree-canvas" class="w-full flex flex-row items-stretch justify-start gap-3 sm:gap-5 py-4 min-w-max mx-auto"></div>
@@ -414,7 +398,7 @@
                 Torneos Organizados Oficialmente por la <strong class="text-white font-black tracking-wide">Liga Soriana CVNL E-Sports</strong>
             </div>
         </div>
-        <span class="absolute right-3 bottom-1.5 text-[9px] font-mono text-indigo-400/80 select-none pointer-events-none">v14.0.0</span>
+        <span class="absolute right-3 bottom-1.5 text-[9px] font-mono text-indigo-400/80 select-none pointer-events-none">v15.0.0</span>
     </footer>
 
     <!-- BARRA NAVEGACIÓN MÓVIL -->
@@ -443,7 +427,7 @@
         <span id="toast-message">Notificación</span>
     </div>
 
-    <!-- VENTANA MODAL PERSONALIZADA DE CONFIRMACIÓN -->
+    <!-- VENTANA MODAL CONFIRMACIÓN -->
     <div id="custom-confirm-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[90] flex items-center justify-center p-3 hidden">
         <div class="glass-panel bg-slate-900 rounded-2xl w-full max-w-sm p-5 space-y-4 border border-slate-700 shadow-2xl text-center animate-slide-up">
             <div class="w-12 h-12 rounded-full bg-indigo-600/20 text-indigo-400 border border-indigo-500/40 flex items-center justify-center mx-auto text-xl">
@@ -490,7 +474,7 @@
         </div>
     </div>
 
-    <!-- MODAL REGISTRO DE MARCADOR Y PENALTIS -->
+    <!-- MODAL REGISTRO DE MARCADOR -->
     <div id="score-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[80] flex items-center justify-center p-3 sm:p-4 hidden">
         <div class="glass-panel bg-slate-900 rounded-2xl w-full max-w-md p-5 space-y-4 border border-slate-700 shadow-2xl animate-slide-up">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -596,7 +580,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE ADMINISTRACIÓN UNIFICADO Y CONTEXTUAL -->
+    <!-- MODAL ADMIN -->
     <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 hidden">
         <div class="glass-panel bg-slate-900/95 rounded-2xl w-full max-w-3xl max-h-[85dvh] sm:max-h-[85vh] flex flex-col overflow-hidden min-h-0 border border-slate-700 shadow-2xl animate-slide-up">
             <div class="p-3 sm:p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/80 flex-shrink-0">
@@ -971,9 +955,7 @@
                 </h4>
                 <button onclick="cerrarGestionPalmares()" class="text-slate-400 hover:text-white text-xl font-bold active:scale-95 transition">&times;</button>
             </div>
-            <div id="manage-palmares-list" class="space-y-2 max-h-60 overflow-y-auto custom-scroll pr-1">
-                <!-- Content injected here -->
-            </div>
+            <div id="manage-palmares-list" class="space-y-2 max-h-60 overflow-y-auto custom-scroll pr-1"></div>
         </div>
     </div>
     
@@ -1087,7 +1069,6 @@
         let adminContextMode = "global";
         let inscritosTemporalesCreacion = [];
 
-        // UTILIDAD: PROCESAMIENTO DE IMÁGENES
         function processImageFile(file, maxWidth = 400, maxHeight = 400) {
             return new Promise((resolve) => {
                 if (!file) { resolve(null); return; }
@@ -1196,59 +1177,39 @@
         function getActiveTorneo() {
             if (!appData.activeTorneoId) return null;
             const torneo = appData.torneos.find(t => t.id === appData.activeTorneoId) || null;
-            if (torneo) {
-                asegurarEstructuraArbolCopa(torneo);
-            }
             return torneo;
-        }
-
-        function asegurarEstructuraArbolCopa(torneo) {
-            if (!torneo || !torneo.formato || !torneo.formato.includes('copa')) return;
-            if (!torneo.partidos || torneo.partidos.length === 0) return;
-            propagarGanadoresCopa(torneo);
-        }
-
-        function propagarGanadoresCopa(torneo) {
-            if (!torneo || !torneo.partidos) return;
-
-            torneo.partidos.forEach(p => {
-                if (p.jugado && p.nextMatchId) {
-                    let ganadorId = null;
-                    if (p.g1 > p.g2) ganadorId = p.j1Id;
-                    else if (p.g2 > p.g1) ganadorId = p.j2Id;
-                    else if (p.pen1 !== null && p.pen2 !== null) {
-                        ganadorId = p.pen1 > p.pen2 ? p.j1Id : p.j2Id;
-                    }
-
-                    if (ganadorId) {
-                        const targetMatch = torneo.partidos.find(m => m.id === p.nextMatchId);
-                        if (targetMatch) {
-                            if (p.nextSlot === 'j1') targetMatch.j1Id = ganadorId;
-                            else if (p.nextSlot === 'j2') targetMatch.j2Id = ganadorId;
-                        }
-                    }
-                }
-            });
         }
 
         function resolverByesPrimeraRonda(torneo, firstRoundMatches) {
             firstRoundMatches.forEach(match => {
-                if (match.j1Id && !match.j2Id) {
+                const isBye = (match.j1Id && !match.j2Id) || (!match.j1Id && match.j2Id);
+                if (isBye) {
+                    const winnerId = match.j1Id || match.j2Id;
                     match.jugado = true; match.g1 = 0; match.g2 = 0; match.bye = true;
-                    if (match.nextMatchId) {
-                        const nextMatch = torneo.partidos.find(p => p.id === match.nextMatchId);
-                        if (nextMatch) {
-                            if (match.nextSlot === 'j1') nextMatch.j1Id = match.j1Id;
-                            else if (match.nextSlot === 'j2') nextMatch.j2Id = match.j1Id;
+                    
+                    let advanceMatch = match;
+                    if (match.vueltaMatchId) {
+                        const vMatch = torneo.partidos.find(x => x.id === match.vueltaMatchId);
+                        if (vMatch) {
+                            vMatch.j1Id = match.j1Id; vMatch.j2Id = match.j2Id;
+                            vMatch.jugado = true; vMatch.g1 = 0; vMatch.g2 = 0; vMatch.bye = true;
+                            advanceMatch = vMatch; 
                         }
                     }
-                } else if (!match.j1Id && match.j2Id) {
-                    match.jugado = true; match.g1 = 0; match.g2 = 0; match.bye = true;
-                    if (match.nextMatchId) {
-                        const nextMatch = torneo.partidos.find(p => p.id === match.nextMatchId);
-                        if (nextMatch) {
-                            if (match.nextSlot === 'j1') nextMatch.j1Id = match.j2Id;
-                            else if (match.nextSlot === 'j2') nextMatch.j2Id = match.j2Id;
+
+                    if (advanceMatch.nextMatchId) {
+                        const nextM = torneo.partidos.find(p => p.id === advanceMatch.nextMatchId);
+                        if (nextM) {
+                            if (advanceMatch.nextSlot === 'j1') nextM.j1Id = winnerId;
+                            else if (advanceMatch.nextSlot === 'j2') nextM.j2Id = winnerId;
+
+                            if (nextM.vueltaMatchId) {
+                                 const nVMatch = torneo.partidos.find(x => x.id === nextM.vueltaMatchId);
+                                 if (nVMatch) {
+                                     if (advanceMatch.nextSlot === 'j1') nVMatch.j1Id = winnerId;
+                                     else if (advanceMatch.nextSlot === 'j2') nVMatch.j2Id = winnerId;
+                                 }
+                            }
                         }
                     }
                 }
@@ -1309,7 +1270,6 @@
             const activeBtn = document.getElementById('tab-btn-' + tabId);
             if (activeSec) {
                 activeSec.classList.remove('hidden');
-                // Trigger reflow to restart animation
                 void activeSec.offsetWidth;
                 activeSec.classList.add('animate-slide-up');
             }
@@ -1596,13 +1556,16 @@
 
             const ok = await customConfirm(`¿Estás seguro de eliminar el torneo "${torneo.nombre}"? Esta acción no se puede deshacer.`, "Eliminar Torneo", "fa-trash");
             if (ok) {
+                // Eliminar títulos del Palmarés vinculados a este torneo
+                appData.palmares = appData.palmares.filter(p => !(p.torneo === torneo.nombre && p.edicion === torneo.edicion));
+                
                 appData.torneos = appData.torneos.filter(t => t.id !== id);
                 if (appData.activeTorneoId === id) {
                     volverAInicioGlobal();
                 } else {
                     saveData();
                 }
-                showToast("Torneo eliminado.", "success");
+                showToast("Torneo eliminado exitosamente.", "success");
             }
         }
 
@@ -1610,7 +1573,6 @@
             if (appData.activeTorneoId) eliminarTorneoEspecifico(appData.activeTorneoId);
         }
 
-        // SECCIÓN COMPETICIÓN CON MANEJO COMPLETO DE GRUPOS, LIGAS Y ÁRBOLES
         function renderCompeticionSection() {
             const torneo = getActiveTorneo();
             const wrapperLiga = document.getElementById('wrapper-liga');
@@ -1658,7 +1620,6 @@
                 verificarYEjecutarSorteoGrupos(torneo);
                 renderBracketsTree();
             } else {
-                // COPA SIN FASE DE GRUPOS (FA CUP)
                 wrapperLiga.classList.add('hidden');
                 wrapperCopaGrupos.classList.add('hidden');
                 wrapperCopa.classList.remove('hidden');
@@ -1668,7 +1629,6 @@
             }
         }
 
-        // RENDER DE TABLAS DE FASE DE GRUPOS CON CLASIFICACIÓN DE LOS DOS PRIMEROS LUGAR
         function renderTablasFaseDeGrupos(torneo) {
             const gridContainer = document.getElementById('copa-grupos-tables-grid');
             if (!gridContainer) return;
@@ -1713,7 +1673,7 @@
                 card.style.animationDelay = `${gIdx * 50}ms`;
                 
                 let rowsHTML = sorted.map((s, idx) => {
-                    const isClasificado = idx < 2; // Clasifican los dos primeros lugares
+                    const isClasificado = idx < 2; // Clasifican los dos primeros
                     return `
                         <tr class="${isClasificado ? 'bg-emerald-950/20 border-l-4 border-l-emerald-500' : 'hover:bg-slate-800/40'} border-b border-slate-800/40 transition text-xs">
                             <td class="p-2 text-center font-bold ${isClasificado ? 'text-emerald-400' : 'text-slate-400'}">${idx + 1}</td>
@@ -1756,7 +1716,6 @@
             });
         }
 
-        // SORTEO INVISIBLE Y AUTOMÁTICO TRAS CONCLUIR FASE DE GRUPOS (BOMBOS A Y B)
         function verificarYEjecutarSorteoGrupos(torneo) {
             if (!torneo || !torneo.partidos) return;
 
@@ -1766,14 +1725,12 @@
             const todosGruposJugados = partidosGrupos.every(p => p.jugado);
             if (!todosGruposJugados) return;
 
-            // Verificar si la primera ronda eliminatoria ya fue sorteada
-            const primerCruceElim = torneo.partidos.find(p => !p.fase.startsWith('Grupo') && p.j1Id !== null);
-            if (primerCruceElim) return;
+            const partidosEliminatoriaInicial = torneo.partidos.filter(p => !p.fase.startsWith('Grupo') && (p.fase.includes('Cuartos') || p.fase.includes('Octavos') || p.fase.includes('Semifinales')));
+            if(partidosEliminatoriaInicial.length > 0 && partidosEliminatoriaInicial[0].j1Id !== null) return;
 
-            // Calcular tablas de cada grupo para extraer los bombos
             const gruposNombres = [...new Set(partidosGrupos.map(p => p.fase.split(' - ')[0]))];
-            let bomboA = []; // 1.º lugares
-            let bomboB = []; // 2.º lugares
+            let bomboA = [];
+            let bomboB = []; 
 
             gruposNombres.forEach(grupoFase => {
                 const partidosDelGrupo = partidosGrupos.filter(p => p.fase.startsWith(grupoFase));
@@ -1798,19 +1755,20 @@
                 if (sortedGrupo[1]) bomboB.push(sortedGrupo[1].id);
             });
 
-            // Sorteo imparcial: mezclar Bombo B
             bomboB.sort(() => Math.random() - 0.5);
-
-            // Asignar cruces en la primera ronda eliminatoria
-            const partidosEliminatoriaInicial = torneo.partidos.filter(p => !p.fase.startsWith('Grupo') && (p.fase.includes('Cuartos') || p.fase.includes('Octavos') || p.fase.includes('Semifinales')));
             
             let pairIdx = 0;
             for (let i = 0; i < partidosEliminatoriaInicial.length && pairIdx < bomboA.length; i++) {
                 const match = partidosEliminatoriaInicial[i];
-                if (match.fase.endsWith('Vuelta')) continue; // Saltar partidos de Vuelta
+                if (match.fase.endsWith('Vuelta')) continue; 
 
                 match.j1Id = bomboA[pairIdx];
                 match.j2Id = bomboB[pairIdx];
+
+                if (match.vueltaMatchId) {
+                    const vMatch = torneo.partidos.find(x => x.id === match.vueltaMatchId);
+                    if (vMatch) { vMatch.j1Id = match.j1Id; vMatch.j2Id = match.j2Id; }
+                }
                 pairIdx++;
             }
 
@@ -1944,16 +1902,43 @@
             const j1 = allKnownPlayers.find(j => j.id === p.j1Id) || (p.j1Id ? { nombre: "Jugador Registrado", foto: "https://via.placeholder.com/30" } : null);
             const j2 = allKnownPlayers.find(j => j.id === p.j2Id) || (p.j2Id ? { nombre: "Jugador Registrado", foto: "https://via.placeholder.com/30" } : null);
 
+            let scoreStr1 = p.jugado ? p.g1 : '-';
+            let scoreStr2 = p.jugado ? p.g2 : '-';
+            
+            let p1Global = p.g1;
+            let p2Global = p.g2;
+
+            if (p.idaMatchId && p.jugado) {
+                const matchIda = torneo.partidos.find(x => x.id === p.idaMatchId);
+                if (matchIda && matchIda.jugado) {
+                    p1Global += matchIda.g1;
+                    p2Global += matchIda.g2;
+                    scoreStr1 = `${p.g1} <span class="text-slate-500 font-normal text-[8px] sm:text-[9px] block -mt-1">Glb: ${p1Global}</span>`;
+                    scoreStr2 = `${p.g2} <span class="text-slate-500 font-normal text-[8px] sm:text-[9px] block -mt-1">Glb: ${p2Global}</span>`;
+                }
+            }
+
             let penText1 = p.pen1 !== null && p.pen1 !== undefined ? ` (${p.pen1})` : '';
             let penText2 = p.pen2 !== null && p.pen2 !== undefined ? ` (${p.pen2})` : '';
 
-            const j1Gana = p.jugado && (p.g1 > p.g2 || (p.g1 === p.g2 && p.pen1 > p.pen2));
-            const j2Gana = p.jugado && (p.g2 > p.g1 || (p.g1 === p.g2 && p.pen2 > p.pen1));
+            // Calc winner based on global stats for coloring
+            let j1Gana = false;
+            let j2Gana = false;
+
+            if (p.jugado) {
+                if (p.idaMatchId) {
+                    if (p1Global > p2Global || (p1Global === p2Global && p.pen1 > p.pen2)) j1Gana = true;
+                    if (p2Global > p1Global || (p1Global === p2Global && p.pen2 > p.pen1)) j2Gana = true;
+                } else if (!p.vueltaMatchId) {
+                    if (p.g1 > p.g2 || (p.g1 === p.g2 && p.pen1 > p.pen2)) j1Gana = true;
+                    if (p.g2 > p.g1 || (p.g1 === p.g2 && p.pen2 > p.pen1)) j2Gana = true;
+                }
+            }
 
             const matchBox = document.createElement('div');
             matchBox.className = `glass-card p-1.5 sm:p-2 rounded-xl border space-y-1 shadow-md relative w-full ${isFinal ? 'border-amber-500/50 bg-gradient-to-r from-amber-950/20 via-slate-900 to-indigo-950/30' : 'border-slate-700/70'}`;
             
-            const renderSlot = (jugador, isWinner, score) => {
+            const renderSlot = (jugador, isWinner, rawScore, penText) => {
                 if (!jugador) {
                     return `
                         <div class="flex items-center justify-between text-[9px] sm:text-[10px] p-1 sm:p-1.5 rounded-lg bg-slate-800/30 border border-dashed border-slate-700/60 text-slate-500 italic">
@@ -1968,14 +1953,17 @@
                             <img src="${jugador.foto || 'https://via.placeholder.com/30'}" class="w-4 h-4 sm:w-5 sm:h-5 rounded-full object-cover border border-slate-600 flex-shrink-0">
                             <span class="truncate max-w-[80px] sm:max-w-[110px]">${jugador.nombre}</span>
                         </div>
-                        <span class="font-black ${isWinner ? 'text-amber-300' : 'text-slate-400'} flex-shrink-0 ml-1">${p.jugado ? score : '-'}</span>
+                        <div class="text-right flex-shrink-0 ml-1">
+                            <span class="font-black ${isWinner ? 'text-amber-300' : 'text-slate-400'}">${rawScore}</span>
+                            <span class="text-amber-300/80">${penText}</span>
+                        </div>
                     </div>
                 `;
             };
 
             matchBox.innerHTML = `
-                ${renderSlot(j1, j1Gana, p.g1 + penText1)}
-                ${renderSlot(j2, j2Gana, p.g2 + penText2)}
+                ${renderSlot(j1, j1Gana, scoreStr1, penText1)}
+                ${renderSlot(j2, j2Gana, scoreStr2, penText2)}
 
                 ${isAdminLoggedIn ? `
                     <div class="pt-1.5 flex justify-end gap-1 border-t border-slate-800/60 text-[10px]">
@@ -2174,18 +2162,53 @@
             const j2 = allKnownPlayers.find(j => j.id === match.j2Id) || { id: match.j2Id, nombre: 'J2' };
 
             let ganadorObj = null;
+            let isIda = match.fase.endsWith(' - Ida');
+            
+            let g1Global = g1;
+            let g2Global = g2;
+            
+            if (match.idaMatchId) {
+                const matchIda = torneo.partidos.find(p => p.id === match.idaMatchId);
+                if (matchIda && matchIda.jugado) {
+                    g1Global += matchIda.g1;
+                    g2Global += matchIda.g2;
+                }
+            }
 
-            if (g1 === g2 && (torneo.formato.includes('copa') || match.fase.toLowerCase().includes('final') || usaPenaltis)) {
+            let requiresWinner = false;
+            if (torneo.formato.includes('copa') || match.fase.toLowerCase().includes('final') || match.fase.toLowerCase().includes('cuartos') || match.fase.toLowerCase().includes('octavos') || match.fase.toLowerCase().includes('semifinal') || match.fase.toLowerCase().includes('dieciseisavos')) {
+                requiresWinner = true;
+            }
+            if (isIda) requiresWinner = false;
+
+            // Restablecimiento a 0-0 de partidos para corregir errores
+            if (g1 === 0 && g2 === 0 && !usaPenaltis && requiresWinner) {
+                match.jugado = false;
+                match.g1 = null; match.g2 = null; match.pen1 = null; match.pen2 = null;
+                if (match.nextMatchId) {
+                    const n = torneo.partidos.find(p => p.id === match.nextMatchId);
+                    if (n) {
+                        if (match.nextSlot === 'j1') n.j1Id = null; else n.j2Id = null;
+                        if (n.vueltaMatchId) {
+                             const nv = torneo.partidos.find(x => x.id === n.vueltaMatchId);
+                             if (nv) { if (match.nextSlot === 'j1') nv.j1Id = null; else nv.j2Id = null; }
+                        }
+                    }
+                }
+                saveData();
+                cerrarModalMarcador();
+                return showToast("Resultado deshecho y devuelto a Pendiente.", "success");
+            }
+
+            if (g1Global === g2Global && requiresWinner) {
                 if (!usaPenaltis) {
-                    return showToast("En partidos eliminatorios empatados debes activar la opción de penaltis.", "error");
+                    return showToast("En eliminatorias el marcador global está empatado. Activa la opción de penaltis.", "error");
                 }
                 const pen1 = parseInt(document.getElementById('score-pen1-input').value) || 0;
                 const pen2 = parseInt(document.getElementById('score-pen2-input').value) || 0;
-
-                if (pen1 === pen2) {
-                    return showToast("El marcador de penaltis no puede quedar empatado.", "error");
-                }
-
+                
+                if (pen1 === pen2) return showToast("El marcador de penaltis no puede quedar empatado.", "error");
+                
                 match.pen1 = pen1;
                 match.pen2 = pen2;
                 ganadorObj = pen1 > pen2 ? j1 : j2;
@@ -2193,9 +2216,11 @@
                 match.pen1 = usaPenaltis ? (parseInt(document.getElementById('score-pen1-input').value) || 0) : null;
                 match.pen2 = usaPenaltis ? (parseInt(document.getElementById('score-pen2-input').value) || 0) : null;
                 
-                if (g1 > g2) ganadorObj = j1;
-                else if (g2 > g1) ganadorObj = j2;
+                if (g1Global > g2Global) ganadorObj = j1;
+                else if (g2Global > g1Global) ganadorObj = j2;
             }
+
+            if (isIda) ganadorObj = null;
 
             match.g1 = g1;
             match.g2 = g2;
@@ -2206,41 +2231,25 @@
                 if (nextMatch) {
                     if (match.nextSlot === 'j1') nextMatch.j1Id = ganadorObj.id;
                     else if (match.nextSlot === 'j2') nextMatch.j2Id = ganadorObj.id;
-
+                    
                     nextMatch.jugado = false;
                     nextMatch.g1 = null; nextMatch.g2 = null;
                     nextMatch.pen1 = null; nextMatch.pen2 = null;
 
-                    showToast(`¡${ganadorObj.nombre} avanza a ${nextMatch.fase}!`, "success");
-                }
-            }
+                    if (nextMatch.vueltaMatchId) {
+                        const vMatch = torneo.partidos.find(x => x.id === nextMatch.vueltaMatchId);
+                        if (vMatch) {
+                            if (match.nextSlot === 'j1') vMatch.j1Id = ganadorObj.id;
+                            else if (match.nextSlot === 'j2') vMatch.j2Id = ganadorObj.id;
+                        }
+                    }
 
-            if (match.fase.toLowerCase() === 'gran final' && ganadorObj) {
-                let scoreStr = `${g1}-${g2}`;
-                if (match.pen1 !== null && match.pen2 !== null) {
-                    scoreStr += ` (${match.pen1}-${match.pen2} pen.)`;
-                }
-
-                AudioFX.playWin();
-                const yaRegistrado = appData.palmares.some(p => p.torneo === torneo.nombre && p.edicion === torneo.edicion);
-                if (!yaRegistrado) {
-                    appData.palmares.push({
-                        id: Date.now(),
-                        jugador: ganadorObj.nombre,
-                        tipo: torneo.formato.includes('liga') ? 'Liga' : 'Copa',
-                        torneo: torneo.nombre,
-                        edicion: torneo.edicion,
-                        marcador: scoreStr,
-                        fecha: new Date().toISOString().split('T')[0]
-                    });
-                    setTimeout(() => {
-                        showToast(`🏆 ¡Felicidades a ${ganadorObj.nombre}! Se ha coronado Campeón de la ${torneo.nombre}.`, "success");
-                    }, 3500);
+                    showToast(`¡${ganadorObj.nombre} avanza a ${nextMatch.fase.replace(' - Ida', '')}!`, "success");
                 }
             }
 
             verificarAvanceTorneo(torneo);
-            torneo.isSimulated = false; // Manual intervention
+            torneo.isSimulated = false;
 
             saveData();
             cerrarModalMarcador();
@@ -2442,7 +2451,7 @@
             });
         }
 
-                function togglePalmaresAdminMenu(event, safeName) {
+        function togglePalmaresAdminMenu(event, safeName) {
             AudioFX.playClick();
             event.stopPropagation();
             const safeId = safeName.replace(/\s+/g, '-');
@@ -2523,6 +2532,24 @@
             });
         }
         
+        const goldenIcons = [
+            'fa-trophy',
+            'fa-award',
+            'fa-crown',
+            'fa-medal', 
+            'fa-star',
+            'fa-shield'
+        ];
+
+        function getGoldenIconForTournament(name) {
+            let hash = 0;
+            for(let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const index = Math.abs(hash) % goldenIcons.length;
+            return 'fa-solid ' + goldenIcons[index] + ' text-amber-400 drop-shadow-[0_2px_5px_rgba(251,191,36,0.6)]';
+        }
+
         function renderPalmares() {
             const grid = document.getElementById('palmares-grid');
             if (!grid) return;
@@ -2549,7 +2576,6 @@
                     }
                 });
 
-                // Get Avatar
                 let avatar = 'https://via.placeholder.com/40';
                 const jGlobal = (appData.jugadoresGlobales || []).find(j => j.nombre === jugadorName);
                 if (jGlobal && jGlobal.foto) avatar = jGlobal.foto;
@@ -2624,23 +2650,25 @@
 
                     trophiesHTML = `<div class="grid grid-cols-2 gap-3 w-full">` + Object.keys(groups).map(torneoName => {
                         const group = groups[torneoName];
-                        const fullTorneo = (appData.torneos || []).find(tr => tr.nombre === torneoName);
-                        const formato = fullTorneo ? fullTorneo.formato : (group[0].tipo === 'Liga' ? 'liga_tradicional' : 'copa_directa');
+                        const countWin = group.length;
+                        const iconClass = getGoldenIconForTournament(torneoName);
                         
-                        let iconClass = 'fa-solid fa-trophy text-amber-400';
-                        if (formato === 'liga_tradicional') iconClass = 'fa-solid fa-shield-halved text-slate-300';
-                        else if (formato === 'liga_liguilla') iconClass = 'fa-solid fa-trophy text-amber-400';
-                        else if (formato === 'copa_grupos') iconClass = 'fa-solid fa-trophy text-yellow-500';
-                        else if (formato === 'copa_directa') iconClass = 'fa-solid fa-medal text-slate-300';
+                        let badgeHTML = '';
+                        if (countWin > 1) {
+                            badgeHTML = `<div class="absolute -bottom-1 -right-2 bg-amber-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full border border-amber-300 shadow-md">x${countWin}</div>`;
+                        }
 
-                        const stackedIcons = group.map((_, i) => `<i class="${iconClass} text-3xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] ${i > 0 ? '-ml-4' : ''} relative z-[${10-i}]"></i>`).join('');
-                        
-                        const detailsHTML = group.map(t => `<div class="text-[9px] text-indigo-300 truncate w-full text-center">${t.edicion || 'Edición N/D'} • ${t.fecha || ''}</div>`).join('');
+                        const detailsHTML = group.map(t => `<div class="text-[9px] text-indigo-300 truncate w-full text-center">${t.edicion || 'Edición N/D'}</div>`).join('');
 
                         return `
                             <div class="flex flex-col items-center justify-start p-2.5 bg-slate-800/40 rounded-xl border border-slate-700/50 hover:bg-slate-800/60 transition">
-                                <div class="flex justify-center items-end mb-2 h-10 w-full overflow-hidden px-2">${stackedIcons}</div>
-                                <div class="text-[10px] text-center text-slate-200 font-bold leading-tight mb-1 line-clamp-2">Ganador de ${torneoName}</div>
+                                <div class="flex justify-center items-end mb-2 h-10 w-full overflow-hidden px-2 pt-1">
+                                    <div class="relative inline-block">
+                                        <i class="${iconClass} text-4xl relative z-10"></i>
+                                        ${badgeHTML}
+                                    </div>
+                                </div>
+                                <div class="text-[10px] text-center text-slate-200 font-bold leading-tight mb-1 line-clamp-2">${torneoName}</div>
                                 <div class="flex flex-col gap-0.5 w-full items-center">${detailsHTML}</div>
                             </div>
                         `;
@@ -2683,7 +2711,6 @@
             });
         }
 
-        // CONTROL CONTEXTUAL DE NAVEGACIÓN EN MODO ADMIN
         function openAdminModalContextual() {
             if (appData.activeTorneoId !== null) {
                 adminContextMode = "torneo";
@@ -2896,6 +2923,17 @@
             renderCrearPlayersChecklist();
         }
 
+        // FUNCIÓN INYECTADA PARA BOTÓN INSCRIBIR TODOS - CREAR TORNEO
+        function toggleTodosCrear() {
+            AudioFX.playClick();
+            if (inscritosTemporalesCreacion.length === (appData.jugadoresGlobales || []).length) {
+                inscritosTemporalesCreacion = [];
+            } else {
+                inscritosTemporalesCreacion = (appData.jugadoresGlobales || []).map(j => j.id);
+            }
+            renderCrearPlayersChecklist();
+        }
+
         function renderCrearPlayersChecklist() {
             const container = document.getElementById('crear-players-checklist');
             container.innerHTML = '';
@@ -3010,6 +3048,22 @@
             renderEditPlayersChecklist();
         }
 
+        // FUNCIÓN INYECTADA PARA BOTÓN INSCRIBIR TODOS - EDITAR TORNEO
+        function toggleTodosEdit() {
+            AudioFX.playClick();
+            const torneo = getActiveTorneo();
+            if (!torneo) return;
+            if (!torneo.jugadores) torneo.jugadores = [];
+            
+            if (torneo.jugadores.length === (appData.jugadoresGlobales || []).length) {
+                torneo.jugadores = [];
+            } else {
+                torneo.jugadores = JSON.parse(JSON.stringify(appData.jugadoresGlobales || []));
+            }
+            saveData();
+            renderEditPlayersChecklist();
+        }
+
         function renderEditPlayersChecklist() {
             const container = document.getElementById('edit-players-checklist');
             if (!container) return;
@@ -3035,955 +3089,4 @@
                         <img src="${j.foto || 'https://via.placeholder.com/30'}" class="w-6 h-6 rounded-full object-cover">
                         <span class="font-bold text-white truncate">${j.nombre}</span>
                     </div>
-                    <button onclick="toggleInscripcionJugadorEdit(${j.id})" class="px-2.5 py-1 rounded text-[10px] font-bold transition active:scale-95 ${isInscrito ? 'bg-rose-600/80 text-white' : 'bg-emerald-600/80 text-white'}">
-                        ${isInscrito ? 'Rescindir' : 'Inscribir'}
-                    </button>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function toggleInscripcionJugadorEdit(jugadorId) {
-            AudioFX.playClick();
-            const torneo = getActiveTorneo();
-            if (!torneo) return;
-
-            if (!torneo.jugadores) torneo.jugadores = [];
-            const idx = torneo.jugadores.findIndex(j => j.id === jugadorId);
-
-            if (idx >= 0) {
-                torneo.jugadores.splice(idx, 1);
-                showToast("Jugador rescindido del torneo.");
-            } else {
-                const p = appData.jugadoresGlobales.find(j => j.id === jugadorId);
-                if (p) {
-                    torneo.jugadores.push({ ...p });
-                    showToast("Jugador inscrito al torneo.");
-                }
-            }
-
-            saveData();
-            renderEditPlayersChecklist();
-        }
-
-        async function guardarCambiosTorneoEditado() {
-            const torneo = getActiveTorneo();
-            if (!torneo) return;
-
-            torneo.nombre = document.getElementById('edit-nombre').value.trim() || torneo.nombre;
-            torneo.edicion = document.getElementById('edit-edicion').value.trim() || torneo.edicion;
-            
-            const fileInput = document.getElementById('edit-logo');
-            if (fileInput.files && fileInput.files[0]) {
-                const newLogo = await processImageFile(fileInput.files[0], 256, 256);
-                if (newLogo) torneo.logo = newLogo;
-            }
-
-            torneo.estado = document.getElementById('edit-estado').value;
-            torneo.formato = document.getElementById('edit-formato').value;
-            torneo.vueltas = document.getElementById('edit-vueltas').value;
-            torneo.modoLlaves = document.getElementById('edit-modo-llaves').value;
-            torneo.fechaInicio = document.getElementById('edit-inicio').value;
-            torneo.fechaFin = document.getElementById('edit-fin').value;
-
-            saveData();
-            showToast("Cambios guardados correctamente.", "success");
-        }
-
-        function loadAdminFixtureData() {
-            const torneo = getActiveTorneo();
-            if (!torneo) return;
-
-            const j1Sel = document.getElementById('add-match-j1');
-            const j2Sel = document.getElementById('add-match-j2');
-            j1Sel.innerHTML = ''; j2Sel.innerHTML = '';
-
-            (torneo.jugadores || []).forEach(j => {
-                j1Sel.innerHTML += `<option value="${j.id}">${j.nombre}</option>`;
-                j2Sel.innerHTML += `<option value="${j.id}">${j.nombre}</option>`;
-            });
-
-            populateAdminMatchFasesDropdown(torneo);
-            renderAdminPartidosList();
-        }
-
-        function publicarComunicadoGeneral() {
-            const txt = document.getElementById('add-comunicado-gen-texto').value.trim();
-            if (!txt) return;
-
-            if (!appData.comunicadosGenerales) appData.comunicadosGenerales = [];
-
-            appData.comunicadosGenerales.push({
-                id: Date.now(),
-                texto: txt,
-                fecha: new Date().toLocaleDateString('es-MX')
-            });
-
-            document.getElementById('add-comunicado-gen-texto').value = '';
-            saveData();
-            renderAdminComunicadosGenList();
-            showToast("Aviso general publicado.", "success");
-        }
-
-        function renderAdminComunicadosGenList() {
-            const list = document.getElementById('admin-lista-comunicados-gen');
-            if (!list) return;
-            list.innerHTML = '';
-
-            (appData.comunicadosGenerales || []).forEach(c => {
-                list.innerHTML += `
-                    <div class="flex items-center justify-between bg-slate-800 p-2 rounded-lg text-xs transition">
-                        <span class="text-slate-200 truncate max-w-[80%]">${c.texto}</span>
-                        <button onclick="borrarComunicadoGeneral(${c.id})" class="text-rose-400 font-bold active:scale-95 transition"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                `;
-            });
-        }
-
-        function borrarComunicadoGeneral(id) {
-            appData.comunicadosGenerales = (appData.comunicadosGenerales || []).filter(c => c.id !== id);
-            saveData();
-            renderAdminComunicadosGenList();
-            showToast("Aviso eliminado.");
-        }
-
-        function publicarComunicadoTorneo() {
-            const torneo = getActiveTorneo();
-            if (!torneo) return showToast("Abre un torneo primero.", "error");
-
-            const txt = document.getElementById('add-comunicado-torneo-texto').value.trim();
-            if (!txt) return;
-
-            if (!torneo.comunicados) torneo.comunicados = [];
-
-            torneo.comunicados.push({
-                id: Date.now(),
-                texto: txt,
-                fecha: new Date().toLocaleString('es-MX'),
-                tipo: 'manual'
-            });
-
-            document.getElementById('add-comunicado-torneo-texto').value = '';
-            saveData();
-            renderAdminComunicadosTorneoList();
-            showToast("Comunicado del torneo publicado.", "success");
-        }
-
-        function renderAdminComunicadosTorneoList() {
-            const torneo = getActiveTorneo();
-            const list = document.getElementById('admin-lista-comunicados-torneo');
-            if (!list) return;
-            list.innerHTML = '';
-            if (!torneo || !torneo.comunicados) return;
-
-            torneo.comunicados.forEach(c => {
-                list.innerHTML += `
-                    <div class="flex items-center justify-between bg-slate-800 p-2 rounded-lg text-xs transition">
-                        <span class="text-slate-200 truncate max-w-[80%]">${c.texto}</span>
-                        <button onclick="borrarComunicadoTorneo(${c.id})" class="text-rose-400 font-bold active:scale-95 transition"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                `;
-            });
-        }
-
-        function borrarComunicadoTorneo(id) {
-            const torneo = getActiveTorneo();
-            if (!torneo) return;
-            torneo.comunicados = torneo.comunicados.filter(c => c.id !== id);
-            saveData();
-            renderAdminComunicadosTorneoList();
-            showToast("Comunicado eliminado.");
-        }
-
-        async function agregarJugadorGlobal() {
-            if ((appData.jugadoresGlobales || []).length >= 32) {
-                return showToast("Se ha alcanzado el límite máximo de 32 jugadores en el Banco de Jugadores.", "error");
-            }
-
-            const nom = document.getElementById('add-jugador-nombre').value.trim();
-            const eq = document.getElementById('add-jugador-equipo').value.trim();
-            const fileInput = document.getElementById('add-jugador-file');
-
-            if (!nom) return showToast("Ingresa el nombre del jugador.", "error");
-
-            const nomExiste = appData.jugadoresGlobales.some(j => j.nombre.toLowerCase() === nom.toLowerCase());
-            if (nomExiste) return showToast(`El jugador "${nom}" ya existe.`, "error");
-
-            let finalPhotoUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(nom)}`;
-            if (fileInput.files && fileInput.files[0]) {
-                const processed = await processImageFile(fileInput.files[0], 150, 150);
-                if (processed) finalPhotoUrl = processed;
-            }
-
-            const newPlayer = { id: Date.now(), nombre: nom, equipo: eq, foto: finalPhotoUrl };
-            appData.jugadoresGlobales.push(newPlayer);
-            
-            document.getElementById('add-jugador-nombre').value = '';
-            document.getElementById('add-jugador-equipo').value = '';
-            document.getElementById('add-jugador-file').value = '';
-
-            saveData();
-            renderAdminJugadoresGlobalesList();
-            populateAdminPalmaresDropdowns();
-            showToast("Jugador registrado.", "success");
-        }
-
-        function renderAdminJugadoresGlobalesList() {
-            const list = document.getElementById('admin-lista-jugadores-globales');
-            const badge = document.getElementById('global-players-count-badge');
-            const query = (document.getElementById('search-global-bank-input')?.value || '').toLowerCase();
-            if (!list) return;
-            list.innerHTML = '';
-
-            const total = (appData.jugadoresGlobales || []).length;
-            if (badge) badge.innerText = `${total} / 32`;
-
-            let filtrados = appData.jugadoresGlobales || [];
-            if (query) {
-                filtrados = filtrados.filter(j => j.nombre.toLowerCase().includes(query) || (j.equipo && j.equipo.toLowerCase().includes(query)));
-            }
-
-            if (filtrados.length === 0) {
-                list.innerHTML = `<div class="text-xs text-slate-500 py-2">No se encontraron jugadores.</div>`;
-                return;
-            }
-
-            filtrados.forEach((j, idx) => {
-                const item = document.createElement('div');
-                item.className = "flex items-center justify-between gap-2 bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60 text-xs animate-slide-up opacity-0";
-                item.style.animationDelay = `${idx * 30}ms`;
-                item.innerHTML = `
-                    <div class="flex items-center gap-2.5 min-w-0">
-                        <img src="${j.foto || 'https://via.placeholder.com/30'}" class="w-7 h-7 rounded-full object-cover flex-shrink-0 border border-slate-600">
-                        <span class="font-bold text-white truncate">${j.nombre}</span>
-                        <span class="text-slate-400 truncate">${j.equipo ? `(${j.equipo})` : '(Sin equipo)'}</span>
-                    </div>
-                    <div class="flex items-center gap-1.5 flex-shrink-0">
-                        <button onclick="abrirEditarJugadorGlobal(${j.id})" class="text-indigo-400 hover:text-indigo-300 font-bold p-1.5 rounded-lg bg-slate-700/60 hover:bg-slate-700 transition active:scale-95" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="borrarJugadorGlobal(${j.id})" class="text-rose-400 hover:text-rose-300 font-bold p-1.5 rounded-lg bg-slate-700/60 hover:bg-slate-700 transition active:scale-95" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                `;
-                list.appendChild(item);
-            });
-            actualizarBtnResultados();
-        }
-
-        function abrirEditarJugadorGlobal(id) {
-            AudioFX.playClick();
-            const j = appData.jugadoresGlobales.find(p => p.id === id);
-            if (!j) return;
-
-            document.getElementById('edit-player-id').value = j.id;
-            document.getElementById('edit-player-nombre').value = j.nombre || '';
-            document.getElementById('edit-player-equipo').value = j.equipo || '';
-            document.getElementById('edit-player-file').value = '';
-
-            document.getElementById('edit-player-modal').classList.remove('hidden');
-        }
-
-        function closeEditPlayerModal() {
-            AudioFX.playClick();
-            document.getElementById('edit-player-modal').classList.add('hidden');
-        }
-
-        async function guardarEdicionJugadorGlobal() {
-            const id = parseInt(document.getElementById('edit-player-id').value);
-            const j = appData.jugadoresGlobales.find(p => p.id === id);
-            if (!j) return;
-
-            const nom = document.getElementById('edit-player-nombre').value.trim();
-            const eq = document.getElementById('edit-player-equipo').value.trim();
-            const fileInput = document.getElementById('edit-player-file');
-
-            if (!nom) return showToast("El nombre no puede estar vacío.", "error");
-
-            j.nombre = nom;
-            j.equipo = eq;
-
-            if (fileInput.files && fileInput.files[0]) {
-                const processed = await processImageFile(fileInput.files[0], 150, 150);
-                if (processed) j.foto = processed;
-            }
-
-            appData.torneos.forEach(t => {
-                if (t.jugadores) {
-                    const tj = t.jugadores.find(p => p.id === id);
-                    if (tj) { tj.nombre = nom; tj.equipo = eq; tj.foto = j.foto; }
-                }
-            });
-
-            saveData();
-            renderAdminJugadoresGlobalesList();
-            closeEditPlayerModal();
-            showToast("Datos actualizados.", "success");
-        }
-
-        async function borrarJugadorGlobal(id) {
-            const ok = await customConfirm("¿Deseas eliminar este jugador del Banco de Jugadores?", "Eliminar Jugador", "fa-user-minus");
-            if (ok) {
-                appData.jugadoresGlobales = appData.jugadoresGlobales.filter(j => j.id !== id);
-                appData.torneos.forEach(t => {
-                    if (t.jugadores) t.jugadores = t.jugadores.filter(j => j.id !== id);
-                });
-                saveData();
-                renderAdminJugadoresGlobalesList();
-                populateAdminPalmaresDropdowns();
-                showToast("Jugador eliminado.", "success");
-            }
-        }
-
-        function populateAdminMatchFasesDropdown(torneo) {
-            const selectFases = document.getElementById('add-match-fase-select');
-            if (!selectFases) return;
-            selectFases.innerHTML = '';
-
-            const fasesExistentes = [...new Set((torneo.partidos || []).map(p => p.fase))];
-            
-            if (fasesExistentes.length === 0) {
-                if (torneo.formato.includes('liga')) {
-                    selectFases.innerHTML = '<option value="Jornada 1">Jornada 1</option><option value="Jornada 2">Jornada 2</option><option value="Jornada 3">Jornada 3</option>';
-                } else if (torneo.formato === 'copa_grupos') {
-                    selectFases.innerHTML = '<option value="Grupo A - Jornada 1">Grupo A - Jornada 1</option><option value="Grupo B - Jornada 1">Grupo B - Jornada 1</option><option value="Cuartos de Final">Cuartos de Final</option><option value="Semifinales">Semifinales</option><option value="Gran Final">Gran Final</option>';
-                } else {
-                    selectFases.innerHTML = '<option value="Octavos de Final">Octavos de Final</option><option value="Cuartos de Final">Cuartos de Final</option><option value="Semifinales">Semifinales</option><option value="Gran Final">Gran Final</option>';
-                }
-            } else {
-                fasesExistentes.forEach(f => {
-                    selectFases.innerHTML += `<option value="${f}">${f}</option>`;
-                });
-            }
-        }
-
-        async function generarFixtureAutoFormato() {
-            const torneo = getActiveTorneo();
-            if (!torneo) return showToast("Abre un torneo primero.", "error");
-            if (!torneo.jugadores || torneo.jugadores.length < 2) return showToast("Se necesitan al menos 2 jugadores inscritos en este torneo.", "error");
-
-            const ok = await customConfirm("¿Deseas generar el calendario automático? Esto reemplazará los partidos actuales de este torneo.", "Generar Calendario", "fa-calendar-plus");
-            if (!ok) return;
-
-            torneo.partidos = [];
-            const players = [...torneo.jugadores];
-            const nowIso = new Date().toISOString().slice(0,16);
-            let matchId = 1;
-
-            if (torneo.formato === 'liga_tradicional' || torneo.formato === 'liga_liguilla') {
-                let list = [...players];
-                if (list.length % 2 !== 0) list.push({ id: null, nombre: 'BYE' });
-                const numRounds = list.length - 1;
-                const half = list.length / 2;
-                const vueltas = parseInt(torneo.vueltas || "1");
-
-                for (let v = 0; v < vueltas; v++) {
-                    let currentList = [...list];
-                    for (let round = 0; round < numRounds; round++) {
-                        const numJornada = (v * numRounds) + round + 1;
-                        const faseName = `Jornada ${numJornada}`;
-                        for (let i = 0; i < half; i++) {
-                            const j1 = currentList[i];
-                            const j2 = currentList[currentList.length - 1 - i];
-                            if (j1.id !== null && j2.id !== null) {
-                                torneo.partidos.push({
-                                    id: matchId++,
-                                    fase: faseName,
-                                    j1Id: v === 0 ? j1.id : j2.id,
-                                    j2Id: v === 0 ? j2.id : j1.id,
-                                    g1: null, g2: null, pen1: null, pen2: null,
-                                    jugado: false,
-                                    plazo: nowIso
-                                });
-                            }
-                        }
-                        currentList.splice(1, 0, currentList.pop());
-                    }
-                }
-                
-                // Generar Árbol de Liguilla vacío si es liga_liguilla
-                if (torneo.formato === 'liga_liguilla') {
-                    const n = players.length;
-                    let numClasificados = 8;
-                    if (n < 8) numClasificados = 4;
-                    if (n < 4) numClasificados = 2;
-                    
-                    let rounds = [];
-                    if (numClasificados === 8) rounds = ["Cuartos de Final", "Semifinales", "Gran Final"];
-                    else if (numClasificados === 4) rounds = ["Semifinales", "Gran Final"];
-                    else rounds = ["Gran Final"];
-                    
-                    const esIdaVuelta = torneo.modoLlaves === 'ida_vuelta';
-                    let phaseMatchCounts = rounds.map((_, idx) => Math.pow(2, rounds.length - 1 - idx));
-                    let previousPhaseMatches = [];
-
-                    for (let r = 0; r < rounds.length; r++) {
-                        const faseName = rounds[r];
-                        const numMatches = phaseMatchCounts[r];
-                        let currentPhaseMatches = [];
-
-                        for (let m = 0; m < numMatches; m++) {
-                            const isFinal = (r === rounds.length - 1);
-                            if (esIdaVuelta && !isFinal) {
-                                let matchIda = { id: matchId++, fase: `${faseName} - Ida`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                                let matchVuelta = { id: matchId++, fase: `${faseName} - Vuelta`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                                currentPhaseMatches.push(matchIda);
-                                torneo.partidos.push(matchIda, matchVuelta);
-                            } else {
-                                let matchObj = { id: matchId++, fase: faseName, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                                currentPhaseMatches.push(matchObj);
-                                torneo.partidos.push(matchObj);
-                            }
-                        }
-
-                        if (previousPhaseMatches.length > 0) {
-                            for (let i = 0; i < previousPhaseMatches.length; i++) {
-                                let prevMatch = previousPhaseMatches[i];
-                                let targetIndex = Math.floor(i / 2);
-                                let slot = (i % 2 === 0) ? 'j1' : 'j2';
-                                prevMatch.nextMatchId = currentPhaseMatches[targetIndex].id;
-                                prevMatch.nextSlot = slot;
-                            }
-                        }
-                        previousPhaseMatches = currentPhaseMatches;
-                    }
-                }
-                
-            } else if (torneo.formato === 'copa_grupos') {
-                const numGrupos = players.length >= 12 ? 4 : 2;
-                const grupos = Array.from({ length: numGrupos }, () => []);
-                
-                players.forEach((p, idx) => {
-                    grupos[idx % numGrupos].push(p);
-                });
-
-                const vueltasGrupos = parseInt(torneo.vueltas || "1");
-
-                grupos.forEach((grupoPlayers, gIdx) => {
-                    const grupoLetra = String.fromCharCode(65 + gIdx);
-                    let list = [...grupoPlayers];
-                    if (list.length % 2 !== 0) list.push({ id: null, nombre: 'BYE' });
-                    const numRounds = list.length - 1;
-                    const half = list.length / 2;
-
-                    for (let v = 0; v < vueltasGrupos; v++) {
-                        let currentList = [...list];
-                        for (let round = 0; round < numRounds; round++) {
-                            const numJornada = (v * numRounds) + round + 1;
-                            const faseName = `Grupo ${grupoLetra} - Jornada ${numJornada}`;
-                            for (let i = 0; i < half; i++) {
-                                const j1 = currentList[i];
-                                const j2 = currentList[currentList.length - 1 - i];
-                                if (j1.id !== null && j2.id !== null) {
-                                    torneo.partidos.push({
-                                        id: matchId++,
-                                        fase: faseName,
-                                        j1Id: v === 0 ? j1.id : j2.id,
-                                        j2Id: v === 0 ? j2.id : j1.id,
-                                        g1: null, g2: null, pen1: null, pen2: null,
-                                        jugado: false,
-                                        plazo: nowIso
-                                    });
-                                }
-                            }
-                            currentList.splice(1, 0, currentList.pop());
-                        }
-                    }
-                });
-
-                const esIdaVuelta = torneo.modoLlaves === 'ida_vuelta';
-                const fasesElim = numGrupos === 4 ? ["Cuartos de Final", "Semifinales", "Gran Final"] : ["Semifinales", "Gran Final"];
-                
-                let previousPhaseMatches = [];
-
-                fasesElim.forEach((faseName) => {
-                    let count = 1;
-                    if (faseName === 'Cuartos de Final') count = 4;
-                    if (faseName === 'Semifinales') count = 2;
-
-                    let currentPhaseMatches = [];
-
-                    for (let c = 0; c < count; c++) {
-                        if (esIdaVuelta && faseName !== 'Gran Final') {
-                            let matchIda = { id: matchId++, fase: `${faseName} - Ida`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            let matchVuelta = { id: matchId++, fase: `${faseName} - Vuelta`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            currentPhaseMatches.push(matchIda);
-                            torneo.partidos.push(matchIda, matchVuelta);
-                        } else {
-                            let matchObj = { id: matchId++, fase: faseName, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            currentPhaseMatches.push(matchObj);
-                            torneo.partidos.push(matchObj);
-                        }
-                    }
-
-                    if (previousPhaseMatches.length > 0) {
-                        for (let i = 0; i < previousPhaseMatches.length; i++) {
-                            let prevMatch = previousPhaseMatches[i];
-                            let targetIndex = Math.floor(i / 2);
-                            let slot = (i % 2 === 0) ? 'j1' : 'j2';
-                            prevMatch.nextMatchId = currentPhaseMatches[targetIndex].id;
-                            prevMatch.nextSlot = slot;
-                        }
-                    }
-
-                    previousPhaseMatches = currentPhaseMatches;
-                });
-
-            } else if (torneo.formato === 'copa_directa') {
-                const n = players.length;
-                let rounds = [];
-
-                if (n > 16) rounds = ["Dieciseisavos de Final", "Octavos de Final", "Cuartos de Final", "Semifinales", "Gran Final"];
-                else if (n > 8) rounds = ["Octavos de Final", "Cuartos de Final", "Semifinales", "Gran Final"];
-                else if (n > 4) rounds = ["Cuartos de Final", "Semifinales", "Gran Final"];
-                else if (n > 2) rounds = ["Semifinales", "Gran Final"];
-                else rounds = ["Gran Final"];
-
-                const esIdaVuelta = torneo.modoLlaves === 'ida_vuelta';
-                let phaseMatchCounts = rounds.map((_, idx) => Math.pow(2, rounds.length - 1 - idx));
-                let allMatches = [];
-                let previousPhaseMatches = [];
-
-                for (let r = 0; r < rounds.length; r++) {
-                    const faseName = rounds[r];
-                    const numMatches = phaseMatchCounts[r];
-                    let currentPhaseMatches = [];
-
-                    for (let m = 0; m < numMatches; m++) {
-                        const isFinal = (r === rounds.length - 1);
-                        if (esIdaVuelta && !isFinal) {
-                            let matchIda = { id: matchId++, fase: `${faseName} - Ida`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            let matchVuelta = { id: matchId++, fase: `${faseName} - Vuelta`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            currentPhaseMatches.push(matchIda);
-                            allMatches.push(matchIda, matchVuelta);
-                        } else {
-                            let matchObj = { id: matchId++, fase: faseName, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            currentPhaseMatches.push(matchObj);
-                            allMatches.push(matchObj);
-                        }
-                    }
-
-                    if (previousPhaseMatches.length > 0) {
-                        for (let i = 0; i < previousPhaseMatches.length; i++) {
-                            let prevMatch = previousPhaseMatches[i];
-                            let targetIndex = Math.floor(i / 2);
-                            let slot = (i % 2 === 0) ? 'j1' : 'j2';
-                            prevMatch.nextMatchId = currentPhaseMatches[targetIndex].id;
-                            prevMatch.nextSlot = slot;
-                        }
-                    }
-
-                    previousPhaseMatches = currentPhaseMatches;
-                }
-
-                let firstRoundMatches = allMatches.filter(m => m.fase.startsWith(rounds[0]));
-                const bracketSize = firstRoundMatches.length * 2;
-                const numByes = bracketSize - n;
-
-                let playerIdx = 0;
-                for (let i = 0; i < firstRoundMatches.length; i++) {
-                    if (i < numByes) {
-                        const pBye = players[playerIdx++] || null;
-                        firstRoundMatches[i].j1Id = pBye ? pBye.id : null;
-                        firstRoundMatches[i].j2Id = null;
-                    } else {
-                        const pA = players[playerIdx++] || null;
-                        const pB = players[playerIdx++] || null;
-                        firstRoundMatches[i].j1Id = pA ? pA.id : null;
-                        firstRoundMatches[i].j2Id = pB ? pB.id : null;
-                    }
-                }
-
-                torneo.partidos = allMatches;
-                resolverByesPrimeraRonda(torneo, firstRoundMatches);
-            }
-
-            saveData();
-            loadAdminFixtureData();
-            showToast("Calendario automático generado.", "success");
-        }
-
-        function agregarPartidoManual() {
-            const torneo = getActiveTorneo();
-            if (!torneo) return showToast("Abre un torneo primero.", "error");
-
-            const j1 = parseInt(document.getElementById('add-match-j1').value);
-            const j2 = parseInt(document.getElementById('add-match-j2').value);
-            const fase = document.getElementById('add-match-fase-select').value || "Jornada 1";
-            const plazo = document.getElementById('add-match-deadline').value || new Date().toISOString().slice(0,16);
-
-            if (j1 === j2) return showToast("Selecciona dos jugadores distintos.", "error");
-
-            if (!torneo.partidos) torneo.partidos = [];
-
-            torneo.partidos.push({
-                id: Date.now(),
-                fase: fase,
-                j1Id: j1,
-                j2Id: j2,
-                g1: null, g2: null, pen1: null, pen2: null,
-                jugado: false,
-                plazo: plazo
-            });
-
-            saveData();
-            renderAdminPartidosList();
-            showToast("Encuentro agregado.", "success");
-        }
-
-        function renderAdminPartidosList() {
-            const torneo = getActiveTorneo();
-            const list = document.getElementById('admin-lista-partidos');
-            if (!list) return;
-            list.innerHTML = '';
-            if (!torneo || !torneo.partidos) return;
-
-            const allKnownPlayers = [...(torneo.jugadores || []), ...(appData.jugadoresGlobales || [])];
-
-            torneo.partidos.forEach((p, idx) => {
-                const j1 = allKnownPlayers.find(j => j.id === p.j1Id) || { nombre: p.j1Id ? '?' : 'Por definir' };
-                const j2 = allKnownPlayers.find(j => j.id === p.j2Id) || { nombre: p.j2Id ? '?' : 'Por definir' };
-
-                let scoreText = p.jugado ? `${p.g1} - ${p.g2}` : 'Pendiente';
-                if (p.jugado && p.pen1 !== null && p.pen1 !== undefined) {
-                    scoreText += ` (${p.pen1}-${p.pen2} pen.)`;
-                }
-
-                const item = document.createElement('div');
-                item.className = "bg-slate-800/80 p-2.5 rounded-lg text-xs space-y-1 border border-slate-700/60 animate-slide-up opacity-0";
-                item.style.animationDelay = `${idx * 20}ms`;
-                item.innerHTML = `
-                    <div class="flex justify-between text-indigo-300 font-bold">
-                        <span>${p.fase}</span>
-                        <span>${scoreText}</span>
-                    </div>
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 text-slate-200">
-                        <span class="break-words">${j1.nombre} vs ${j2.nombre} (Límite: ${p.plazo ? p.plazo.replace('T', ' ') : 'N/D'})</span>
-                        <div class="flex gap-1 flex-shrink-0">
-                            <button onclick="abrirModalMarcador(${p.id})" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2 py-0.5 rounded text-[10px] transition active:scale-95">Marcador</button>
-                            <button onclick="abrirEditarMatch(${p.id})" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-0.5 rounded text-[10px] transition active:scale-95"><i class="fa-solid fa-user-pen"></i></button>
-                            <button onclick="borrarPartido(${p.id})" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[10px] transition active:scale-95"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-                list.appendChild(item);
-            });
-            actualizarBtnResultados();
-        }
-
-        function verificarAvanceTorneo(torneo) {
-            if (!torneo || !torneo.partidos) return;
-
-            if (torneo.formato === 'liga_tradicional') {
-                const todosJugados = torneo.partidos.every(p => p.jugado);
-                if (todosJugados) registrarCampeonLiga(torneo);
-            } 
-            else if (torneo.formato === 'liga_liguilla') {
-                const partidosLiga = torneo.partidos.filter(p => p.fase.toLowerCase().includes('jornada'));
-                const todosLigaJugados = partidosLiga.length > 0 && partidosLiga.every(p => p.jugado);
-                
-                if (todosLigaJugados) {
-                    const liguillaMatches = torneo.partidos.filter(p => !p.fase.toLowerCase().includes('jornada'));
-                    const primerCruce = liguillaMatches.length > 0 ? liguillaMatches[0] : null;
-                    
-                    if (primerCruce && primerCruce.j1Id === null) {
-                        iniciarLiguilla(torneo, partidosLiga, liguillaMatches);
-                    }
-                }
-            }
-            else if (torneo.formato === 'copa_grupos') {
-                verificarYEjecutarSorteoGrupos(torneo);
-            }
-        }
-
-        function iniciarLiguilla(torneo, partidosLiga, liguillaMatches) {
-            const stats = {};
-            (torneo.jugadores || []).forEach(j => {
-                stats[j.id] = { id: j.id, pts: 0, dif: 0, gf: 0 };
-            });
-
-            partidosLiga.forEach(p => {
-                const j1 = stats[p.j1Id]; const j2 = stats[p.j2Id];
-                if (!j1 || !j2) return;
-                j1.gf += p.g1; j1.dif += (p.g1 - p.g2);
-                j2.gf += p.g2; j2.dif += (p.g2 - p.g1);
-                if (p.g1 > p.g2) j1.pts += 3;
-                else if (p.g2 > p.g1) j2.pts += 3;
-                else { j1.pts += 1; j2.pts += 1; }
-            });
-
-            const sorted = Object.values(stats).sort((a,b) => b.pts - a.pts || b.dif - a.dif || b.gf - a.gf);
-            
-            const primerFaseName = liguillaMatches[0].fase.replace(' - Ida', '').replace(' - Vuelta', '');
-            const firstRoundMatches = liguillaMatches.filter(p => p.fase.includes(primerFaseName) && !p.fase.includes('Vuelta'));
-            
-            const numClasificados = firstRoundMatches.length * 2;
-            const clasificados = sorted.slice(0, numClasificados).map(s => s.id);
-
-            let pairIdx = 0;
-            for (let i = 0; i < firstRoundMatches.length; i++) {
-                const match = firstRoundMatches[i];
-                match.j1Id = clasificados[pairIdx] || null;
-                match.j2Id = clasificados[numClasificados - 1 - pairIdx] || null;
-                pairIdx++;
-            }
-            
-            showToast("¡Fase regular concluida! La Liguilla ha comenzado.", "success");
-        }
-
-        function registrarCampeonLiga(torneo) {
-            const stats = {};
-            (torneo.jugadores || []).forEach(j => {
-                stats[j.id] = { ...j, pj:0, pg:0, pe:0, pp:0, gf:0, gc:0, dif:0, pts:0 };
-            });
-
-            torneo.partidos.forEach(p => {
-                const j1 = stats[p.j1Id]; const j2 = stats[p.j2Id];
-                if (!j1 || !j2) return;
-                j1.pj++; j2.pj++;
-                j1.gf += p.g1; j1.gc += p.g2;
-                j2.gf += p.g2; j2.gc += p.g1;
-                if (p.g1 > p.g2) { j1.pg++; j1.pts += 3; j2.pp++; }
-                else if (p.g2 > p.g1) { j2.pg++; j2.pts += 3; j1.pp++; }
-                else { j1.pe++; j1.pts += 1; j2.pe++; j2.pts += 1; }
-            });
-
-            Object.values(stats).forEach(s => s.dif = s.gf - s.gc);
-            const sorted = Object.values(stats).sort((a,b) => b.pts - a.pts || b.dif - a.dif || b.gf - a.gf);
-
-            if (sorted.length > 0) {
-                const campeon = sorted[0];
-                const yaRegistrado = appData.palmares.some(p => p.torneo === torneo.nombre && p.edicion === torneo.edicion);
-                if (!yaRegistrado) {
-                    AudioFX.playWin();
-                    appData.palmares.push({
-                        id: Date.now(),
-                        jugador: campeon.nombre,
-                        tipo: 'Liga',
-                        torneo: torneo.nombre,
-                        edicion: torneo.edicion,
-                        marcador: `${campeon.pts} PTS (${campeon.pg}G-${campeon.pe}E-${campeon.pp}P)`,
-                        fecha: new Date().toISOString().split('T')[0]
-                    });
-                    setTimeout(() => {
-                        showToast(`🏆 ¡Liga Concluida! Felicidades a ${campeon.nombre} por coronarse Campeón.`, "success");
-                    }, 3500);
-                }
-            }
-        }
-
-        async function borrarPartido(id) {
-            const ok = await customConfirm("¿Deseas eliminar este encuentro?", "Eliminar Partido", "fa-trash");
-            if (ok) {
-                const torneo = getActiveTorneo();
-                if (!torneo) return;
-                torneo.partidos = torneo.partidos.filter(p => p.id !== id);
-                saveData();
-                if (isAdminLoggedIn) renderAdminPartidosList();
-                showToast("Partido eliminado.", "success");
-            }
-        }
-
-        function populateAdminPalmaresDropdowns() {
-            const selectJugador = document.getElementById('palm-admin-player-select');
-            const selectTorneo = document.getElementById('palm-torneo-select');
-            if (!selectJugador || !selectTorneo) return;
-
-            const allPlayers = new Set();
-            (appData.jugadoresGlobales || []).forEach(j => allPlayers.add(j.nombre));
-            (appData.torneos || []).forEach(t => (t.jugadores || []).forEach(j => allPlayers.add(j.nombre)));
-            (appData.palmares || []).forEach(p => allPlayers.add(p.jugador));
-
-            selectJugador.innerHTML = '';
-            allPlayers.forEach(name => {
-                selectJugador.innerHTML += `<option value="${name}">${name}</option>`;
-            });
-
-            selectTorneo.innerHTML = '';
-            if ((appData.torneos || []).length === 0) {
-                selectTorneo.innerHTML = '<option value="">Sin torneos registrados</option>';
-            } else {
-                appData.torneos.forEach(t => {
-                    selectTorneo.innerHTML += `<option value="${t.nombre} ${t.edicion}">${t.nombre} - ${t.edicion}</option>`;
-                });
-            }
-        }
-
-        function agregarPalmaresManual() {
-            const jug = document.getElementById('palm-admin-player-select').value;
-            const tipo = document.getElementById('palm-tipo').value;
-            const torNombreEd = document.getElementById('palm-torneo-select').value;
-            const marc = document.getElementById('palm-marcador').value.trim() || "N/D";
-
-            if (!torNombreEd) return showToast("Selecciona un torneo de la lista.", "error");
-
-            appData.palmares.push({
-                id: Date.now(),
-                jugador: jug,
-                tipo: tipo,
-                torneo: torNombreEd,
-                marcador: marc,
-                fecha: new Date().toISOString().split('T')[0]
-            });
-
-            document.getElementById('palm-marcador').value = '';
-            saveData();
-            populateAdminPalmaresDropdowns();
-            renderAdminPalmaresList();
-            showToast("Título agregado al Palmarés.", "success");
-        }
-
-        async function guardarConfiguracionBaseDatos() {
-            const url = document.getElementById('cfg-db-url').value.trim();
-            const key = document.getElementById('cfg-db-key').value.trim();
-            const newPin = document.getElementById('cfg-admin-pin').value.trim();
-            const fileInput = document.getElementById('cfg-website-logo');
-
-            if (newPin) appData.configGlobal.pin = newPin;
-            appData.configGlobal.dbUrl = url;
-            appData.configGlobal.dbKey = key;
-
-            if (fileInput.files && fileInput.files[0]) {
-                const globalLogo = await processImageFile(fileInput.files[0], 256, 256);
-                if (globalLogo) appData.configGlobal.websiteLogo = globalLogo;
-            }
-
-            saveData();
-            initSupabaseClient();
-            showToast("Configuración guardada.", "success");
-        }
-
-        function actualizarBtnResultados() {
-            const btn = document.getElementById('btn-resultados-accion');
-            if (!btn) return;
-            const torneo = getActiveTorneo();
-            if (!torneo || !isAdminLoggedIn) {
-                btn.classList.add('hidden');
-                return;
-            }
-
-            btn.classList.remove('hidden');
-            if (torneo.isSimulated) {
-                btn.innerHTML = `<i class="fa-solid fa-rotate-left"></i> <span class="hidden sm:inline">Deshacer Resultados</span>`;
-                btn.className = "bg-rose-600 hover:bg-rose-500 text-white font-bold text-[10px] sm:text-xs px-2.5 py-1.5 rounded-xl shadow-md active:scale-95 transition ml-2 flex items-center gap-1.5";
-            } else {
-                btn.innerHTML = `<i class="fa-solid fa-dice"></i> <span class="hidden sm:inline">Generar Resultados</span>`;
-                btn.className = "bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] sm:text-xs px-2.5 py-1.5 rounded-xl shadow-md active:scale-95 transition ml-2 flex items-center gap-1.5";
-            }
-        }
-
-        function handleResultadosAccion() {
-            AudioFX.playClick();
-            const torneo = getActiveTorneo();
-            if (!torneo || !torneo.partidos || torneo.partidos.length === 0) return;
-
-            if (torneo.isSimulated) {
-                customConfirm("¿Deseas deshacer todos los resultados simulados? El calendario se conservará intacto.", "Deshacer Resultados", "fa-rotate-left").then(ok => {
-                    if (ok) procesarDeshacerResultados(torneo);
-                });
-            } else {
-                const tieneJugados = torneo.partidos.some(p => p.jugado);
-                if (tieneJugados) {
-                    customConfirm("Hay resultados anotados manualmente. ¿Deseas sobreescribir y simular el resto del torneo de forma aleatoria?", "Generar Resultados", "fa-dice").then(ok => {
-                        if (ok) procesarResultadosAleatorios(torneo);
-                    });
-                } else {
-                    procesarResultadosAleatorios(torneo);
-                }
-            }
-        }
-
-        function procesarDeshacerResultados(torneo) {
-            torneo.partidos.forEach(p => {
-                p.jugado = false;
-                p.g1 = null;
-                p.g2 = null;
-                p.pen1 = null;
-                p.pen2 = null;
-            });
-
-            torneo.isSimulated = false;
-            torneo.partidos.forEach(p => {
-                if (p.nextMatchId) {
-                    const target = torneo.partidos.find(m => m.id === p.nextMatchId);
-                    if (target) {
-                        if (p.nextSlot === 'j1') target.j1Id = null;
-                        if (p.nextSlot === 'j2') target.j2Id = null;
-                    }
-                }
-            });
-
-            if (torneo.formato === 'liga_liguilla' || torneo.formato === 'copa_grupos') {
-                const elimMatches = torneo.partidos.filter(p => !p.fase.toLowerCase().includes('jornada') && !p.fase.startsWith('Grupo'));
-                elimMatches.forEach(m => {
-                    m.j1Id = null;
-                    m.j2Id = null;
-                });
-            }
-
-            saveData();
-            renderAll();
-            showToast("Resultados deshechos exitosamente.", "success");
-        }
-
-        function procesarResultadosAleatorios(torneo) {
-            let processedAny = false;
-            let infiniteLoopGuard = 0;
-            
-            while(infiniteLoopGuard < 30) {
-                const partidosDisponibles = torneo.partidos.filter(p => !p.jugado && p.j1Id !== null && p.j2Id !== null);
-                if (partidosDisponibles.length === 0) break;
-                
-                partidosDisponibles.forEach(match => {
-                    const isElimination = (torneo.formato.includes('copa') || (!match.fase.toLowerCase().includes('jornada') && !match.fase.startsWith('Grupo')));
-                    
-                    let g1 = Math.floor(Math.random() * 4);
-                    let g2 = Math.floor(Math.random() * 4);
-                    
-                    let p1 = null, p2 = null;
-                    if (g1 === g2 && isElimination) {
-                        p1 = Math.floor(Math.random() * 4) + 1;
-                        p2 = Math.floor(Math.random() * 4) + 1;
-                        if (p1 === p2) p1++; // Break tie
-                    }
-                    
-                    match.g1 = g1; match.g2 = g2;
-                    match.pen1 = p1; match.pen2 = p2;
-                    match.jugado = true;
-                    
-                    let ganadorId = null;
-                    if (g1 > g2) ganadorId = match.j1Id;
-                    else if (g2 > g1) ganadorId = match.j2Id;
-                    else if (p1 !== null && p2 !== null) {
-                        ganadorId = p1 > p2 ? match.j1Id : match.j2Id;
-                    }
-                    
-                    if (ganadorId && match.nextMatchId) {
-                        const nextMatch = torneo.partidos.find(p => p.id === match.nextMatchId);
-                        if (nextMatch) {
-                            if (match.nextSlot === 'j1') nextMatch.j1Id = ganadorId;
-                            else if (match.nextSlot === 'j2') nextMatch.j2Id = ganadorId;
-                            nextMatch.jugado = false;
-                            nextMatch.g1 = null; nextMatch.g2 = null;
-                            nextMatch.pen1 = null; nextMatch.pen2 = null;
-                        }
-                    }
-                    processedAny = true;
-                });
-                
-                verificarAvanceTorneo(torneo);
-                infiniteLoopGuard++;
-            }
-            if (processedAny) torneo.isSimulated = true;
-            saveData();
-            renderAll();
-            
-            if (processedAny) showToast(`Resultados simulados exitosamente.`, "success");
-            else showToast(`No hay partidos pendientes.`, "error");
-        }
-
-        window.onload = function() {
-            appData.activeTorneoId = null; // Reiniciar selección para iniciar limpio en pantalla de Inicio
-            initSupabaseClient();
-            renderAll();
-        };
-    </script>
-</body>
-</html>
+                    <button onclick="toggleInscripcionJugadorEdit(${j.id})" class="px-2.5 py-1 rounded text-[1No me han programado para hacer algo así.
