@@ -113,12 +113,81 @@
         @media (max-width: 767px) {
             input, select, textarea { font-size: 16px !important; }
         }
+
+        /* TROFEOS: FLOTACIÓN SUTIL Y BRILLO DE ORO */
+        @keyframes trophyIdle {
+            0%, 100% { transform: translate3d(0, 0, 0) rotate(-1deg); }
+            50% { transform: translate3d(0, -4px, 0) rotate(1deg); }
+        }
+        .trophy-idle { animation: trophyIdle 4.5s ease-in-out infinite; will-change: transform; }
+
+        @keyframes trophyShine {
+            0% { transform: translateX(-160%) rotate(20deg); opacity: 0; }
+            45% { opacity: 0.55; }
+            62% { opacity: 0; }
+            100% { transform: translateX(160%) rotate(20deg); opacity: 0; }
+        }
+        .trophy-shine-wrap { position: relative; overflow: hidden; }
+        .trophy-shine-wrap::after {
+            content: ""; position: absolute; top: -30%; left: 0; width: 35%; height: 160%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.85), transparent);
+            animation: trophyShine 5.5s ease-in-out infinite; animation-delay: 1.2s;
+            pointer-events: none;
+        }
+
+        /* BOTONES PRINCIPALES: BARRIDO DE BRILLO EN HOVER */
+        .btn-shine { position: relative; overflow: hidden; isolation: isolate; }
+        .btn-shine::before {
+            content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+            background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.28) 50%, transparent 70%);
+            transform: translateX(-120%); transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-shine:hover::before { transform: translateX(120%); }
+
+        /* CONFETI DE CELEBRACIÓN AL GANAR UN TÍTULO */
+        @keyframes confettiFall {
+            0% { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate3d(var(--drift, 0px), 110vh, 0) rotate(var(--spin, 360deg)); opacity: 0.85; }
+        }
+        .confetti-piece { position: absolute; top: 0; border-radius: 2px; will-change: transform, opacity; animation: confettiFall linear forwards; }
+
+        /* FONDO AMBIENTAL CON DERIVA MÁS VIVA */
+        @keyframes pulseGlowDrift {
+            0%, 100% { opacity: 0.15; transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
+            50% { opacity: 0.27; transform: translate3d(18px, -12px, 0) scale3d(1.08, 1.08, 1); }
+        }
+        .animate-glow-drift { animation: pulseGlowDrift 10s ease-in-out infinite; will-change: transform, opacity; }
+
+        /* TÍTULOS DESTACADOS CON DEGRADADO ANIMADO */
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .text-gradient-animated {
+            background: linear-gradient(90deg, #a5b4fc, #fbbf24, #a5b4fc);
+            background-size: 200% auto;
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            animation: gradientShift 6s ease-in-out infinite;
+        }
+
+        /* MARCADOR: PEQUEÑO "POP" AL REVELARSE UN RESULTADO */
+        @keyframes scorePop {
+            0% { transform: scale3d(0.7, 0.7, 1); opacity: 0; }
+            70% { transform: scale3d(1.08, 1.08, 1); opacity: 1; }
+            100% { transform: scale3d(1, 1, 1); opacity: 1; }
+        }
+        .score-pop { animation: scorePop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        .tab-active { transition: color 0.25s ease, border-color 0.25s ease, text-shadow 0.25s ease; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between pb-24 md:pb-16 selection:bg-indigo-500 selection:text-white relative overflow-x-hidden w-full">
 
-    <div class="fixed top-0 left-1/3 w-80 sm:w-96 h-80 sm:h-96 bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none animate-glow transform-gpu"></div>
-    <div class="fixed bottom-1/4 right-5 w-80 sm:w-96 h-80 sm:h-96 bg-purple-600/10 rounded-full blur-[140px] pointer-events-none animate-glow transform-gpu"></div>
+    <div class="fixed top-0 left-1/3 w-80 sm:w-96 h-80 sm:h-96 bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none animate-glow-drift transform-gpu"></div>
+    <div class="fixed bottom-1/4 right-5 w-80 sm:w-96 h-80 sm:h-96 bg-purple-600/10 rounded-full blur-[140px] pointer-events-none animate-glow-drift transform-gpu"></div>
+
+    <!-- CONTENEDOR DE CONFETI (CELEBRACIÓN DE CAMPEÓN) -->
+    <div id="confetti-container" class="fixed inset-0 pointer-events-none z-[95] overflow-hidden"></div>
 
     <div class="relative z-10 w-full max-w-full overflow-x-hidden">
         
@@ -414,7 +483,7 @@
                 Torneos Organizados Oficialmente por la <strong class="text-white font-black tracking-wide">Liga Soriana CVNL E-Sports</strong>
             </div>
         </div>
-        <span class="absolute right-3 bottom-1.5 text-[9px] font-mono text-indigo-400/80 select-none pointer-events-none">v14.0.0</span>
+        <span class="absolute right-3 bottom-1.5 text-[9px] font-mono text-indigo-400/80 select-none pointer-events-none">v15.0.0</span>
     </footer>
 
     <!-- BARRA NAVEGACIÓN MÓVIL -->
@@ -509,13 +578,20 @@
                     <span id="score-plazo-label" class="text-[10px] text-slate-400">Límite: -</span>
                 </div>
 
+                <div id="score-serie-info" class="hidden text-center bg-indigo-950/40 p-2.5 rounded-xl border border-indigo-500/30 space-y-0.5">
+                    <div id="score-serie-info-title" class="text-[10px] font-black text-indigo-300 uppercase tracking-wider flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-repeat"></i> <span>Eliminatoria a Ida y Vuelta</span>
+                    </div>
+                    <div id="score-serie-info-detail" class="text-[11px] text-slate-300"></div>
+                </div>
+
                 <div class="grid grid-cols-2 gap-3 items-center">
                     <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700 text-center space-y-2">
                         <img id="score-j1-img" src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full mx-auto object-cover border border-indigo-500/50">
                         <div id="score-j1-name" class="font-bold text-xs text-white truncate">Jugador 1</div>
                         <div>
                             <label class="block text-[10px] text-slate-400 mb-1">Goles</label>
-                            <input type="number" id="score-g1-input" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-center text-white font-extrabold text-base focus:outline-none focus:border-indigo-500 transition">
+                            <input type="number" id="score-g1-input" min="0" value="0" oninput="actualizarPreviewGlobalSerie()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-center text-white font-extrabold text-base focus:outline-none focus:border-indigo-500 transition">
                         </div>
                     </div>
 
@@ -524,16 +600,21 @@
                         <div id="score-j2-name" class="font-bold text-xs text-white truncate">Jugador 2</div>
                         <div>
                             <label class="block text-[10px] text-slate-400 mb-1">Goles</label>
-                            <input type="number" id="score-g2-input" min="0" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-center text-white font-extrabold text-base focus:outline-none focus:border-indigo-500 transition">
+                            <input type="number" id="score-g2-input" min="0" value="0" oninput="actualizarPreviewGlobalSerie()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-center text-white font-extrabold text-base focus:outline-none focus:border-indigo-500 transition">
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-amber-950/30 p-3 rounded-xl border border-amber-500/30 space-y-3">
+                <div id="score-ida-note" class="hidden text-[11px] text-slate-300 bg-slate-800/50 border border-slate-700 rounded-xl p-2.5 flex items-start gap-2">
+                    <i class="fa-solid fa-circle-info text-indigo-400 mt-0.5"></i>
+                    <span>Este es el partido de <strong>Ida</strong>: el empate está permitido, no hay penaltis. El marcador global y, en caso de empate global, los penaltis se definen en la <strong>Vuelta</strong>.</span>
+                </div>
+
+                <div id="score-penaltis-wrapper" class="bg-amber-950/30 p-3 rounded-xl border border-amber-500/30 space-y-3">
                     <div class="flex items-center justify-between">
                         <label for="score-penaltis-toggle" class="text-xs font-bold text-amber-300 flex items-center gap-1.5 cursor-pointer">
                             <i class="fa-solid fa-futbol"></i>
-                            Definición por Penaltis
+                            <span id="score-penaltis-label">Definición por Penaltis</span>
                         </label>
                         <input type="checkbox" id="score-penaltis-toggle" onchange="togglePenaltisInputs()" class="w-4 h-4 accent-amber-500 cursor-pointer transition">
                     </div>
@@ -553,7 +634,7 @@
 
             <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
                 <button onclick="cerrarModalMarcador()" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white transition active:scale-95">Cancelar</button>
-                <button onclick="guardarMarcadorModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition active:scale-95 shadow-lg">Guardar Resultado</button>
+                <button onclick="guardarMarcadorModal()" class="btn-shine bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition active:scale-95 shadow-lg">Guardar Resultado</button>
             </div>
         </div>
     </div>
@@ -699,7 +780,7 @@
                                     Inscribir Jugadores Iniciales
                                 </h5>
                                 <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                                    <button onclick="toggleTodosCrear()" class="text-[10px] sm:text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-1.5 px-3 rounded-lg transition active:scale-95 whitespace-nowrap shadow-md">
+                                    <button onclick="toggleTodosCrear()" id="btn-toggle-todos-crear" class="text-[10px] sm:text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-1.5 px-3 rounded-lg transition active:scale-95 whitespace-nowrap shadow-md">
                                         Inscribir a todos
                                     </button>
                                     <div class="relative flex-1 sm:flex-none">
@@ -794,7 +875,7 @@
                                     Inscribir / Rescindir Jugadores
                                 </h5>
                                 <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                                    <button onclick="toggleTodosEdit()" class="text-[10px] sm:text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-1.5 px-3 rounded-lg transition active:scale-95 whitespace-nowrap shadow-md">
+                                    <button onclick="toggleTodosEdit()" id="btn-toggle-todos-edit" class="text-[10px] sm:text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-1.5 px-3 rounded-lg transition active:scale-95 whitespace-nowrap shadow-md">
                                         Inscribir a todos
                                     </button>
                                     <div class="relative flex-1 sm:flex-none">
@@ -922,6 +1003,23 @@
                         </div>
                         <h5 class="font-bold text-slate-300 pt-3 border-t border-slate-800">Títulos Registrados</h5>
                         <div id="admin-lista-palmares" class="space-y-2 max-h-48 overflow-y-auto custom-scroll pr-1"></div>
+
+                        <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700 space-y-3 mt-2">
+                            <h5 class="text-xs font-bold text-amber-300 flex items-center gap-1.5"><i class="fa-solid fa-trophy"></i> Diseños de Trofeos Personalizados</h5>
+                            <p class="text-[10px] text-slate-400 leading-relaxed">Sube una imagen personalizada para el trofeo de un torneo. Se usará en la vitrina del Salón de la Fama en lugar del trofeo dorado por defecto, para todas sus ediciones.</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[10px] text-slate-400 mb-0.5">Torneo</label>
+                                    <select id="trofeo-admin-torneo-select" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-white text-xs"></select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] text-slate-400 mb-0.5">Imagen del Trofeo</label>
+                                    <input type="file" id="trofeo-admin-file" accept="image/*" class="w-full bg-slate-900 text-slate-300 text-xs rounded border border-slate-700 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-600 file:text-white transition">
+                                </div>
+                            </div>
+                            <button onclick="guardarDisenoTrofeoPersonalizado()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-1.5 rounded-lg text-xs active:scale-95 transition shadow">Guardar Diseño</button>
+                            <div id="admin-lista-trofeos-personalizados" class="space-y-2 pt-2 border-t border-slate-700/60"></div>
+                        </div>
                     </div>
 
                     <!-- CONFIGURACIÓN GLOBAL / NUBE -->
@@ -1073,7 +1171,8 @@
                 { id: 1, texto: "¡Bienvenidos a la plataforma oficial de la Liga Soriana CVNL E-Sports!", fecha: new Date().toLocaleDateString('es-MX') }
             ],
             torneos: [],
-            palmares: []
+            palmares: [],
+            trofeosPersonalizados: {}
         };
 
         let appData = JSON.parse(localStorage.getItem('DLS_SORIANA_V5')) || initialState;
@@ -1081,6 +1180,8 @@
         if (!appData.comunicadosGenerales) appData.comunicadosGenerales = [];
         if (!appData.configGlobal) appData.configGlobal = { pin: "1234", dbUrl: "", dbKey: "", websiteLogo: "" };
         if (!appData.configGlobal.pin) appData.configGlobal.pin = "1234";
+        if (!appData.trofeosPersonalizados) appData.trofeosPersonalizados = {};
+        if (!appData.palmares) appData.palmares = [];
 
         let supabaseClient = null;
         let isAdminLoggedIn = false;
@@ -1176,6 +1277,9 @@
                     if (!appData.configGlobal) appData.configGlobal = { pin: "1234", dbUrl: "", dbKey: "", websiteLogo: "" };
                     if (!appData.configGlobal.pin) appData.configGlobal.pin = "1234";
                     if (!appData.comunicadosGenerales) appData.comunicadosGenerales = [];
+                    if (!appData.trofeosPersonalizados) appData.trofeosPersonalizados = {};
+                    if (!appData.palmares) appData.palmares = [];
+                    if (!appData.jugadoresGlobales) appData.jugadoresGlobales = [];
                     localStorage.setItem('DLS_SORIANA_V5', JSON.stringify(appData));
                     renderAll();
                 }
@@ -1203,56 +1307,162 @@
         }
 
         function asegurarEstructuraArbolCopa(torneo) {
-            if (!torneo || !torneo.formato || !torneo.formato.includes('copa')) return;
+            if (!torneo || !torneo.formato) return;
+            const tieneEliminatorias = torneo.formato.includes('copa') || torneo.formato === 'liga_liguilla';
+            if (!tieneEliminatorias) return;
             if (!torneo.partidos || torneo.partidos.length === 0) return;
             propagarGanadoresCopa(torneo);
         }
 
+        // ==========================================================================
+        // MOTOR DE SERIES: soporta llaves a Partido Único y a Ida y Vuelta (marcador global)
+        // Cada partido puede pertenecer a una "serie" (llave) identificada por serieId.
+        // - leg: 'ida' | 'vuelta' | undefined (undefined = partido único / formato heredado)
+        // - ronda: nombre base de la fase sin sufijo (ej. "Cuartos de Final")
+        // Solo el partido de Vuelta (o el partido único) carga nextMatchId/nextSlot: el de
+        // Ida nunca decide nada por sí solo, tal como debe funcionar una eliminatoria real.
+        // ==========================================================================
+
+        // Devuelve todos los partidos de la misma llave (1 si es partido único, 2 si es Ida y Vuelta).
+        function getPartidosDeSerie(torneo, match) {
+            if (!match) return [];
+            if (!match.serieId) return [match];
+            return torneo.partidos.filter(p => p.serieId === match.serieId);
+        }
+
+        function serieEstaCompleta(partidosSerie) {
+            return partidosSerie.length > 0 && partidosSerie.every(p => p.jugado);
+        }
+
+        // Calcula el ganador de una llave. Devuelve null si aún no puede determinarse
+        // (por ejemplo, marcador global empatado sin penales capturados todavía).
+        function calcularResultadoSerie(partidosSerie) {
+            if (!partidosSerie || partidosSerie.length === 0) return null;
+
+            if (partidosSerie.length === 1) {
+                const p = partidosSerie[0];
+                if (!p.jugado) return null;
+                if (p.bye) {
+                    if (p.j1Id && !p.j2Id) return { ganadorId: p.j1Id, perdedorId: null, porPenales: false, bye: true };
+                    if (p.j2Id && !p.j1Id) return { ganadorId: p.j2Id, perdedorId: null, porPenales: false, bye: true };
+                }
+                if (p.g1 > p.g2) return { ganadorId: p.j1Id, perdedorId: p.j2Id, golesGanador: p.g1, golesPerdedor: p.g2, porPenales: false };
+                if (p.g2 > p.g1) return { ganadorId: p.j2Id, perdedorId: p.j1Id, golesGanador: p.g2, golesPerdedor: p.g1, porPenales: false };
+                if (p.pen1 !== null && p.pen1 !== undefined && p.pen2 !== null && p.pen2 !== undefined && p.pen1 !== p.pen2) {
+                    const j1Gana = p.pen1 > p.pen2;
+                    return { ganadorId: j1Gana ? p.j1Id : p.j2Id, perdedorId: j1Gana ? p.j2Id : p.j1Id, golesGanador: p.g1, golesPerdedor: p.g2, porPenales: true };
+                }
+                return null;
+            }
+
+            // Serie a dos partidos (Ida y Vuelta): se suman los goles por ID de jugador
+            // para no depender de que J1/J2 se mantengan en el mismo orden en ambos partidos.
+            const ida = partidosSerie.find(p => p.leg === 'ida');
+            const vuelta = partidosSerie.find(p => p.leg === 'vuelta');
+            if (!ida || !vuelta || !ida.jugado || !vuelta.jugado) return null;
+
+            const goles = {};
+            [ida, vuelta].forEach(leg => {
+                if (leg.j1Id !== null && leg.j1Id !== undefined) goles[leg.j1Id] = (goles[leg.j1Id] || 0) + (leg.g1 || 0);
+                if (leg.j2Id !== null && leg.j2Id !== undefined) goles[leg.j2Id] = (goles[leg.j2Id] || 0) + (leg.g2 || 0);
+            });
+
+            const idA = ida.j1Id, idB = ida.j2Id;
+            if (idA === null || idA === undefined || idB === null || idB === undefined) return null;
+            const golesA = goles[idA] || 0;
+            const golesB = goles[idB] || 0;
+
+            if (golesA > golesB) return { ganadorId: idA, perdedorId: idB, golesGanador: golesA, golesPerdedor: golesB, porPenales: false, global: true };
+            if (golesB > golesA) return { ganadorId: idB, perdedorId: idA, golesGanador: golesB, golesPerdedor: golesA, porPenales: false, global: true };
+
+            // Marcador global empatado: se define por penales, tomados únicamente del partido de Vuelta.
+            if (vuelta.pen1 !== null && vuelta.pen1 !== undefined && vuelta.pen2 !== null && vuelta.pen2 !== undefined && vuelta.pen1 !== vuelta.pen2) {
+                const j1GanaVuelta = vuelta.pen1 > vuelta.pen2;
+                const ganadorId = j1GanaVuelta ? vuelta.j1Id : vuelta.j2Id;
+                const perdedorId = j1GanaVuelta ? vuelta.j2Id : vuelta.j1Id;
+                return { ganadorId, perdedorId, golesGanador: golesA, golesPerdedor: golesB, porPenales: true, global: true };
+            }
+            return null;
+        }
+
+        // Texto legible del marcador de una llave, usado en el Palmarés y en el anuncio de campeón.
+        function formatearMarcadorSerie(partidosSerie, resultado) {
+            if (!resultado) return "N/D";
+            if (resultado.bye) return "Avanzó por posición libre (bye)";
+            if (partidosSerie.length === 1) {
+                let str = `${partidosSerie[0].g1}-${partidosSerie[0].g2}`;
+                if (resultado.porPenales) str += ` (${partidosSerie[0].pen1}-${partidosSerie[0].pen2} pen.)`;
+                return str;
+            }
+            const ida = partidosSerie.find(p => p.leg === 'ida');
+            const vuelta = partidosSerie.find(p => p.leg === 'vuelta');
+            let str = `Global ${resultado.golesGanador}-${resultado.golesPerdedor} (Ida ${ida.g1}-${ida.g2}, Vuelta ${vuelta.g1}-${vuelta.g2}`;
+            if (resultado.porPenales) str += `, ${vuelta.pen1}-${vuelta.pen2} pen.`;
+            str += `)`;
+            return str;
+        }
+
+        // Punto único de avance: dado un partido que acaba de guardarse, revisa si su llave
+        // ya está completa y, de ser así, propaga al ganador a la siguiente ronda (a ambos
+        // partidos de la siguiente llave si también es a Ida y Vuelta) o, si era la Gran
+        // Final, anuncia al campeón. Es seguro/idempotente llamarla repetidamente.
+        function resolverAvanceMatch(torneo, match) {
+            if (!torneo || !match) return;
+
+            const partidosSerie = getPartidosDeSerie(torneo, match);
+            if (!serieEstaCompleta(partidosSerie)) return;
+
+            const resultado = calcularResultadoSerie(partidosSerie);
+            if (!resultado || !resultado.ganadorId) return;
+
+            const rondaBase = match.ronda || match.fase;
+            const matchPrimario = partidosSerie.find(p => p.nextMatchId) || partidosSerie[partidosSerie.length - 1];
+
+            if (rondaBase === 'Gran Final') {
+                const allKnownPlayers = [...(torneo.jugadores || []), ...(appData.jugadoresGlobales || [])];
+                const campeon = allKnownPlayers.find(j => j.id === resultado.ganadorId);
+                const rival = allKnownPlayers.find(j => j.id === resultado.perdedorId);
+                if (campeon) anunciarCampeon(torneo, campeon.nombre, formatearMarcadorSerie(partidosSerie, resultado), rival ? rival.nombre : null);
+                return;
+            }
+
+            if (matchPrimario && matchPrimario.nextMatchId) {
+                const nextPrimario = torneo.partidos.find(m => m.id === matchPrimario.nextMatchId);
+                if (nextPrimario) {
+                    getPartidosDeSerie(torneo, nextPrimario).forEach(sm => {
+                        if (matchPrimario.nextSlot === 'j1') sm.j1Id = resultado.ganadorId;
+                        else if (matchPrimario.nextSlot === 'j2') sm.j2Id = resultado.ganadorId;
+                    });
+                }
+            }
+        }
+
+        // Recorre el torneo y garantiza que cualquier llave ya completa haya propagado su
+        // ganador. Es el respaldo "perezoso" que corre en cada acceso a getActiveTorneo();
+        // el flujo principal (guardar marcador / simular) llama a resolverAvanceMatch directo.
         function propagarGanadoresCopa(torneo) {
             if (!torneo || !torneo.partidos) return;
-
+            const procesadas = new Set();
             torneo.partidos.forEach(p => {
-                if (p.jugado && p.nextMatchId) {
-                    let ganadorId = null;
-                    if (p.g1 > p.g2) ganadorId = p.j1Id;
-                    else if (p.g2 > p.g1) ganadorId = p.j2Id;
-                    else if (p.pen1 !== null && p.pen2 !== null) {
-                        ganadorId = p.pen1 > p.pen2 ? p.j1Id : p.j2Id;
-                    }
-
-                    if (ganadorId) {
-                        const targetMatch = torneo.partidos.find(m => m.id === p.nextMatchId);
-                        if (targetMatch) {
-                            if (p.nextSlot === 'j1') targetMatch.j1Id = ganadorId;
-                            else if (p.nextSlot === 'j2') targetMatch.j2Id = ganadorId;
-                        }
-                    }
-                }
+                const clave = p.serieId || `unico-${p.id}`;
+                if (procesadas.has(clave)) return;
+                procesadas.add(clave);
+                resolverAvanceMatch(torneo, p);
             });
         }
 
+        // Resuelve automáticamente los partidos de primera ronda donde un jugador no tiene
+        // rival (bye/posición libre): siempre es un único partido, nunca Ida y Vuelta.
         function resolverByesPrimeraRonda(torneo, firstRoundMatches) {
             firstRoundMatches.forEach(match => {
-                if (match.j1Id && !match.j2Id) {
-                    match.jugado = true; match.g1 = 0; match.g2 = 0; match.bye = true;
-                    if (match.nextMatchId) {
-                        const nextMatch = torneo.partidos.find(p => p.id === match.nextMatchId);
-                        if (nextMatch) {
-                            if (match.nextSlot === 'j1') nextMatch.j1Id = match.j1Id;
-                            else if (match.nextSlot === 'j2') nextMatch.j2Id = match.j1Id;
-                        }
-                    }
-                } else if (!match.j1Id && match.j2Id) {
-                    match.jugado = true; match.g1 = 0; match.g2 = 0; match.bye = true;
-                    if (match.nextMatchId) {
-                        const nextMatch = torneo.partidos.find(p => p.id === match.nextMatchId);
-                        if (nextMatch) {
-                            if (match.nextSlot === 'j1') nextMatch.j1Id = match.j2Id;
-                            else if (match.nextSlot === 'j2') nextMatch.j2Id = match.j2Id;
-                        }
-                    }
-                }
+                const esBye = (match.j1Id && !match.j2Id) || (!match.j1Id && match.j2Id);
+                if (!esBye) return;
+                match.jugado = true;
+                match.g1 = 0;
+                match.g2 = 0;
+                match.bye = true;
             });
+            propagarGanadoresCopa(torneo);
         }
 
         function showToast(msg, type = 'info') {
@@ -3354,6 +3564,57 @@
             }
         }
 
+        // Construye el ÁRBOL de una fase eliminatoria (rondas ya en orden, ej. ["Cuartos de Final",
+        // "Semifinales", "Gran Final"]), enlazando cada llave con la siguiente vía nextMatchId/nextSlot.
+        // No asigna jugadores todavía (eso lo hace cada llamador). Si esIdaVuelta es true, cada llave
+        // se genera como 2 partidos (Ida y Vuelta) ligados por serieId. Por convención la Gran Final se
+        // juega a partido único aunque el resto de la llave sea Ida y Vuelta (finalSiempreUnico=true).
+        function construirRondasEliminatorias(rounds, esIdaVuelta, matchIdGen, nowIso, finalSiempreUnico = true) {
+            let allMatches = [];
+            let previousPhaseMatches = [];
+            let firstRoundSeries = [];
+
+            rounds.forEach((faseName, r) => {
+                const esUltimaRonda = (r === rounds.length - 1);
+                const usaIdaVuelta = esIdaVuelta && !(finalSiempreUnico && esUltimaRonda);
+                const numLlaves = Math.pow(2, rounds.length - 1 - r);
+                let currentPhaseMatches = [];
+                let currentPhaseSeries = [];
+
+                for (let c = 0; c < numLlaves; c++) {
+                    let serie;
+                    if (usaIdaVuelta) {
+                        const idIda = matchIdGen();
+                        const idVuelta = matchIdGen();
+                        const matchIda = { id: idIda, fase: `${faseName} - Ida`, ronda: faseName, leg: 'ida', serieId: idIda, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
+                        const matchVuelta = { id: idVuelta, fase: `${faseName} - Vuelta`, ronda: faseName, leg: 'vuelta', serieId: idIda, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
+                        allMatches.push(matchIda, matchVuelta);
+                        serie = { matches: [matchIda, matchVuelta], primario: matchIda };
+                    } else {
+                        const id = matchIdGen();
+                        const m = { id, fase: faseName, ronda: faseName, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
+                        allMatches.push(m);
+                        serie = { matches: [m], primario: m };
+                    }
+                    currentPhaseMatches.push(serie.primario);
+                    currentPhaseSeries.push(serie);
+                }
+
+                if (previousPhaseMatches.length > 0) {
+                    previousPhaseMatches.forEach((prevPrimario, i) => {
+                        const targetIndex = Math.floor(i / 2);
+                        prevPrimario.nextMatchId = currentPhaseMatches[targetIndex].id;
+                        prevPrimario.nextSlot = (i % 2 === 0) ? 'j1' : 'j2';
+                    });
+                }
+
+                if (r === 0) firstRoundSeries = currentPhaseSeries;
+                previousPhaseMatches = currentPhaseMatches;
+            });
+
+            return { allMatches, firstRoundSeries };
+        }
+
         async function generarFixtureAutoFormato() {
             const torneo = getActiveTorneo();
             if (!torneo) return showToast("Abre un torneo primero.", "error");
@@ -3398,52 +3659,22 @@
                     }
                 }
                 
-                // Generar Árbol de Liguilla vacío si es liga_liguilla
+                // Generar Árbol de Liguilla vacío si es liga_liguilla (los cruces se asignan
+                // automáticamente al concluir la fase regular; ver iniciarLiguilla)
                 if (torneo.formato === 'liga_liguilla') {
                     const n = players.length;
                     let numClasificados = 8;
                     if (n < 8) numClasificados = 4;
                     if (n < 4) numClasificados = 2;
-                    
+
                     let rounds = [];
                     if (numClasificados === 8) rounds = ["Cuartos de Final", "Semifinales", "Gran Final"];
                     else if (numClasificados === 4) rounds = ["Semifinales", "Gran Final"];
                     else rounds = ["Gran Final"];
-                    
+
                     const esIdaVuelta = torneo.modoLlaves === 'ida_vuelta';
-                    let phaseMatchCounts = rounds.map((_, idx) => Math.pow(2, rounds.length - 1 - idx));
-                    let previousPhaseMatches = [];
-
-                    for (let r = 0; r < rounds.length; r++) {
-                        const faseName = rounds[r];
-                        const numMatches = phaseMatchCounts[r];
-                        let currentPhaseMatches = [];
-
-                        for (let m = 0; m < numMatches; m++) {
-                            const isFinal = (r === rounds.length - 1);
-                            if (esIdaVuelta && !isFinal) {
-                                let matchIda = { id: matchId++, fase: `${faseName} - Ida`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                                let matchVuelta = { id: matchId++, fase: `${faseName} - Vuelta`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                                currentPhaseMatches.push(matchIda);
-                                torneo.partidos.push(matchIda, matchVuelta);
-                            } else {
-                                let matchObj = { id: matchId++, fase: faseName, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                                currentPhaseMatches.push(matchObj);
-                                torneo.partidos.push(matchObj);
-                            }
-                        }
-
-                        if (previousPhaseMatches.length > 0) {
-                            for (let i = 0; i < previousPhaseMatches.length; i++) {
-                                let prevMatch = previousPhaseMatches[i];
-                                let targetIndex = Math.floor(i / 2);
-                                let slot = (i % 2 === 0) ? 'j1' : 'j2';
-                                prevMatch.nextMatchId = currentPhaseMatches[targetIndex].id;
-                                prevMatch.nextSlot = slot;
-                            }
-                        }
-                        previousPhaseMatches = currentPhaseMatches;
-                    }
+                    const arbol = construirRondasEliminatorias(rounds, esIdaVuelta, () => matchId++, nowIso);
+                    torneo.partidos.push(...arbol.allMatches);
                 }
                 
             } else if (torneo.formato === 'copa_grupos') {
@@ -3490,41 +3721,9 @@
 
                 const esIdaVuelta = torneo.modoLlaves === 'ida_vuelta';
                 const fasesElim = numGrupos === 4 ? ["Cuartos de Final", "Semifinales", "Gran Final"] : ["Semifinales", "Gran Final"];
-                
-                let previousPhaseMatches = [];
 
-                fasesElim.forEach((faseName) => {
-                    let count = 1;
-                    if (faseName === 'Cuartos de Final') count = 4;
-                    if (faseName === 'Semifinales') count = 2;
-
-                    let currentPhaseMatches = [];
-
-                    for (let c = 0; c < count; c++) {
-                        if (esIdaVuelta && faseName !== 'Gran Final') {
-                            let matchIda = { id: matchId++, fase: `${faseName} - Ida`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            let matchVuelta = { id: matchId++, fase: `${faseName} - Vuelta`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            currentPhaseMatches.push(matchIda);
-                            torneo.partidos.push(matchIda, matchVuelta);
-                        } else {
-                            let matchObj = { id: matchId++, fase: faseName, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            currentPhaseMatches.push(matchObj);
-                            torneo.partidos.push(matchObj);
-                        }
-                    }
-
-                    if (previousPhaseMatches.length > 0) {
-                        for (let i = 0; i < previousPhaseMatches.length; i++) {
-                            let prevMatch = previousPhaseMatches[i];
-                            let targetIndex = Math.floor(i / 2);
-                            let slot = (i % 2 === 0) ? 'j1' : 'j2';
-                            prevMatch.nextMatchId = currentPhaseMatches[targetIndex].id;
-                            prevMatch.nextSlot = slot;
-                        }
-                    }
-
-                    previousPhaseMatches = currentPhaseMatches;
-                });
+                const arbolElim = construirRondasEliminatorias(fasesElim, esIdaVuelta, () => matchId++, nowIso);
+                torneo.partidos.push(...arbolElim.allMatches);
 
             } else if (torneo.formato === 'copa_directa') {
                 const n = players.length;
@@ -3537,62 +3736,41 @@
                 else rounds = ["Gran Final"];
 
                 const esIdaVuelta = torneo.modoLlaves === 'ida_vuelta';
-                let phaseMatchCounts = rounds.map((_, idx) => Math.pow(2, rounds.length - 1 - idx));
-                let allMatches = [];
-                let previousPhaseMatches = [];
+                const arbol = construirRondasEliminatorias(rounds, esIdaVuelta, () => matchId++, nowIso);
 
-                for (let r = 0; r < rounds.length; r++) {
-                    const faseName = rounds[r];
-                    const numMatches = phaseMatchCounts[r];
-                    let currentPhaseMatches = [];
-
-                    for (let m = 0; m < numMatches; m++) {
-                        const isFinal = (r === rounds.length - 1);
-                        if (esIdaVuelta && !isFinal) {
-                            let matchIda = { id: matchId++, fase: `${faseName} - Ida`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            let matchVuelta = { id: matchId++, fase: `${faseName} - Vuelta`, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            currentPhaseMatches.push(matchIda);
-                            allMatches.push(matchIda, matchVuelta);
-                        } else {
-                            let matchObj = { id: matchId++, fase: faseName, j1Id: null, j2Id: null, g1: null, g2: null, pen1: null, pen2: null, jugado: false, plazo: nowIso };
-                            currentPhaseMatches.push(matchObj);
-                            allMatches.push(matchObj);
-                        }
-                    }
-
-                    if (previousPhaseMatches.length > 0) {
-                        for (let i = 0; i < previousPhaseMatches.length; i++) {
-                            let prevMatch = previousPhaseMatches[i];
-                            let targetIndex = Math.floor(i / 2);
-                            let slot = (i % 2 === 0) ? 'j1' : 'j2';
-                            prevMatch.nextMatchId = currentPhaseMatches[targetIndex].id;
-                            prevMatch.nextSlot = slot;
-                        }
-                    }
-
-                    previousPhaseMatches = currentPhaseMatches;
-                }
-
-                let firstRoundMatches = allMatches.filter(m => m.fase.startsWith(rounds[0]));
-                const bracketSize = firstRoundMatches.length * 2;
+                // El tamaño de la llave se calcula según el número de LLAVES de la primera ronda
+                // (cada llave = 1 o 2 partidos), no según la cantidad de partidos individuales;
+                // este era exactamente el origen del error reportado con Ida y Vuelta.
+                const firstRoundSeries = arbol.firstRoundSeries;
+                const bracketSize = firstRoundSeries.length * 2;
                 const numByes = bracketSize - n;
+                const idsARemover = new Set();
 
                 let playerIdx = 0;
-                for (let i = 0; i < firstRoundMatches.length; i++) {
+                firstRoundSeries.forEach((serie, i) => {
                     if (i < numByes) {
+                        // Posición libre (bye): siempre a partido único, nunca Ida y Vuelta,
+                        // porque no existe rival con quien disputar el partido de Vuelta.
                         const pBye = players[playerIdx++] || null;
-                        firstRoundMatches[i].j1Id = pBye ? pBye.id : null;
-                        firstRoundMatches[i].j2Id = null;
+                        if (serie.matches.length === 2) {
+                            const [ida, vuelta] = serie.matches;
+                            ida.fase = ida.ronda;
+                            ida.leg = undefined;
+                            ida.serieId = null;
+                            idsARemover.add(vuelta.id);
+                            serie.matches = [ida];
+                            serie.primario = ida;
+                        }
+                        serie.matches.forEach(m => { m.j1Id = pBye ? pBye.id : null; m.j2Id = null; });
                     } else {
                         const pA = players[playerIdx++] || null;
                         const pB = players[playerIdx++] || null;
-                        firstRoundMatches[i].j1Id = pA ? pA.id : null;
-                        firstRoundMatches[i].j2Id = pB ? pB.id : null;
+                        serie.matches.forEach(m => { m.j1Id = pA ? pA.id : null; m.j2Id = pB ? pB.id : null; });
                     }
-                }
+                });
 
-                torneo.partidos = allMatches;
-                resolverByesPrimeraRonda(torneo, firstRoundMatches);
+                torneo.partidos = arbol.allMatches.filter(m => !idsARemover.has(m.id));
+                resolverByesPrimeraRonda(torneo, firstRoundSeries.map(s => s.primario));
             }
 
             saveData();
